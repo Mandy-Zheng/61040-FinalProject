@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 
 import { Router, getExpressRouter } from "./framework/router";
 
-import { Friend, Post, User, WebSession } from "./app";
+import { Friend, Membership, Post, Team, User, WebSession } from "./app";
 import { PostDoc, PostOptions } from "./concepts/post";
 import { UserDoc } from "./concepts/user";
 import { WebSessionDoc } from "./concepts/websession";
@@ -136,6 +136,90 @@ class Routes {
     const fromId = (await User.getUserByUsername(from))._id;
     return await Friend.rejectRequest(fromId, user);
   }
+  @Router.post("/users/:id")
+  async registerUser(session: WebSessionDoc, username: string, password: string) {
+    WebSession.isLoggedOut(session);
+    const { user, msg } = await User.create(username, password);
+    let membership;
+    if (user) {
+      membership = await Membership.create(user._id);
+    }
+    return { msg, user, membership: membership?.membership };
+  }
+
+  @Router.post("/organization/:id")
+  async registerOrganization(session: WebSessionDoc, orgName: string) {
+    const user = WebSession.getUser(session);
+    const { msg, team } = await Team.create(orgName, user);
+    if (team) {
+      await Membership.addMembership(user, team._id);
+    }
+    return { msg: msg, team: team };
+  }
+
+  @Router.patch("/organization/:id")
+  async updateOrganizationName(session: WebSessionDoc, orgName: string) {
+    // const user = WebSession.getUser(session);
+    // const { msg, team } = await Team.create(orgName, user);
+    // if (team) {
+    //   await Membership.addMembership(user, team._id);
+    // }
+    // return { msg: msg, team: team };
+  }
+
+  @Router.patch("/organization/:id")
+  async addMemberToOrganization(session: WebSessionDoc, orgName: string) {
+    // const user = WebSession.getUser(session);
+    // const { msg, team } = await Team.create(orgName, user);
+    // if (team) {
+    //   await Membership.addMembership(user, team._id);
+    // }
+    // return { msg: msg, team: team };
+  }
+
+  @Router.patch("/organization/:id")
+  async updateMemberStatus(session: WebSessionDoc, orgName: string) {
+    // const user = WebSession.getUser(session);
+    // const { msg, team } = await Team.create(orgName, user);
+    // if (team) {
+    //   await Membership.addMembership(user, team._id);
+    // }
+    // return { msg: msg, team: team };
+  }
+
+  @Router.patch("/organization/:id")
+  async removeUserFromOrganization(session: WebSessionDoc, orgName: string) {
+    // const user = WebSession.getUser(session);
+    // const { msg, team } = await Team.create(orgName, user);
+    // if (team) {
+    //   await Membership.addMembership(user, team._id);
+    // }
+    // return { msg: msg, team: team };
+  }
+
+  @Router.delete("/organization/:id")
+  async deleteOrganization(session: WebSessionDoc, orgName: string) {
+    // const user = WebSession.getUser(session);
+    // const { msg, team } = await Team.create(orgName, user);
+    // if (team) {
+    //   await Membership.addMembership(user, team._id);
+    // }
+    // return { msg: msg, team: team };
+  }
+
+  // @Router.delete("/organization/:id")
+  // async deleteUser(session: WebSessionDoc, orgName: string) {
+  //   // const user = WebSession.getUser(session);
+  //   // const { msg, team } = await Team.create(orgName, user);
+  //   // if (team) {
+  //   //   await Membership.addMembership(user, team._id);
+  //   // }
+  //   // return { msg: msg, team: team };
+  // }
+  // @Router.get()
+  // @Router.patch()
+  // @Router.post()
+  // @Router.delete()
 }
 
 export default getExpressRouter(new Routes());
