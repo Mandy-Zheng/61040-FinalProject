@@ -2,8 +2,9 @@ import { ObjectId } from "mongodb";
 
 import { Router, getExpressRouter } from "./framework/router";
 
-import { Friend, Membership, Post, Team, User, WebSession } from "./app";
+import { Friend, Membership, Post, Stock, Team, User, WebSession } from "./app";
 import { PostDoc, PostOptions } from "./concepts/post";
+import { StockDoc } from "./concepts/stock";
 import { UserDoc } from "./concepts/user";
 import { WebSessionDoc } from "./concepts/websession";
 import Responses from "./responses";
@@ -220,6 +221,31 @@ class Routes {
   // @Router.patch()
   // @Router.post()
   // @Router.delete()
+
+  // return inventory of given organization
+  @Router.get("/inventory/:orgId")
+  async getOrganizationInventory(session: WebSessionDoc, orgId: ObjectId) {
+    // const user = WebSession.getUser(session);
+    // await Team.isMember(user, orgId);
+    const inventory = await Stock.getStocksByOwner(orgId);
+    return inventory;
+  }
+
+  // increment/decrement the amount of stock `id` based on `change`
+  @Router.patch("/inventory")
+  async updateInventoryItem(session: WebSessionDoc, id: ObjectId, update: Partial<StockDoc>) {
+    return;
+  }
+
+  @Router.post("/inventory")
+  async addNewInventoryItem(session: WebSessionDoc, owner: ObjectId, item: string, count: number, link?: string, img?: string, maxp?: number) {
+    return;
+  }
+
+  @Router.delete("/inventory")
+  async deleteInventoryItem(session: WebSessionDoc, id: ObjectId) {
+    return;
+  }
 }
 
 export default getExpressRouter(new Routes());
