@@ -89,7 +89,7 @@ export default class HouseholdConcept {
 
   async addVisit(_id: ObjectId) {
     const household = await this.getProfileById(_id);
-    const newVisits=new Array<ObjectId>;
+    const newVisits=new Array<Date>;
     household.pastVisits.forEach((id) => {
       newVisits.push(id);
     });
