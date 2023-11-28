@@ -2,8 +2,8 @@ import { ObjectId } from "mongodb";
 
 import { Router, getExpressRouter } from "./framework/router";
 
-import { Membership, Stock, Team, User, WebSession } from "./app";
-import { DietaryRestrictions } from "./concepts/household";
+import { Household, Membership, Stock, Team, User, WebSession } from "./app";
+import { DietaryRestrictions, HouseholdDoc, Language } from "./concepts/household";
 import { StockDoc } from "./concepts/stock";
 import { UserDoc } from "./concepts/user";
 import { WebSessionDoc } from "./concepts/websession";
@@ -126,11 +126,73 @@ class Routes {
     return Team.delete(orgId, user);
   }
 
-  // return inventory of given organization
+  // reset all visits for all households in organization
+  @Router.patch("/organization/reset")
+  async resetAllVisits(session: WebSessionDoc, orgId: ObjectId) {
+    const user = WebSession.getUser(session);
+    await Team.isAdmin(orgId, user);
+    const households = await Household.getProfilesByOwner(orgId);
+    for (const h of households) {
+      await Household.resetVisits(h._id);
+    }
+    return { msg: "Successfully reset all visits!" };
+  }
+
+  @Router.post("/profile/:id")
+  async createHouseholdProfile(session: WebSessionDoc, orgId: ObjectId, name: string, birthday: Date, img: string, diet: Array<DietaryRestrictions>, lang: Language, req: string) {
+    const user = WebSession.getUser(session);
+    await Team.isTeamMember(orgId, user);
+    // TODO ADD WHEN PATRON IS DONE
+    // const patron = Patron.createPatron(name, birthday, img);
+    // return await Household.create(orgId, [patron], diet, lang, req);
+    return await Household.create(orgId, [], diet, lang, req);
+  }
+
+  // update household members, diet restrictions, language, special requests
+  @Router.patch("/profile/:id")
+  async updateHouseholdDetails(session: WebSessionDoc, id: ObjectId, update: Partial<HouseholdDoc>) {
+    const household = await Household.getProfileById(id);
+    const user = WebSession.getUser(session);
+    await Team.isTeamMember(household.organization, user);
+    return await Household.updateHouseholdDetails(id, update);
+  }
+
+  // add single existing patron to household
+  @Router.patch("/profile/member/:id")
+  async addHouseholdMember(session: WebSessionDoc, id: ObjectId, member: ObjectId) {
+    const household = await Household.getProfileById(id);
+    const user = WebSession.getUser(session);
+    await Team.isTeamMember(household.organization, user);
+    return await Household.addMember(id, member);
+  }
+
+  // return household and add visit
+  @Router.get("/profile/:id")
+  async signInHousehold(session: WebSessionDoc, id: ObjectId) {
+    const household = await Household.getProfileById(id);
+    const user = WebSession.getUser(session);
+    await Team.isTeamMember(household.organization, user);
+    await Household.addVisit(id);
+    return household;
+  }
+
+  @Router.delete("/profile/:id")
+  async removeHouseholdProfile(session: WebSessionDoc, id: ObjectId) {
+    const household = await Household.getProfileById(id);
+    const user = WebSession.getUser(session);
+    await Team.isTeamMember(household.organization, user);
+    // TODO ADD WHEN PATRON IS DONE
+    // for (const patron of household.members) {
+    //   await Patron.deletePatron(patron);
+    // }
+    return await Household.delete(id);
+  }
+
+  // return inventory of given organization, including the max per day allocation
   @Router.get("/inventory/:orgId")
   async getOrganizationInventory(session: WebSessionDoc, orgId: ObjectId, item?: string) {
     const user = WebSession.getUser(session);
-    await !Team.isTeamMember(orgId, user);
+    await Team.isTeamMember(orgId, user);
     let inventory;
     if (item) {
       inventory = await Stock.getStockByItem(orgId, item);
@@ -143,11 +205,12 @@ class Routes {
     }
   }
 
+  // update an inventory item's count or other details (link, image, etc)
   @Router.patch("/inventory")
   async updateInventoryItem(session: WebSessionDoc, id: ObjectId, update: Partial<StockDoc>) {
     const user = WebSession.getUser(session);
     const stock = await Stock.getStockById(id);
-    await !Team.isTeamMember(stock.owner, user);
+    await Team.isTeamMember(stock.owner, user);
     if (update.count) {
       await Stock.updateStockQuantity(id, update.count);
     }
@@ -160,7 +223,7 @@ class Routes {
   @Router.post("/inventory")
   async addNewInventoryItem(session: WebSessionDoc, owner: ObjectId, item: string, count: number, diet: Array<DietaryRestrictions>, link?: string, img?: string, maxp?: number) {
     const user = WebSession.getUser(session);
-    await !Team.isTeamMember(owner, user);
+    await Team.isTeamMember(owner, user);
     return await Stock.createStock(owner, item, count, diet, link, img, maxp);
   }
 
@@ -168,7 +231,7 @@ class Routes {
   async deleteInventoryItem(session: WebSessionDoc, id: ObjectId) {
     const user = WebSession.getUser(session);
     const stock = await Stock.getStockById(id);
-    await !Team.isTeamMember(stock.owner, user);
+    await Team.isTeamMember(stock.owner, user);
     return await Stock.deleteStock(id);
   }
 }
