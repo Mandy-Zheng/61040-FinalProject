@@ -157,13 +157,22 @@ class Routes {
     return await Household.updateHouseholdDetails(id, update);
   }
 
-  // add single existing patron to household
-  @Router.patch("/profile/member/:id")
-  async addHouseholdMember(session: WebSessionDoc, id: ObjectId, member: ObjectId) {
+  // TODO ADD WHEN PATRON IS DONE
+  // @Router.patch("/profile/addPatron/:id")
+  // async addPatronToHousehold(session: WebSessionDoc, id: ObjectId, name: string, birthday: Date, img: string) {
+  //   const household = await Household.getProfileById(id);
+  //   const user = WebSession.getUser(session);
+  //   await Team.isTeamMember(household.organization, user);
+  //   const patron = Patron.createPatron(name, birthday, img);
+  //   return await Household.addMember(id, patron);
+  // }
+
+  @Router.patch("/profile/removePatron/:id")
+  async removePatronFromHousehold(session: WebSessionDoc, id: ObjectId, patronId: ObjectId) {
     const household = await Household.getProfileById(id);
     const user = WebSession.getUser(session);
     await Team.isTeamMember(household.organization, user);
-    return await Household.addMember(id, member);
+    return await Household.removeMember(id, patronId);
   }
 
   // return household and add visit
