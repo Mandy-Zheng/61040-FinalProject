@@ -2,6 +2,7 @@ import { ObjectId } from "mongodb";
 
 import DocCollection, { BaseDoc } from "../framework/doc";
 import { BadValuesError, NotFoundError } from "./errors";
+//use strings, also comparing enum can be done using ===
 export enum DietaryRestrictions {
   None = 0,
   Meat = 1,
@@ -104,7 +105,7 @@ export default class HouseholdConcept {
 
   async addDietaryRestriction(_id: ObjectId, diet: DietaryRestrictions) {
     const household = await this.getProfileById(_id);
-    household.dietaryRestrictions.forEach((id, idx) => {
+    household.dietaryRestrictions.forEach((id) => {
       if (id.valueOf() === diet.valueOf()) throw new BadValuesError("Dietary Restriction of household already exists!");
     });
   }
