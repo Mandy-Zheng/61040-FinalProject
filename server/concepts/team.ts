@@ -38,39 +38,53 @@ export default class TeamConcept {
     return team;
   }
 
+  async isTeamMember(_id: ObjectId, user: ObjectId) {
+    const team = await this.get(_id);
+    if (!team) {
+      throw new NotFoundError("Team Not Found");
+    }
+    return team.admins.some((member) => member.equals(user)) || team.members.some((member) => member.equals(user));
+  }
+
   async updateName(_id: ObjectId, name: string, editor: ObjectId) {
     await this.isAdmin(_id, editor);
     await this.teams.updateOne({ _id }, { name });
     return { msg: "Successfully Updated Team Name" };
   }
 
-  async removeUserFromTeam(_id: ObjectId, user: ObjectId, editor: ObjectId) {
-    const oldTeam = await this.isAdmin(_id, editor);
-    const members = oldTeam.members.filter((member) => member.equals(user));
-    const admins = oldTeam.members.filter((member) => member.equals(user));
+  async removeUserFromTeam(_id: ObjectId, member: ObjectId, editor: ObjectId) {
+    let oldTeam;
+    if (member.equals(editor)) {
+      oldTeam = await this.get(_id);
+    } else {
+      oldTeam = await this.isAdmin(_id, editor);
+    }
+    const members = oldTeam.members.filter((user) => user.equals(member));
+    const admins = oldTeam.members.filter((user) => user.equals(member));
     await this.teams.updateOne({ _id }, { members, admins });
     return { msg: "Successfully Removed User From Team" };
   }
 
-  async addUserAsMember(_id: ObjectId, user: ObjectId, editor: ObjectId) {
+  async addUserAsMember(_id: ObjectId, member: ObjectId, editor: ObjectId) {
     const oldTeam = await this.isAdmin(_id, editor);
-    const members = oldTeam.members.filter((member) => member.equals(user));
-    const admins = oldTeam.members.filter((member) => member.equals(user));
-    members.push(user);
+    const members = oldTeam.members.filter((user) => user.equals(member));
+    const admins = oldTeam.members.filter((user) => user.equals(member));
+    members.push(member);
     await this.teams.updateOne({ _id }, { members, admins });
     return { msg: "Successfully Added New Member to Team!" };
   }
 
-  async addUserAsAdmin(_id: ObjectId, user: ObjectId, editor: ObjectId) {
+  async addUserAsAdmin(_id: ObjectId, member: ObjectId, editor: ObjectId) {
     const oldTeam = await this.isAdmin(_id, editor);
-    const members = oldTeam.members.filter((member) => member.equals(user));
-    const admins = oldTeam.members.filter((member) => member.equals(user));
-    admins.push(user);
+    const members = oldTeam.members.filter((user) => user.equals(member));
+    const admins = oldTeam.members.filter((user) => user.equals(member));
+    admins.push(member);
     await this.teams.updateOne({ _id }, { members, admins });
     return { msg: "Successfully Added New Admin to Team!" };
   }
 
-  async delete(_id: ObjectId) {
+  async delete(_id: ObjectId, editor: ObjectId) {
+    await this.isAdmin(_id, editor);
     await this.teams.deleteOne({ _id });
     return { msg: "Team is Successfully Deleted!" };
   }
