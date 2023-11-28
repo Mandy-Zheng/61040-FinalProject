@@ -1,6 +1,7 @@
-import { User } from "./app";
+import { Team, User } from "./app";
 import { AlreadyFriendsError, FriendNotFoundError, FriendRequestAlreadyExistsError, FriendRequestDoc, FriendRequestNotFoundError } from "./concepts/friend";
 import { PostAuthorNotMatchError, PostDoc } from "./concepts/post";
+import { StockDoc } from "./concepts/stock";
 import { Router } from "./framework/router";
 
 /**
@@ -25,6 +26,25 @@ export default class Responses {
   static async posts(posts: PostDoc[]) {
     const authors = await User.idsToUsernames(posts.map((post) => post.author));
     return posts.map((post, i) => ({ ...post, author: authors[i] }));
+  }
+
+  /**
+   * Convert StockDoc into more readable format for the frontend by converting the org id into a name.
+   */
+  static async stock(stock: StockDoc | null) {
+    if (!stock) {
+      return stock;
+    }
+    const owner = await Team.get(stock.owner);
+    return { ...stock, owner: owner.name };
+  }
+
+  /**
+   * Same as {@link stock} but for an array of StockDoc for improved performance.
+   */
+  static async stocks(stocks: StockDoc[]) {
+    const owners = await Team.idsToNames(stocks.map((s) => s.owner));
+    return stocks.map((stock, i) => ({ ...stock, owner: owners[i] }));
   }
 
   /**

@@ -1,7 +1,7 @@
 import { ObjectId } from "mongodb";
 
 import DocCollection, { BaseDoc } from "../framework/doc";
-import { NotFoundError } from "./errors";
+import { NotAllowedError, NotFoundError } from "./errors";
 
 export interface MembershipDoc extends BaseDoc {
   user: ObjectId;
@@ -45,5 +45,12 @@ export default class MembershipConcept {
   async deleteUserMembership(user: ObjectId) {
     await this.memberships.deleteOne({ user });
     return { msg: "Memberships of User are Successfully Deleted!" };
+  }
+
+  async isMember(member: ObjectId, org: ObjectId) {
+    const membership = await this.get(member);
+    if (!membership.organizations.includes(org.toString())) {
+      throw new NotAllowedError(`${member} is not a member of organization ${org}!`);
+    }
   }
 }

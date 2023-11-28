@@ -3,6 +3,7 @@ import { ObjectId } from "mongodb";
 import { Router, getExpressRouter } from "./framework/router";
 
 import { Friend, Membership, Post, Stock, Team, User, WebSession } from "./app";
+import { DietaryRestrictions } from "./concepts/household";
 import { PostDoc, PostOptions } from "./concepts/post";
 import { StockDoc } from "./concepts/stock";
 import { UserDoc } from "./concepts/user";
@@ -224,27 +225,48 @@ class Routes {
 
   // return inventory of given organization
   @Router.get("/inventory/:orgId")
-  async getOrganizationInventory(session: WebSessionDoc, orgId: ObjectId) {
-    // const user = WebSession.getUser(session);
-    // await Team.isMember(user, orgId);
-    const inventory = await Stock.getStocksByOwner(orgId);
-    return inventory;
+  async getOrganizationInventory(session: WebSessionDoc, orgId: ObjectId, item?: string) {
+    const user = WebSession.getUser(session);
+    await Membership.isMember(user, orgId);
+    let inventory;
+    if (item) {
+      inventory = await Stock.getStockByItem(orgId, item);
+      return { ...(await Responses.stock(inventory)), maxPerDay: Stock.getTodaysAllocation(inventory.count) };
+    } else {
+      inventory = await Stock.getStocksByOwner(orgId);
+      const maxPDs = inventory.map((stock) => Stock.getTodaysAllocation(stock.count));
+      const response = await Responses.stocks(inventory);
+      return response.map((stock, i) => ({ ...stock, maxPerDay: maxPDs[i] }));
+    }
   }
 
-  // increment/decrement the amount of stock `id` based on `change`
   @Router.patch("/inventory")
   async updateInventoryItem(session: WebSessionDoc, id: ObjectId, update: Partial<StockDoc>) {
-    return;
+    const user = WebSession.getUser(session);
+    const stock = await Stock.getStockById(id);
+    await Membership.isMember(user, stock.owner);
+    if (update.count) {
+      await Stock.updateStockQuantity(id, update.count);
+    }
+    // eslint-disable-next-line
+    const { count, ...rest } = update; // remove count
+    await Stock.updateStockDetails(id, rest);
+    return { msg: "Stock successfully updated!" };
   }
 
   @Router.post("/inventory")
-  async addNewInventoryItem(session: WebSessionDoc, owner: ObjectId, item: string, count: number, link?: string, img?: string, maxp?: number) {
-    return;
+  async addNewInventoryItem(session: WebSessionDoc, owner: ObjectId, item: string, count: number, diet: Array<DietaryRestrictions>, link?: string, img?: string, maxp?: number) {
+    const user = WebSession.getUser(session);
+    await Membership.isMember(user, owner);
+    return await Stock.createStock(owner, item, count, diet, link, img, maxp);
   }
 
   @Router.delete("/inventory")
   async deleteInventoryItem(session: WebSessionDoc, id: ObjectId) {
-    return;
+    const user = WebSession.getUser(session);
+    const stock = await Stock.getStockById(id);
+    await Membership.isMember(user, stock.owner);
+    return await Stock.deleteStock(id);
   }
 }
 
