@@ -3,10 +3,11 @@ import { ObjectId } from "mongodb";
 import { Router, getExpressRouter } from "./framework/router";
 
 import { Membership, Stock, Team, User, WebSession } from "./app";
-import { NotAllowedError } from "./concepts/errors";
+import { DietaryRestrictions } from "./concepts/household";
 import { StockDoc } from "./concepts/stock";
 import { UserDoc } from "./concepts/user";
 import { WebSessionDoc } from "./concepts/websession";
+import Responses from "./responses";
 
 class Routes {
   @Router.get("/session")
@@ -100,10 +101,7 @@ class Routes {
   @Router.patch("/organization/:id")
   async updateMemberStatus(session: WebSessionDoc, orgId: ObjectId, member: ObjectId, isPromoting: Boolean) {
     const user = WebSession.getUser(session);
-    const isMember = Team.isTeamMember(orgId, member);
-    if (!isMember) {
-      throw new NotAllowedError("User Is Not A Member of the Organization");
-    }
+    await Team.isTeamMember(orgId, member);
     if (isPromoting) {
       return Team.addUserAsAdmin(orgId, member, user);
     } else {
@@ -130,27 +128,48 @@ class Routes {
 
   // return inventory of given organization
   @Router.get("/inventory/:orgId")
-  async getOrganizationInventory(session: WebSessionDoc, orgId: ObjectId) {
-    // const user = WebSession.getUser(session);
-    // await Team.isMember(user, orgId);
-    const inventory = await Stock.getStocksByOwner(orgId);
-    return inventory;
+  async getOrganizationInventory(session: WebSessionDoc, orgId: ObjectId, item?: string) {
+    const user = WebSession.getUser(session);
+    await !Team.isTeamMember(orgId, user);
+    let inventory;
+    if (item) {
+      inventory = await Stock.getStockByItem(orgId, item);
+      return { ...(await Responses.stock(inventory)), maxPerDay: Stock.getTodaysAllocation(inventory.count) };
+    } else {
+      inventory = await Stock.getStocksByOwner(orgId);
+      const maxPDs = inventory.map((stock) => Stock.getTodaysAllocation(stock.count));
+      const response = await Responses.stocks(inventory);
+      return response.map((stock, i) => ({ ...stock, maxPerDay: maxPDs[i] }));
+    }
   }
 
-  // increment/decrement the amount of stock `id` based on `change`
   @Router.patch("/inventory")
   async updateInventoryItem(session: WebSessionDoc, id: ObjectId, update: Partial<StockDoc>) {
-    return;
+    const user = WebSession.getUser(session);
+    const stock = await Stock.getStockById(id);
+    await !Team.isTeamMember(stock.owner, user);
+    if (update.count) {
+      await Stock.updateStockQuantity(id, update.count);
+    }
+    // eslint-disable-next-line
+    const { count, ...rest } = update; // remove count
+    await Stock.updateStockDetails(id, rest);
+    return { msg: "Stock successfully updated!" };
   }
 
   @Router.post("/inventory")
-  async addNewInventoryItem(session: WebSessionDoc, owner: ObjectId, item: string, count: number, link?: string, img?: string, maxp?: number) {
-    return;
+  async addNewInventoryItem(session: WebSessionDoc, owner: ObjectId, item: string, count: number, diet: Array<DietaryRestrictions>, link?: string, img?: string, maxp?: number) {
+    const user = WebSession.getUser(session);
+    await !Team.isTeamMember(owner, user);
+    return await Stock.createStock(owner, item, count, diet, link, img, maxp);
   }
 
   @Router.delete("/inventory")
   async deleteInventoryItem(session: WebSessionDoc, id: ObjectId) {
-    return;
+    const user = WebSession.getUser(session);
+    const stock = await Stock.getStockById(id);
+    await !Team.isTeamMember(stock.owner, user);
+    return await Stock.deleteStock(id);
   }
 }
 

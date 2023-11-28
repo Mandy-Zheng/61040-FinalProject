@@ -2,23 +2,24 @@ import { ObjectId } from "mongodb";
 
 import DocCollection, { BaseDoc } from "../framework/doc";
 import { NotAllowedError, NotFoundError } from "./errors";
+import { DietaryRestrictions } from "./household";
 
 export interface StockDoc extends BaseDoc {
   owner: ObjectId;
   item: string;
   count: number;
+  diet: Array<DietaryRestrictions>;
   supplyLink?: string;
   image?: string;
-  maxPerDay: number;
   maxPerPerson: number;
 }
 
 export default class StockConcept {
   public readonly stocks = new DocCollection<StockDoc>("stocks");
 
-  async createStock(owner: ObjectId, item: string, count: number, link?: string, img?: string, maxPP: number = 3) {
+  async createStock(owner: ObjectId, item: string, count: number, diet: Array<DietaryRestrictions>, link?: string, img?: string, maxPP: number = 3) {
     await this.isItemUnique(owner, item); // can't duplicate item name within same owner
-    const _id = await this.stocks.createOne({ owner, item, count, supplyLink: link, image: img, maxPerDay: 0, maxPerPerson: maxPP });
+    const _id = await this.stocks.createOne({ owner, item, count, diet, supplyLink: link, image: img, maxPerPerson: maxPP });
     if (count < 0) {
       throw new NotAllowedError("Initial stock count cannot be negative");
     }
@@ -69,14 +70,12 @@ export default class StockConcept {
     return { msg: "Stock successfully deleted!" };
   }
 
-  async isOwner(owner: ObjectId, _id: ObjectId) {
-    const stock = await this.stocks.readOne({ _id });
-    if (!stock) {
-      throw new NotFoundError(`Stock ${_id} does not exist!`);
-    }
-    if (stock.owner.toString() !== owner.toString()) {
-      throw new NotAllowedError(`${owner} is not the owner of stock ${_id}!`);
-    }
+  getTodaysAllocation(count: number) {
+    // return the amount that can be given away today in order to maintain a proportional
+    // inventory for the rest of the week, assuming the week begins on sunday
+    const currentDate = new Date();
+    const currentDay = currentDate.getDay(); // sunday is 0, monday is 1, etc.
+    return count / (7 - currentDay);
   }
 
   private sanitizeUpdate(update: Partial<StockDoc>) {

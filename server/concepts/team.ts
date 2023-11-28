@@ -43,7 +43,9 @@ export default class TeamConcept {
     if (!team) {
       throw new NotFoundError("Team Not Found");
     }
-    return team.admins.some((member) => member.equals(user)) || team.members.some((member) => member.equals(user));
+    if (team.admins.some((member) => member.equals(user)) || team.members.some((member) => member.equals(user))) {
+      throw new NotAllowedError(`${user} is not a member of organization ${_id}!`);
+    }
   }
 
   async updateName(_id: ObjectId, name: string, editor: ObjectId) {
@@ -87,5 +89,13 @@ export default class TeamConcept {
     await this.isAdmin(_id, editor);
     await this.teams.deleteOne({ _id });
     return { msg: "Team is Successfully Deleted!" };
+  }
+
+  async idsToNames(ids: ObjectId[]) {
+    const teams = await this.teams.readMany({ _id: { $in: ids } });
+
+    // Store strings in Map because ObjectId comparison by reference is wrong
+    const idToTeam = new Map(teams.map((t) => [t._id.toString(), t]));
+    return ids.map((id) => idToTeam.get(id.toString())?.name ?? "DELETED_USER");
   }
 }

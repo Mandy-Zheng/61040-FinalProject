@@ -33,7 +33,7 @@ export default class MembershipConcept {
     return { msg: "Successfully Added Membership!" };
   }
 
-  async isMember(user: ObjectId, organization: ObjectId) {
+  async hasMembership(user: ObjectId, organization: ObjectId) {
     const membership = await this.get(user);
     return membership.organizations.some((org) => org.equals(organization));
   }
