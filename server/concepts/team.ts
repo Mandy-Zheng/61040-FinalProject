@@ -1,7 +1,7 @@
 import { ObjectId } from "mongodb";
 
 import DocCollection, { BaseDoc } from "../framework/doc";
-import { NotAllowedError, NotFoundError } from "./errors";
+import { BadValuesError, NotAllowedError, NotFoundError } from "./errors";
 
 export interface TeamDoc extends BaseDoc {
   name: string;
@@ -15,6 +15,10 @@ export default class TeamConcept {
   async create(name: string, founder: ObjectId) {
     const admins: Array<ObjectId> = [founder];
     const members: Array<ObjectId> = [];
+    if (!name) {
+      throw new BadValuesError("Missing Organization Name");
+    }
+    await this.isTeamNameUnique(name);
     const _id = await this.teams.createOne({ name, admins, members });
     return { msg: "Team successfully created!", team: await this.teams.readOne({ _id }) };
   }
@@ -25,6 +29,11 @@ export default class TeamConcept {
       throw new NotFoundError("Team Not Found");
     }
     return team;
+  }
+  private async isTeamNameUnique(name: string) {
+    if (await this.teams.readOne({ name })) {
+      throw new NotAllowedError(`Team with team name ${name} already exists!`);
+    }
   }
 
   async isAdmin(_id: ObjectId, editor: ObjectId) {

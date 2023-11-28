@@ -3,6 +3,7 @@ import { ObjectId } from "mongodb";
 import { Router, getExpressRouter } from "./framework/router";
 
 import { Household, Membership, Stock, Team, User, WebSession } from "./app";
+import { BadValuesError } from "./concepts/errors";
 import { DietaryRestrictions, HouseholdDoc, Language } from "./concepts/household";
 import { StockDoc } from "./concepts/stock";
 import { UserDoc } from "./concepts/user";
@@ -87,6 +88,9 @@ class Routes {
   @Router.patch("/organization/:id")
   async updateOrganizationName(session: WebSessionDoc, orgId: ObjectId, orgName: string) {
     const user = WebSession.getUser(session);
+    if (!orgName) {
+      throw new BadValuesError("Missing Organization Name");
+    }
     return await Team.updateName(orgId, orgName, user);
   }
 
