@@ -56,8 +56,8 @@ export default class HouseholdConcept {
   }
 
   async updateMembers(_id: ObjectId, members: Array<ObjectId>) {
-    const household = await this.getProfileById(_id);
-    household.members = members;
+    await this.getProfileById(_id);
+    this.households.updateOne({_id},{members:members});
   }
 
   async addMember(_id: ObjectId, member: ObjectId) {
@@ -65,7 +65,12 @@ export default class HouseholdConcept {
     household.members.forEach((id) => {
       if (id.equals(member)) throw new BadValuesError("Member of household already exists!");
     });
-    household.members.push(member);
+    const newMembers=new Array<ObjectId>;
+    household.members.forEach((id) => {
+      newMembers.push(id);
+    });
+    newMembers.push(member);
+    this.households.updateOne({_id},{members:newMembers});
   }
 
   async removeMember(_id: ObjectId, member: ObjectId) {
@@ -74,17 +79,27 @@ export default class HouseholdConcept {
     household.members.forEach((id, idx) => {
       if (id.equals(member)) idxList.push(idx);
     });
-    for (let i = idxList.length - 1; i >= 0; i--) household.members.splice(idxList[i], 1);
+    const newMembers=new Array<ObjectId>;
+    household.members.forEach((id) => {
+      newMembers.push(id);
+    });
+    for (let i = idxList.length - 1; i >= 0; i--) newMembers.splice(idxList[i], 1);
+    this.households.updateOne({_id},{members:newMembers});
   }
 
   async addVisit(_id: ObjectId) {
     const household = await this.getProfileById(_id);
-    household.pastVisits.push(new Date());
+    const newVisits=new Array<ObjectId>;
+    household.pastVisits.forEach((id) => {
+      newVisits.push(id);
+    });
+    newVisits.push(new Date());
+    this.households.updateOne({_id},{pastVisits:newVisits});
   }
 
   async resetVisits(_id: ObjectId) {
-    const household = await this.getProfileById(_id);
-    household.pastVisits = new Array<Date>();
+    await this.getProfileById(_id);
+    this.households.updateOne({_id},{pastVisits:new Array<Date>});
   }
 
   async countVisits(_id: ObjectId) {
@@ -93,13 +108,13 @@ export default class HouseholdConcept {
   }
 
   async updateLanguage(_id: ObjectId, lang: Language) {
-    const household = await this.getProfileById(_id);
-    household.preferredLanguage = lang;
+    await this.getProfileById(_id);
+    this.households.updateOne({_id},{preferredLanguage:lang});
   }
 
   async updateRequests(_id: ObjectId, req: string) {
-    const household = await this.getProfileById(_id);
-    household.specialRequests = req;
+    await this.getProfileById(_id);
+    this.households.updateOne({_id},{specialRequests:req});
   }
 
   async addDietaryRestriction(_id: ObjectId, diet: DietaryRestrictions) {
@@ -107,6 +122,12 @@ export default class HouseholdConcept {
     household.dietaryRestrictions.forEach((id) => {
       if (id.valueOf() === diet.valueOf()) throw new BadValuesError("Dietary Restriction of household already exists!");
     });
+    const newRestrictions=new Array<DietaryRestrictions>;
+    household.dietaryRestrictions.forEach((id) => {
+      newRestrictions.push(id);
+    });
+    newRestrictions.push(diet);
+    this.households.updateOne({_id},{dietaryRestrictions:newRestrictions});
   }
 
   async removeDietaryRestriction(_id: ObjectId, diet: DietaryRestrictions) {
@@ -115,15 +136,20 @@ export default class HouseholdConcept {
     household.dietaryRestrictions.forEach((id, idx) => {
       if (id.valueOf() === diet.valueOf()) idxList.push(idx);
     });
-    for (let i = idxList.length - 1; i >= 0; i--) household.dietaryRestrictions.splice(idxList[i], 1);
+    const newRestrictions=new Array<DietaryRestrictions>;
+    household.dietaryRestrictions.forEach((id) => {
+      newRestrictions.push(id);
+    });
+    for (let i = idxList.length - 1; i >= 0; i--) newRestrictions.splice(idxList[i], 1);
+    this.households.updateOne({_id},{dietaryRestrictions:newRestrictions});
   }
 
   async updateDietaryRestrictions(_id: ObjectId, diets: Array<DietaryRestrictions>) {
-    const household = await this.getProfileById(_id);
-    household.dietaryRestrictions = diets;
+    await this.getProfileById(_id);
+    this.households.updateOne({_id},{dietaryRestrictions:diets});
   }
 
-  async updateHouseholdDetails(_id: ObjectId, update: Partial<HouseholdDoc>) {
+  async update(_id: ObjectId, update: Partial<HouseholdDoc>) {
     this.sanitizeUpdate(update);
     await this.households.updateOne({ _id }, update);
     return { msg: "Profile successfully updated!" };
