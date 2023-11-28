@@ -5,16 +5,16 @@ import { NotAllowedError, NotFoundError } from "./errors";
 
 export interface TeamDoc extends BaseDoc {
   name: string;
-  admins: Array<string>;
-  members: Array<string>;
+  admins: Array<ObjectId>;
+  members: Array<ObjectId>;
 }
 
 export default class TeamConcept {
   public readonly teams = new DocCollection<TeamDoc>("teams");
 
   async create(name: string, founder: ObjectId) {
-    const admins: Array<string> = [founder.toString()];
-    const members: Array<string> = [];
+    const admins: Array<ObjectId> = [founder];
+    const members: Array<ObjectId> = [];
     const _id = await this.teams.createOne({ name, admins, members });
     return { msg: "Team successfully created!", team: await this.teams.readOne({ _id }) };
   }
@@ -32,7 +32,7 @@ export default class TeamConcept {
     if (!team) {
       throw new NotFoundError("Team Not Found");
     }
-    if (team.admins.includes(editor.toString())) {
+    if (team.admins.some((member) => member.equals(editor))) {
       throw new NotAllowedError("Non Admins Cannot Edit Team");
     }
     return team;
@@ -46,28 +46,26 @@ export default class TeamConcept {
   async removeUserFromTeam(_id: ObjectId, userId: ObjectId, editor: ObjectId) {
     const user = userId.toString();
     const oldTeam = await this.isAdmin(_id, editor);
-    const members = oldTeam.members.filter((member) => user === member);
-    const admins = oldTeam.members.filter((member) => user === member);
+    const members = oldTeam.members.filter((member) => member.equals(user));
+    const admins = oldTeam.members.filter((member) => member.equals(user));
     await this.teams.updateOne({ _id }, { members, admins });
     return { msg: "Successfully Removed User From Team" };
   }
 
-  async addUserAsMember(_id: ObjectId, userId: ObjectId, editor: ObjectId) {
-    const user = userId.toString();
+  async addUserAsMember(_id: ObjectId, user: ObjectId, editor: ObjectId) {
     const oldTeam = await this.isAdmin(_id, editor);
-    const members = oldTeam.members.filter((member) => user === member);
-    const admins = oldTeam.members.filter((member) => user === member);
-    members.push(user.toString());
+    const members = oldTeam.members.filter((member) => member.equals(user));
+    const admins = oldTeam.members.filter((member) => member.equals(user));
+    members.push(user);
     await this.teams.updateOne({ _id }, { members, admins });
     return { msg: "Successfully Added New Member to Team!" };
   }
 
-  async addUserAsAdmin(_id: ObjectId, userId: ObjectId, editor: ObjectId) {
-    const user = userId.toString();
+  async addUserAsAdmin(_id: ObjectId, user: ObjectId, editor: ObjectId) {
     const oldTeam = await this.isAdmin(_id, editor);
-    const members = oldTeam.members.filter((member) => user === member);
-    const admins = oldTeam.members.filter((member) => user === member);
-    admins.push(user.toString());
+    const members = oldTeam.members.filter((member) => member.equals(user));
+    const admins = oldTeam.members.filter((member) => member.equals(user));
+    admins.push(user);
     await this.teams.updateOne({ _id }, { members, admins });
     return { msg: "Successfully Added New Admin to Team!" };
   }

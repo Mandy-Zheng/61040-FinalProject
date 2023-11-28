@@ -5,14 +5,14 @@ import { NotFoundError } from "./errors";
 
 export interface MembershipDoc extends BaseDoc {
   user: ObjectId;
-  organizations: Array<string>;
+  organizations: Array<ObjectId>;
 }
 
 export default class MembershipConcept {
   public readonly memberships = new DocCollection<MembershipDoc>("memberships");
 
   async create(user: ObjectId) {
-    const organizations: Array<string> = [];
+    const organizations: Array<ObjectId> = [];
     const _id = await this.memberships.createOne({ user, organizations });
     return { msg: "Membership successfully created!", membership: await this.memberships.readOne({ _id }) };
   }
@@ -25,19 +25,23 @@ export default class MembershipConcept {
     return membership;
   }
 
-  async addMembership(user: ObjectId, orgId: ObjectId) {
+  async addMembership(user: ObjectId, organization: ObjectId) {
     const oldOrganizations = await this.get(user);
-    const organization = orgId.toString();
-    const organizations = oldOrganizations.organizations.filter((org) => org === organization);
+    const organizations = oldOrganizations.organizations.filter((org) => org.equals(organization));
     organizations.push(organization);
     await this.memberships.updateOne({ user }, { organizations });
     return { msg: "Successfully Added Membership!" };
   }
 
+  async isMember(user: ObjectId, organization: ObjectId) {
+    const membership = await this.get(user);
+    return membership.organizations.some((org) => org.equals(organization));
+  }
+
   async removeMembership(user: ObjectId, orgId: ObjectId) {
     const oldOrganizations = await this.get(user);
     const organization = orgId.toString();
-    const organizations = oldOrganizations.organizations.filter((org) => org === organization);
+    const organizations = oldOrganizations.organizations.filter((org) => org.equals(organization));
     await this.memberships.updateOne({ user }, { organizations });
     return { msg: "Successfully Removed Membership!" };
   }
