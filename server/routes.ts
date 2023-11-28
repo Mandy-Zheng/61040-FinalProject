@@ -159,13 +159,9 @@ class Routes {
   }
 
   @Router.patch("/organization/:id")
-  async updateOrganizationName(session: WebSessionDoc, orgName: string) {
-    // const user = WebSession.getUser(session);
-    // const { msg, team } = await Team.create(orgName, user);
-    // if (team) {
-    //   await Membership.addMembership(user, team._id);
-    // }
-    // return { msg: msg, team: team };
+  async updateOrganizationName(session: WebSessionDoc, orgId: ObjectId, orgName: string) {
+    const user = WebSession.getUser(session);
+    return await Team.updateName(orgId, orgName, user);
   }
 
   @Router.patch("/organization/:id")

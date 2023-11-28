@@ -38,13 +38,13 @@ export default class TeamConcept {
     return team;
   }
 
-  async updateName(_id: ObjectId, name: string) {
+  async updateName(_id: ObjectId, name: string, editor: ObjectId) {
+    await this.isAdmin(_id, editor);
     await this.teams.updateOne({ _id }, { name });
     return { msg: "Successfully Updated Team Name" };
   }
 
-  async removeUserFromTeam(_id: ObjectId, userId: ObjectId, editor: ObjectId) {
-    const user = userId.toString();
+  async removeUserFromTeam(_id: ObjectId, user: ObjectId, editor: ObjectId) {
     const oldTeam = await this.isAdmin(_id, editor);
     const members = oldTeam.members.filter((member) => member.equals(user));
     const admins = oldTeam.members.filter((member) => member.equals(user));
