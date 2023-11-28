@@ -1,8 +1,7 @@
 import { ObjectId } from "mongodb";
 
 import DocCollection, { BaseDoc } from "../framework/doc";
-import { BadValuesError, NotFoundError } from "./errors";
-//use strings, also comparing enum can be done using ===
+import { BadValuesError, NotAllowedError, NotFoundError } from "./errors";
 export enum DietaryRestrictions {
   None = 0,
   Meat = 1,
@@ -16,7 +15,7 @@ export enum DietaryRestrictions {
   Dairy = 9,
   Kosher = 10,
 }
-export enum Languages {
+export enum Language {
   English = 0,
   Korean = 1,
   Mandarin = 2,
@@ -27,7 +26,7 @@ export interface HouseholdDoc extends BaseDoc {
   organization: ObjectId;
   members: Array<ObjectId>;
   dietaryRestrictions: Array<DietaryRestrictions>;
-  preferredLanguage: Languages;
+  preferredLanguage: Language;
   pastVisits: Array<Date>;
   specialRequests: string;
 }
@@ -35,7 +34,7 @@ export interface HouseholdDoc extends BaseDoc {
 export default class HouseholdConcept {
   public readonly households = new DocCollection<HouseholdDoc>("households");
 
-  async create(org: ObjectId, members: Array<ObjectId>, diet: Array<DietaryRestrictions>, language: Languages, requests: string) {
+  async create(org: ObjectId, members: Array<ObjectId>, diet: Array<DietaryRestrictions>, language: Language, requests: string) {
     const _id = await this.households.createOne({ organization: org, members: members, dietaryRestrictions: diet, preferredLanguage: language, specialRequests: requests });
     return { msg: "HouseholdProfile successfully created!", household: await this.households.readOne({ _id }) };
   }
@@ -63,7 +62,7 @@ export default class HouseholdConcept {
 
   async addMember(_id: ObjectId, member: ObjectId) {
     const household = await this.getProfileById(_id);
-    household.members.forEach((id, _) => {
+    household.members.forEach((id) => {
       if (id.equals(member)) throw new BadValuesError("Member of household already exists!");
     });
     household.members.push(member);
@@ -93,7 +92,7 @@ export default class HouseholdConcept {
     return household.members.length;
   }
 
-  async updateLanguage(_id: ObjectId, lang: Languages) {
+  async updateLanguage(_id: ObjectId, lang: Language) {
     const household = await this.getProfileById(_id);
     household.preferredLanguage = lang;
   }
@@ -124,8 +123,24 @@ export default class HouseholdConcept {
     household.dietaryRestrictions = diets;
   }
 
+  async updateHouseholdDetails(_id: ObjectId, update: Partial<HouseholdDoc>) {
+    this.sanitizeUpdate(update);
+    await this.households.updateOne({ _id }, update);
+    return { msg: "Profile successfully updated!" };
+  }
+
   async delete(_id: ObjectId) {
     await this.households.deleteOne({ _id });
     return { msg: "Succesfully deleted household profile" };
+  }
+
+  private sanitizeUpdate(update: Partial<HouseholdDoc>) {
+    // update cannot change the organization or past visits
+    const unallowedUpdates = ["organization", "pastVisits"];
+    for (const key in update) {
+      if (unallowedUpdates.includes(key)) {
+        throw new NotAllowedError(`Cannot update '${key}' field!`);
+      }
+    }
   }
 }

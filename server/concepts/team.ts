@@ -27,7 +27,7 @@ export default class TeamConcept {
     return team;
   }
 
-  private async isAdmin(_id: ObjectId, editor: ObjectId) {
+  async isAdmin(_id: ObjectId, editor: ObjectId) {
     const team = await this.get(_id);
     if (!team) {
       throw new NotFoundError("Team Not Found");
