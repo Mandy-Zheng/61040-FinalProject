@@ -12,7 +12,6 @@ export const useOrganizationStore = defineStore(
     const getOrganizations = async () => {
       try {
         const orgs = await fetchy(`/api/organization`, "GET");
-        console.log(orgs);
         allOrgs.value = orgs;
       } catch (error) {
         return;

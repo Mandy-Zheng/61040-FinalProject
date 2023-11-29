@@ -17,7 +17,6 @@ onBeforeMount(async () => {
     return;
   }
 });
-console.log(allOrgs);
 </script>
 
 <template>
@@ -29,7 +28,7 @@ console.log(allOrgs);
       <option v-for="org in allOrgs" :key="org._id" :value="org._id">{{ org.name }}</option>
     </select>
     <p v-else>You are currently not a part of organization</p>
-    <div v-for="org in allOrgs" :key="org"><OrganizationComponent :organization="org" /></div>
+    <div v-for="org in allOrgs" :key="org"><OrganizationComponent :orgId="org.id" /></div>
     <RegisterOrganizationForm />
     <p>Manage Organization</p>
     <section></section>
