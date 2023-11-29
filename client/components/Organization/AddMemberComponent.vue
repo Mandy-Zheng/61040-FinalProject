@@ -7,7 +7,7 @@ const props = defineProps(["show", "organization"]);
 const allUsers = ref<Array<{ label: string; value: string }>>([]);
 const admins: Set<string> = new Set(props.organization.admins);
 const members: Set<string> = new Set(props.organization.members);
-const emit = defineEmits(["close"]);
+const emit = defineEmits(["close", "add"]);
 const usersToAdd = ref<Array<string>>([]);
 const nonTeamMembers = computed(() => {
   return allUsers.value.filter((user) => !admins.has(user.label) && !members.has(user.label));
@@ -35,7 +35,8 @@ onBeforeMount(async () => {
         <Multiselect class="multiselect" v-model="usersToAdd" mode="tags" :options="nonTeamMembers" :searchable="true" required />
 
         <div class="modal-footer">
-          <button class="modal-default-button" @click="emit('close')">Close</button>
+          <button class="button-39" @click="emit('close')">Close</button>
+          <button class="button-39" @click="emit('add', usersToAdd)">Add Members</button>
         </div>
       </div>
     </div>

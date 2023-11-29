@@ -23,11 +23,12 @@ console.log(allOrgs);
 <template>
   <main>
     <h1>Organization Page</h1>
-    <p>Current Selected Organization</p>
+    <h3>Current Selected Organization</h3>
     <!-- <Multiselect class="multiselect" v-model="selected" :options="allOrgNames" :searchable="true" required /> -->
-    <select>
+    <select v-if="allOrgs.length !== 0">
       <option v-for="org in allOrgs" :key="org._id" :value="org._id">{{ org.name }}</option>
     </select>
+    <p v-else>You are currently not a part of organization</p>
     <div v-for="org in allOrgs" :key="org"><OrganizationComponent :organization="org" /></div>
     <RegisterOrganizationForm />
     <p>Manage Organization</p>

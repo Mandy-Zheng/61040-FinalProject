@@ -21,8 +21,14 @@ async function register() {
       </div>
 
       <div class="pure-controls">
-        <button class="pure-button pure-button-primary">Register</button>
+        <button class="button-39">Register</button>
       </div>
     </fieldset>
   </form>
 </template>
+<style scoped>
+.button-39 {
+  background-color: var(--primary);
+  color: white;
+}
+</style>

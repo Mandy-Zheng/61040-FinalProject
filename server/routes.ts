@@ -101,10 +101,10 @@ class Routes {
   }
 
   @Router.patch("/organization/addMember")
-  async addMemberToOrganization(session: WebSessionDoc, orgId: ObjectId, newMember: ObjectId) {
+  async addMembersToOrganization(session: WebSessionDoc, orgId: ObjectId, newMembers: Array<ObjectId>) {
     const user = WebSession.getUser(session);
-    const addMsg = Team.addUserAsMember(orgId, newMember, user);
-    await Membership.addMembership(newMember, orgId);
+    const addMsg = await Promise.all(newMembers.map((member) => Team.addUserAsMember(orgId, member, user)));
+    await Promise.all(newMembers.map((member) => Membership.addMembership(member, orgId)));
     return addMsg;
   }
 
