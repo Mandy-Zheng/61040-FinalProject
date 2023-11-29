@@ -75,17 +75,24 @@ class Routes {
     return { msg, user, membership: membership?.membership };
   }
 
-  @Router.post("/organization/:id")
-  async registerOrganization(session: WebSessionDoc, orgName: string) {
+  @Router.post("/organization/:name")
+  async registerOrganization(session: WebSessionDoc, name: string) {
     const user = WebSession.getUser(session);
-    const { msg, team } = await Team.create(orgName, user);
+    const { msg, team } = await Team.create(name, user);
     if (team) {
       await Membership.addMembership(user, team._id);
     }
     return { msg: msg, team: team };
   }
 
-  @Router.patch("/organization/:id")
+  @Router.get("/organization")
+  async getOrganizationsOfUser(session: WebSessionDoc) {
+    const user = WebSession.getUser(session);
+    const { organizations } = await Membership.get(user);
+    return Promise.all(organizations.map((id) => Team.get(id)));
+  }
+
+  @Router.patch("/organization")
   async updateOrganizationName(session: WebSessionDoc, orgId: ObjectId, orgName: string) {
     const user = WebSession.getUser(session);
     if (!orgName) {
@@ -94,7 +101,7 @@ class Routes {
     return await Team.updateName(orgId, orgName, user);
   }
 
-  @Router.patch("/organization/:id")
+  @Router.patch("/organization/addMember")
   async addMemberToOrganization(session: WebSessionDoc, orgId: ObjectId, newMember: ObjectId) {
     const user = WebSession.getUser(session);
     const addMsg = Team.addUserAsMember(orgId, newMember, user);
@@ -102,7 +109,7 @@ class Routes {
     return addMsg;
   }
 
-  @Router.patch("/organization/:id")
+  @Router.patch("/organization/updateMember")
   async updateMemberStatus(session: WebSessionDoc, orgId: ObjectId, member: ObjectId, isPromoting: Boolean) {
     const user = WebSession.getUser(session);
     await Team.isTeamMember(orgId, member);
@@ -113,7 +120,7 @@ class Routes {
     }
   }
 
-  @Router.patch("/organization/:id")
+  @Router.patch("/organization/removeMember")
   async removeUserFromOrganization(session: WebSessionDoc, orgId: ObjectId, member: ObjectId) {
     const user = WebSession.getUser(session);
     const msg = await Team.removeUserFromTeam(orgId, member, user);
@@ -121,7 +128,7 @@ class Routes {
     return msg;
   }
 
-  @Router.delete("/organization/:id")
+  @Router.delete("/organization")
   async deleteOrganization(session: WebSessionDoc, orgId: ObjectId) {
     const user = WebSession.getUser(session);
     const { admins, members } = await Team.get(orgId);

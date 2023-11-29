@@ -6,51 +6,58 @@ import { BodyT, fetchy } from "@/utils/fetchy";
 export const useOrganizationStore = defineStore(
   "organization",
   () => {
-    const orgId = ref<any>(undefined);
-    const orgName = ref<string>("");
+    const allOrgs = ref<Array<any>>([]);
+    const selectedOrg = ref<number | undefined>(undefined);
 
-    const getPostValidations = async () => {
+    const getOrganizations = async () => {
       try {
-        postValidations.value = await Promise.all(viewablePosts.value.map((post) => fetchy(`/api/validation/exclusivepost/${post.post._id}`, "GET")));
+        const orgs = await fetchy(`/api/organization`, "GET");
+        allOrgs.value = orgs;
       } catch (error) {
         return;
       }
     };
 
-    const getPosts = async () => {
+    const setOrganization = async (name: string) => {
+      allOrgs.value.forEach((org, idx) => {
+        if (org.name === name) {
+          selectedOrg.value = idx;
+        }
+      });
+    };
+
+    const createOrganization = async (body: BodyT) => {
       try {
-        viewablePosts.value = await fetchy("/api/exclusivepost", "GET");
-        postValidations.value = await Promise.all(viewablePosts.value.map((post) => fetchy(`/api/validation/exclusivepost/${post.post._id}`, "GET")));
+        await fetchy("/api/organization", "POST", { body: body });
       } catch (_) {
         return;
       }
     };
 
-    const createPost = async (body: BodyT) => {
+    const updateOrganizationName = async (body: BodyT) => {
       try {
-        await fetchy("/api/exclusivepost", "POST", { body: body });
+        await fetchy("/api/organization", "POST", { body: body });
       } catch (_) {
         return;
       }
-      await getPosts();
     };
 
-    const deletePost = async (id: string) => {
+    const deleteOrganization = async (id: string) => {
       try {
         await fetchy(`/api/exclusivepost/${id}`, "DELETE");
       } catch (_) {
         return;
       }
-      await getPosts();
     };
 
     return {
-      postValidations,
-      viewablePosts,
-      createPost,
-      getPostValidations,
-      deletePost,
-      getPosts,
+      allOrgs,
+      selectedOrg,
+      getOrganizations,
+      setOrganization,
+      updateOrganizationName,
+      createOrganization,
+      deleteOrganization,
     };
   },
   { persist: true },
