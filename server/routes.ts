@@ -28,7 +28,7 @@ class Routes {
   }
 
   @Router.post("/users")
-  async createUser(session: WebSessionDoc, username: string, password: string) {
+  async registerUser(session: WebSessionDoc, username: string, password: string) {
     WebSession.isLoggedOut(session);
     const { msg, user } = await User.create(username, password);
     if (user) {
@@ -66,17 +66,6 @@ class Routes {
   async logOut(session: WebSessionDoc) {
     WebSession.end(session);
     return { msg: "Logged out!" };
-  }
-
-  @Router.post("/users/:id")
-  async registerUser(session: WebSessionDoc, username: string, password: string) {
-    WebSession.isLoggedOut(session);
-    const { user, msg } = await User.create(username, password);
-    let membership;
-    if (user) {
-      membership = await Membership.create(user._id);
-    }
-    return { msg, user, membership: membership?.membership };
   }
 
   @Router.post("/organization")
@@ -163,10 +152,8 @@ class Routes {
   async createHouseholdProfile(session: WebSessionDoc, orgId: ObjectId, name: string, birthday: Date, img: string, diet: Array<DietaryRestrictions>, lang: Language, req: string) {
     const user = WebSession.getUser(session);
     await Team.isTeamMember(orgId, user);
-    // TODO ADD WHEN PATRON IS DONE
-    // const patron = Patron.createPatron(name, birthday, img);
-    // return await Household.create(orgId, [patron], diet, lang, req);
-    return await Household.create(orgId, [], diet, lang, req);
+    const patron = await Patron.create(name, birthday, img);
+    return await Household.create(orgId, [patron.patron._id], diet, lang, req);
   }
 
   // update household members, diet restrictions, language, special requests
