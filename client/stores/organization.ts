@@ -12,7 +12,6 @@ export const useOrganizationStore = defineStore(
     const getOrganizations = async () => {
       try {
         const orgs = await fetchy(`/api/organization`, "GET");
-        console.log(orgs);
         allOrgs.value = orgs;
       } catch (error) {
         return;
@@ -23,6 +22,8 @@ export const useOrganizationStore = defineStore(
       allOrgs.value.forEach((org, idx) => {
         if (org.name === name) {
           selectedOrg.value = idx;
+        } else if (name === "") {
+          selectedOrg.value = undefined;
         }
       });
     };
