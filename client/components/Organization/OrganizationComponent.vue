@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import AddMemberComponent from "@/components/Organization/AddMemberComponent.vue";
-import { ref } from "vue";
+import { onBeforeMount, ref } from "vue";
 
 const props = defineProps(["organization"]);
 const showEditModal = ref<boolean>(false);
+onBeforeMount(() => {
+  console.log("WOAH");
+});
 </script>
 
 <template>

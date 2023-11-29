@@ -1,31 +1,24 @@
 <script setup lang="ts">
 import { fetchy } from "@/utils/fetchy";
 import Multiselect from "@vueform/multiselect";
-import { onBeforeMount, ref } from "vue";
+import { computed, onBeforeMount, ref } from "vue";
 
 const props = defineProps(["show", "organization"]);
-const allUsers = ref<Array<any>>([
-  { label: "A", value: "A" },
-  { label: "B", value: "B" },
-]);
-const admins = new Set(props.organization.admins);
-const members = new Set(props.organization.members);
+const allUsers = ref<Array<{ label: string; value: string }>>([]);
+const admins: Set<string> = new Set(props.organization.admins);
+const members: Set<string> = new Set(props.organization.members);
 const emit = defineEmits(["close"]);
-const username = ref<string>("");
-//const users = await fetchy(`/users`, "GET");
-//console.log(users);
-console.log(allUsers);
+const usersToAdd = ref<Array<string>>([]);
+const nonTeamMembers = computed(() => {
+  return allUsers.value.filter((user) => !admins.has(user.label) && !members.has(user.label));
+});
 
 onBeforeMount(async () => {
   try {
-    const users = await fetchy(`/users`, "GET");
-    // allUsers.value = users
-    //   .filter((user: any) => !admins.has(user.username) && members.has(user.username))
-    //   .map((user: any) => {
-    //     return { label: user.username, value: user.username };
-    //   });
-    console.log("hi");
-    console.log("hello", users);
+    const users = await fetchy(`/api/users`, "GET");
+    allUsers.value = users.map((user: any) => {
+      return { label: user.username, value: user._id };
+    });
   } catch {
     return;
   }
@@ -39,7 +32,7 @@ onBeforeMount(async () => {
         <div class="modal-header">Settings for {{ props.organization.name }}</div>
         Add Member:
 
-        <Multiselect class="multiselect" v-model="username" :options="allUsers" :searchable="true" required />
+        <Multiselect class="multiselect" v-model="usersToAdd" mode="tags" :options="nonTeamMembers" :searchable="true" required />
 
         <div class="modal-footer">
           <button class="modal-default-button" @click="emit('close')">Close</button>
