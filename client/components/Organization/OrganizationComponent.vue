@@ -15,6 +15,7 @@ const showDeleteModal = ref<boolean>(false);
 const organization = ref<any>(undefined);
 async function addMembers(members:any) {
   const body = { orgId: props.orgId, newMembers: members };
+  console.log(members);
   showAddModal.value = false;
   try {
     await fetchy(`/api/organization/addMember`, "PATCH", { body: body });
@@ -46,7 +47,7 @@ onBeforeMount(async () => {
       <button class="button-39" @click.prevent="showAddModal = true">Add Member</button>
       <button class="button-39 red" @click.prevent="showDeleteModal = true">Delete Org</button>
       <teleport to="body">
-        <AddMemberComponent :show="showAddModal" :organization="organization" @close="showAddModal = false" @add="addMembers()" />
+        <AddMemberComponent :show="showAddModal" :organization="organization" @close="showAddModal = false" @add="addMembers" />
         <DeleteOrganizationComponent :show="showDeleteModal" :organization="organization" @close="showDeleteModal = false" @delete="deleteOrg(),showDeleteModal = false" />
       </teleport>
     </div>
