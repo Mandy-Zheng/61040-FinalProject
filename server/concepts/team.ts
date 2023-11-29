@@ -42,7 +42,7 @@ export default class TeamConcept {
     if (!team) {
       throw new NotFoundError("Team Not Found");
     }
-    if (team.admins.some((member) => member.equals(editor))) {
+    if (!team.admins.some((member) => member.equals(editor))) {
       throw new NotAllowedError("Non Admins Cannot Edit Team");
     }
     return team;

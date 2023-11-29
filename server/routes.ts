@@ -127,13 +127,17 @@ class Routes {
     //todo decide what to do if all admins leave?
   }
 
-  @Router.delete("/organization")
+  @Router.delete("/organization/:orgId")
   async deleteOrganization(session: WebSessionDoc, orgId: ObjectId) {
     const user = WebSession.getUser(session);
     await Team.isAdmin(orgId,user);
     const { admins, members } = await Team.get(orgId);
     const allMembers = members.concat(admins);
-    await Promise.all(allMembers.map((member) => Membership.removeMembership(member, orgId)));
+    console.log(allMembers);
+    allMembers.forEach(async member => {
+      await Membership.removeMembership(member, orgId);
+    });
+    console.log('Hi');
     return Team.delete(orgId, user);
   }
 

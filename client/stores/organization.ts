@@ -48,7 +48,7 @@ export const useOrganizationStore = defineStore(
 
     const deleteOrganization = async (id: string) => {
       try {
-        await fetchy(`/api/exclusivepost/${id}`, "DELETE");
+        await fetchy(`/api/organization/${id}`, "DELETE");
       } catch (_) {
         return;
       }

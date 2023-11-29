@@ -1,17 +1,23 @@
 <script setup lang="ts">
 import AddMemberComponent from "@/components/Organization/AddMemberComponent.vue";
+import DeleteOrganizationComponent from "@/components/Organization/DeleteOrganizationComponent.vue";
 import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
 import { onBeforeMount, ref } from "vue";
+import { useOrganizationStore } from "@/stores/organization";
 
 const { currentUsername } = storeToRefs(useUserStore());
+const { deleteOrganization } = useOrganizationStore();
 const props = defineProps(["organization"]);
 const showAddModal = ref<boolean>(false);
+const showDeleteModal = ref<boolean>(false);
 async function addMembers() {
   //await fetchy()
 }
+async function deleteOrg() {
+  await deleteOrganization(props.organization.id);
+}
 onBeforeMount(() => {
-  console.log("WOAH");
 });
 </script>
 
@@ -24,8 +30,10 @@ onBeforeMount(() => {
     <div v-for="member in props.organization.members" :key="member">{{ member }}</div>
     <div v-if="props.organization.admins.includes(currentUsername)">
       <button class="button-39" @click.prevent="showAddModal = true">Add Member</button>
+      <button class="button-39 red" @click.prevent="showDeleteModal = true">Delete Org</button>
       <teleport to="body">
         <AddMemberComponent :show="showAddModal" :organization="organization" @close="showAddModal = false" @add="addMembers()" />
+        <DeleteOrganizationComponent :show="showDeleteModal" :organization="organization" @close="showDeleteModal = false" @delete="deleteOrg(),showDeleteModal = false" />
       </teleport>
     </div>
   </div>
@@ -42,7 +50,11 @@ onBeforeMount(() => {
   width: 24em;
 }
 .button-39 {
+  margin-left:5px;
   background-color: var(--primary);
   color: white;
+}
+.red {
+  background-color: var(--red);
 }
 </style>
