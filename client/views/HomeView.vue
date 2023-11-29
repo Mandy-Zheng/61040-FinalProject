@@ -1,8 +1,4 @@
-<script setup lang="ts">
-import { useUserStore } from "@/stores/user";
-import { storeToRefs } from "pinia";
-const { currentUsername, isLoggedIn } = storeToRefs(useUserStore());
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <main>
@@ -17,7 +13,7 @@ const { currentUsername, isLoggedIn } = storeToRefs(useUserStore());
     </div>
     <div class="info" id="info">
       <p>
-        Food insecurity affects the well-being of individuals and communities and it’s especially prominent since the pandemic, with over 40 million adults and children in the US facing food
+        Food insecurity affects the well-being of individuals and communities and it's especially prominent since the pandemic, with over 40 million adults and children in the US facing food
         insecurity in 2020. To address these challenges we present Cornucopia, an app that helps streamline food pantry operations.
       </p>
     </div>
