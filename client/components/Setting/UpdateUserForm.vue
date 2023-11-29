@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useOrganizationStore } from "@/stores/organization";
 import { useUserStore } from "@/stores/user";
 import { ref } from "vue";
 
@@ -6,10 +7,12 @@ let username = ref("");
 let password = ref("");
 
 const { updateUser, updateSession } = useUserStore();
+const { getOrganizations } = useOrganizationStore();
 
 async function updateUsername() {
   await updateUser({ username: username.value });
   await updateSession();
+  await getOrganizations();
   username.value = "";
 }
 

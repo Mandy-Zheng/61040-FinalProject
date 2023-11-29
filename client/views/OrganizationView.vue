@@ -1,14 +1,17 @@
 <script setup lang="ts">
-import { useUserStore } from "@/stores/user";
+import OrganizationComponent from "@/components/Organization/OrganizationComponent.vue";
+import RegisterOrganizationForm from "@/components/Organization/RegisterOrganizationForm.vue";
+import { useOrganizationStore } from "@/stores/organization";
 import { storeToRefs } from "pinia";
 import { onBeforeMount } from "vue";
 
-const { currentUsername, isLoggedIn } = storeToRefs(useUserStore());
+const { allOrgs, selectedOrg } = storeToRefs(useOrganizationStore());
+const { getOrganizations, setOrganization } = useOrganizationStore();
 onBeforeMount(async () => {
   try {
-    // await userStore.updateSession();
+    await getOrganizations();
   } catch {
-    // User is not logged in
+    return;
   }
 });
 </script>
@@ -16,8 +19,9 @@ onBeforeMount(async () => {
 <template>
   <main>
     <h1>Organization Page</h1>
-    <p>Dropdown</p>
-    <p>Create</p>
+    <div v-for="org in allOrgs" :key="org"><OrganizationComponent :organization="org" /></div>
+    <p>Selected {{ selectedOrg }}</p>
+    <RegisterOrganizationForm />
     <p>Manage Organization</p>
     <section></section>
   </main>

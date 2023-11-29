@@ -32,6 +32,7 @@ export const useOrganizationStore = defineStore(
       } catch (_) {
         return;
       }
+      await getOrganizations();
     };
 
     const updateOrganizationName = async (body: BodyT) => {
@@ -40,6 +41,7 @@ export const useOrganizationStore = defineStore(
       } catch (_) {
         return;
       }
+      await getOrganizations();
     };
 
     const deleteOrganization = async (id: string) => {

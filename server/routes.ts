@@ -30,7 +30,11 @@ class Routes {
   @Router.post("/users")
   async createUser(session: WebSessionDoc, username: string, password: string) {
     WebSession.isLoggedOut(session);
-    return await User.create(username, password);
+    const { msg, user } = await User.create(username, password);
+    if (user) {
+      await Membership.create(user._id);
+    }
+    return { msg, user };
   }
 
   @Router.patch("/users")
@@ -75,7 +79,7 @@ class Routes {
     return { msg, user, membership: membership?.membership };
   }
 
-  @Router.post("/organization/:name")
+  @Router.post("/organization")
   async registerOrganization(session: WebSessionDoc, name: string) {
     const user = WebSession.getUser(session);
     const { msg, team } = await Team.create(name, user);
@@ -89,7 +93,12 @@ class Routes {
   async getOrganizationsOfUser(session: WebSessionDoc) {
     const user = WebSession.getUser(session);
     const { organizations } = await Membership.get(user);
-    return Promise.all(organizations.map((id) => Team.get(id)));
+    const allOrgs = await Promise.all(organizations.map((id) => Team.get(id)));
+    const allAdmins = await Promise.all(allOrgs.map((org) => User.idsToUsernames(org.admins)));
+    const allMembers = await Promise.all(allOrgs.map((org) => User.idsToUsernames(org.members)));
+    return allOrgs.map((org, idx) => {
+      return { id: org._id, name: org.name, admins: allAdmins[idx], members: allMembers[idx] };
+    });
   }
 
   @Router.patch("/organization")
@@ -126,6 +135,7 @@ class Routes {
     const msg = await Team.removeUserFromTeam(orgId, member, user);
     await Membership.removeMembership(member, orgId);
     return msg;
+    //todo decide what to do if all admins leave?
   }
 
   @Router.delete("/organization")

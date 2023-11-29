@@ -72,6 +72,9 @@ export default class TeamConcept {
     }
     const members = oldTeam.members.filter((user) => user.equals(member));
     const admins = oldTeam.members.filter((user) => user.equals(member));
+    if (admins.length === 0) {
+      throw new NotAllowedError("Organization must have at least one admin");
+    }
     await this.teams.updateOne({ _id }, { members, admins });
     return { msg: "Successfully Removed User From Team" };
   }
