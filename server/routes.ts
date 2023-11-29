@@ -154,7 +154,7 @@ class Routes {
     const household = await Household.getProfileById(id);
     const user = WebSession.getUser(session);
     await Team.isTeamMember(household.organization, user);
-    return await Household.updateHouseholdDetails(id, update);
+    return await Household.update(id, update);
   }
 
   @Router.patch("/profile/addPatron/:id")
