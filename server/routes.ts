@@ -2,14 +2,14 @@ import { ObjectId } from "mongodb";
 
 import { Router, getExpressRouter } from "./framework/router";
 
-import { Household, Membership, Stock, Team, User, WebSession } from "./app";
+import { Household, Membership, Patron, Stock, Team, User, WebSession } from "./app";
 import { BadValuesError } from "./concepts/errors";
 import { DietaryRestrictions, HouseholdDoc, Language } from "./concepts/household";
+import { PatronDoc } from "./concepts/patron";
 import { StockDoc } from "./concepts/stock";
 import { UserDoc } from "./concepts/user";
 import { WebSessionDoc } from "./concepts/websession";
 import Responses from "./responses";
-
 class Routes {
   @Router.get("/session")
   async getSessionUser(session: WebSessionDoc) {
@@ -165,18 +165,18 @@ class Routes {
     const household = await Household.getProfileById(id);
     const user = WebSession.getUser(session);
     await Team.isTeamMember(household.organization, user);
-    return await Household.updateHouseholdDetails(id, update);
+    return await Household.update(id, update);
   }
 
-  // TODO ADD WHEN PATRON IS DONE
-  // @Router.patch("/profile/addPatron/:id")
-  // async addPatronToHousehold(session: WebSessionDoc, id: ObjectId, name: string, birthday: Date, img: string) {
-  //   const household = await Household.getProfileById(id);
-  //   const user = WebSession.getUser(session);
-  //   await Team.isTeamMember(household.organization, user);
-  //   const patron = Patron.createPatron(name, birthday, img);
-  //   return await Household.addMember(id, patron);
-  // }
+  @Router.patch("/profile/addPatron/:id")
+  async addPatronToHousehold(session: WebSessionDoc, id: ObjectId, name: string, birthday: string, img: string) {
+    const user = WebSession.getUser(session);
+    const household = await Household.getProfileById(id);
+    await Team.isTeamMember(household.organization, user);
+    const date = new Date(birthday);
+    const patron = (await Patron.create(name, date, img)).patron;
+    return await Household.addMember(id, patron._id);
+  }
 
   @Router.patch("/profile/removePatron/:id")
   async removePatronFromHousehold(session: WebSessionDoc, id: ObjectId, patronId: ObjectId) {
@@ -184,6 +184,14 @@ class Routes {
     const user = WebSession.getUser(session);
     await Team.isTeamMember(household.organization, user);
     return await Household.removeMember(id, patronId);
+  }
+
+  @Router.patch("/profile/updatePatron/:id")
+  async updatePatron(session: WebSessionDoc, id: ObjectId, patronId: ObjectId, update: Partial<PatronDoc>) {
+    const household = await Household.getProfileById(id);
+    const user = WebSession.getUser(session);
+    await Team.isTeamMember(household.organization, user);
+    return await Patron.updatePatron(patronId, update);
   }
 
   // return household and add visit
@@ -201,10 +209,9 @@ class Routes {
     const household = await Household.getProfileById(id);
     const user = WebSession.getUser(session);
     await Team.isTeamMember(household.organization, user);
-    // TODO ADD WHEN PATRON IS DONE
-    // for (const patron of household.members) {
-    //   await Patron.deletePatron(patron);
-    // }
+    for (const patron of household.members) {
+      await Patron.deletePatron(patron);
+    }
     return await Household.delete(id);
   }
 
