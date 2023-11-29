@@ -1,4 +1,4 @@
-# 6.1040 Social Media Frontend Starter Code
+# Cornucopia 6.1040 final project
 
 ## Getting Started
 
