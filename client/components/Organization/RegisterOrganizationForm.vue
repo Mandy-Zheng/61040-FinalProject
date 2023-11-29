@@ -13,7 +13,7 @@ async function register() {
 
 <template>
   <form class="pure-form pure-form-aligned" @submit.prevent="register">
-    <h3>Register User</h3>
+    <h3>Register New Organization</h3>
     <fieldset>
       <div class="pure-control-group">
         <label for="aligned-name">Organization Name</label>

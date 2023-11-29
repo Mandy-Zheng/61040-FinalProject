@@ -5,10 +5,10 @@ import { ref } from "vue";
 
 const username = ref("");
 const password = ref("");
-const { createUser, loginUser, updateSession } = useUserStore();
+const { registerUser, loginUser, updateSession } = useUserStore();
 
 async function register() {
-  await createUser(username.value, password.value);
+  await registerUser(username.value, password.value);
   await loginUser(username.value, password.value);
   void updateSession();
   void router.push({ name: "Home" });
@@ -17,18 +17,18 @@ async function register() {
 
 <template>
   <form class="pure-form pure-form-aligned" @submit.prevent="register">
-    <h3>Register User</h3>
+    <h3>Create Account</h3>
     <fieldset>
       <div class="pure-control-group">
-        <label for="aligned-name">Username</label>
-        <input v-model.trim="username" type="text" id="aligned-name" placeholder="Username" required />
+        <label for="aligned-name">username</label>
+        <input v-model.trim="username" type="text" id="aligned-name" required />
       </div>
       <div class="pure-control-group">
-        <label for="aligned-password">Password</label>
-        <input type="password" v-model.trim="password" id="aligned-password" placeholder="Password" required />
+        <label for="aligned-password">password</label>
+        <input type="password" v-model.trim="password" id="aligned-password" required />
       </div>
       <div class="pure-controls">
-        <button type="submit" class="pure-button pure-button-primary">Register</button>
+        <button type="submit" class="button-39">Create Account</button>
       </div>
     </fieldset>
   </form>
@@ -38,5 +38,10 @@ async function register() {
 h3 {
   display: flex;
   justify-content: center;
+}
+
+.button-39 {
+  background-color: var(--primary);
+  color: white;
 }
 </style>
