@@ -22,6 +22,8 @@ export const useOrganizationStore = defineStore(
       allOrgs.value.forEach((org, idx) => {
         if (org.name === name) {
           selectedOrg.value = idx;
+        } else if (name === "") {
+          selectedOrg.value = undefined;
         }
       });
     };

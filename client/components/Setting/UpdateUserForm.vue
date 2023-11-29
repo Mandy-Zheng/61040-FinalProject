@@ -24,20 +24,26 @@ async function updatePassword() {
 </script>
 
 <template>
-  <h2>Update user details</h2>
   <form @submit.prevent="updateUsername" class="pure-form">
     <fieldset>
       <legend>Change your username</legend>
-      <input type="text" placeholder="New username" v-model="username" required />
-      <button type="submit" class="pure-button pure-button-primary">Update username</button>
+      <input type="text" v-model="username" required />
+      <button type="submit" class="button-39">Update</button>
     </fieldset>
   </form>
 
   <form @submit.prevent="updatePassword" class="pure-form">
     <fieldset>
       <legend>Change your password</legend>
-      <input type="password" placeholder="New password" v-model="password" required />
-      <button type="submit" class="pure-button pure-button-primary">Update password</button>
+      <input type="password" v-model="password" required />
+      <button type="submit" class="button-39">Update</button>
     </fieldset>
   </form>
 </template>
+
+<style scoped>
+.button-39 {
+  margin: 10px;
+  padding: 10px;
+}
+</style>
