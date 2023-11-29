@@ -85,7 +85,6 @@ class Routes {
     const allOrgs = await Promise.all(organizations.map((id) => Team.get(id)));
     const allAdmins = await Promise.all(allOrgs.map((org) => User.idsToUsernames(org.admins)));
     const allMembers = await Promise.all(allOrgs.map((org) => User.idsToUsernames(org.members)));
-    console.log(allOrgs);
     return allOrgs.map((org, idx) => {
       return { id: org._id, name: org.name, admins: allAdmins[idx], members: allMembers[idx] };
     });

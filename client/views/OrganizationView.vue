@@ -28,7 +28,7 @@ console.log(allOrgs);
     <select v-if="allOrgs.length !== 0">
       <option v-for="org in allOrgs" :key="org._id" :value="org._id">{{ org.name }}</option>
     </select>
-    <p v-else>You are currently not a part of organization</p>
+    <p v-else>You are currently not a part of organization. To join an organization, ask an admin to add your account.</p>
     <div v-for="org in allOrgs" :key="org"><OrganizationComponent :organization="org" /></div>
     <RegisterOrganizationForm />
     <p>Manage Organization</p>

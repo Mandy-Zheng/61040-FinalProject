@@ -21,8 +21,26 @@ async function delete_() {
 <template>
   <main class="column">
     <h1>Settings for {{ currentUsername }}</h1>
-    <button class="pure-button pure-button-primary" @click="logout">Logout</button>
-    <button class="button-error pure-button" @click="delete_">Delete User</button>
+    <div class="row">
+      <div class="column">
+        <button class="button-39" style="background-color: var(--primary)" @click="logout">Logout</button>
+      </div>
+      <div class="column">
+        <button class="button-39" style="background-color: var(--secondary)" @click="delete_">Delete</button>
+      </div>
+    </div>
     <UpdateUserForm />
   </main>
 </template>
+
+<style scoped>
+.row {
+  display: flex;
+  margin-bottom: 5%;
+}
+
+.column {
+  flex: 50%;
+  padding: 10px;
+}
+</style>
