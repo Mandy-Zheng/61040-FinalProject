@@ -1,13 +1,8 @@
 <script setup lang="ts">
-import { fetchy } from "@/utils/fetchy";
-import { computed, onBeforeMount, ref } from "vue";
 
 const props = defineProps(["show", "organization"]);
 const emit = defineEmits(["close", "delete"]);
 
-onBeforeMount(async () => {
-
-});
 </script>
 
 <template>

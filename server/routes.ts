@@ -78,6 +78,14 @@ class Routes {
     return { msg: msg, team: team };
   }
 
+  @Router.get("/organization/:orgId")
+  async getOrganizationById(session: WebSessionDoc, orgId: ObjectId) {
+    const org = await Team.get(orgId);
+    const admins = await User.idsToUsernames(org.admins);
+    const members = await User.idsToUsernames(org.members);
+    return { id: orgId, name: org.name, admins: admins, members: members };
+  }
+
   @Router.get("/organization")
   async getOrganizationsOfUser(session: WebSessionDoc) {
     const user = WebSession.getUser(session);
@@ -100,11 +108,12 @@ class Routes {
   }
 
   @Router.patch("/organization/addMember")
-  async addMembersToOrganization(session: WebSessionDoc, orgId: ObjectId, newMembers: Array<ObjectId>) {
+  async addMembersToOrganization(session: WebSessionDoc, orgId: ObjectId, newMembers: Array<string>) {
     const user = WebSession.getUser(session);
-    const addMsg = await Promise.all(newMembers.map((member) => Team.addUserAsMember(orgId, member, user)));
-    await Promise.all(newMembers.map((member) => Membership.addMembership(member, orgId)));
-    return addMsg;
+    const memberIds = newMembers.map((member) => new ObjectId(member));
+    await Promise.all(memberIds.map((member) => Team.addUserAsMember(orgId, member, user)));
+    await Promise.all(memberIds.map((member) => Membership.addMembership(member, orgId)));
+    return { msg: "Successfully Added Members To Organization!" };
   }
 
   @Router.patch("/organization/updateMember")
@@ -130,7 +139,7 @@ class Routes {
   @Router.delete("/organization/:orgId")
   async deleteOrganization(session: WebSessionDoc, orgId: ObjectId) {
     const user = WebSession.getUser(session);
-    await Team.isAdmin(orgId,user);
+    await Team.isAdmin(orgId, user);
     const { admins, members } = await Team.get(orgId);
     const allMembers = members.concat(admins);
     console.log(allMembers);

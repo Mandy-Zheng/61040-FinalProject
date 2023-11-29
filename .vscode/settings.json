@@ -7,5 +7,8 @@
     "source.fixAll": true,
     "source.organizeImports": true
   },
-  "typescript.preferences.importModuleSpecifier": "project-relative"
+  "typescript.preferences.importModuleSpecifier": "project-relative",
+  "cSpell.words": [
+    "fetchy"
+  ]
 }

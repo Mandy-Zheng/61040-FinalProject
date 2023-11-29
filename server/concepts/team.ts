@@ -53,7 +53,7 @@ export default class TeamConcept {
     if (!team) {
       throw new NotFoundError("Team Not Found");
     }
-    if (team.admins.some((member) => member.equals(user)) || team.members.some((member) => member.equals(user))) {
+    if (!team.admins.some((member) => member.equals(user)) || team.members.some((member) => member.equals(user))) {
       throw new NotAllowedError(`${user} is not a member of organization ${_id}!`);
     }
   }
@@ -71,8 +71,8 @@ export default class TeamConcept {
     } else {
       oldTeam = await this.isAdmin(_id, editor);
     }
-    const members = oldTeam.members.filter((user) => user.equals(member));
-    const admins = oldTeam.members.filter((user) => user.equals(member));
+    const members = oldTeam.members.filter((user) => !user.equals(member));
+    const admins = oldTeam.admins.filter((user) => !user.equals(member));
     if (admins.length === 0) {
       throw new NotAllowedError("Organization must have at least one admin");
     }
@@ -82,8 +82,8 @@ export default class TeamConcept {
 
   async addUserAsMember(_id: ObjectId, member: ObjectId, editor: ObjectId) {
     const oldTeam = await this.isAdmin(_id, editor);
-    const members = oldTeam.members.filter((user) => user.equals(member));
-    const admins = oldTeam.members.filter((user) => user.equals(member));
+    const members = oldTeam.members.filter((user) => !user.equals(member));
+    const admins = oldTeam.admins.filter((user) => !user.equals(member));
     members.push(member);
     await this.teams.updateOne({ _id }, { members, admins });
     return { msg: "Successfully Added New Member to Team!" };
@@ -91,8 +91,8 @@ export default class TeamConcept {
 
   async addUserAsAdmin(_id: ObjectId, member: ObjectId, editor: ObjectId) {
     const oldTeam = await this.isAdmin(_id, editor);
-    const members = oldTeam.members.filter((user) => user.equals(member));
-    const admins = oldTeam.members.filter((user) => user.equals(member));
+    const members = oldTeam.members.filter((user) => !user.equals(member));
+    const admins = oldTeam.admins.filter((user) => !user.equals(member));
     admins.push(member);
     await this.teams.updateOne({ _id }, { members, admins });
     return { msg: "Successfully Added New Admin to Team!" };
