@@ -1,5 +1,5 @@
 <script setup lang="ts"></script>
 
 <template>
-  <main>Patrons</main>
+  <main>Timesheet</main>
 </template>
