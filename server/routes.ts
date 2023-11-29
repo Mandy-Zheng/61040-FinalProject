@@ -131,6 +131,7 @@ class Routes {
   @Router.delete("/organization")
   async deleteOrganization(session: WebSessionDoc, orgId: ObjectId) {
     const user = WebSession.getUser(session);
+    await Team.isAdmin(orgId,user);
     const { admins, members } = await Team.get(orgId);
     const allMembers = members.concat(admins);
     await Promise.all(allMembers.map((member) => Membership.removeMembership(member, orgId)));
