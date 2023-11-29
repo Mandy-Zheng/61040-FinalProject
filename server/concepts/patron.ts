@@ -13,7 +13,11 @@ export default class PatronConcept {
 
   async create(name: string, birthday: Date, image: string) {
     const _id = await this.patrons.createOne({ name, birthday, image });
-    return { msg: "Patron successfully created!", patron: await this.patrons.readOne({ _id }) };
+    const patron = await this.patrons.readOne({ _id });
+    if (patron == null) {
+      throw new NotFoundError(`Patron not found!`);
+    }
+    return { msg: "Patron successfully created!", patron: patron };
   }
 
   async getPatronById(_id: ObjectId) {
@@ -25,6 +29,9 @@ export default class PatronConcept {
   }
 
   async updatePatron(_id: ObjectId, update: Partial<PatronDoc>) {
+    if (update.birthday) {
+      update.birthday = new Date(update.birthday);
+    }
     await this.patrons.updateOne({ _id }, update);
     return { msg: "Patron updated successfully!" };
   }
