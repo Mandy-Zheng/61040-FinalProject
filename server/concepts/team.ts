@@ -31,7 +31,8 @@ export default class TeamConcept {
     return team;
   }
   private async isTeamNameUnique(name: string) {
-    if (await this.teams.readOne({ name })) {
+    const exists = await this.teams.readOne({ name });
+    if (exists) {
       throw new NotAllowedError(`Team with team name ${name} already exists!`);
     }
   }

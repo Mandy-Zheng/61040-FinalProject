@@ -7,6 +7,7 @@ const orgName = ref<string>("");
 async function register() {
   const body = { name: orgName.value };
   await createOrganization(body);
+  orgName.value = "";
 }
 </script>
 
@@ -20,7 +21,7 @@ async function register() {
       </div>
 
       <div class="pure-controls">
-        <button class="pure-button pure-button-primary" @click="register">Register</button>
+        <button class="pure-button pure-button-primary">Register</button>
       </div>
     </fieldset>
   </form>

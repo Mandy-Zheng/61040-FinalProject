@@ -12,6 +12,7 @@ export const useOrganizationStore = defineStore(
     const getOrganizations = async () => {
       try {
         const orgs = await fetchy(`/api/organization`, "GET");
+        console.log(orgs);
         allOrgs.value = orgs;
       } catch (error) {
         return;
@@ -37,7 +38,7 @@ export const useOrganizationStore = defineStore(
 
     const updateOrganizationName = async (body: BodyT) => {
       try {
-        await fetchy("/api/organization", "POST", { body: body });
+        await fetchy("/api/organization", "PATCH", { body: body });
       } catch (_) {
         return;
       }

@@ -17,6 +17,7 @@ onBeforeMount(async () => {
     return;
   }
 });
+console.log(allOrgs);
 </script>
 
 <template>
