@@ -20,11 +20,11 @@ export const useOrganizationStore = defineStore(
       }
     };
 
-    const setOrganization = async (name: string) => {
+    const setOrganization = async (id: string) => {
       allOrgs.value.forEach((org, idx) => {
-        if (org.name === name) {
+        if (org.id === id) {
           selectedOrg.value = idx;
-        } else if (name === "") {
+        } else if (id === "") {
           selectedOrg.value = undefined;
         }
       });
