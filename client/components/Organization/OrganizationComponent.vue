@@ -107,13 +107,17 @@ onBeforeMount(async () => {
       <button class="button-39" @click.prevent="showAddModal = true">Add Members</button>
       <button class="button-39" @click.prevent="showManageModal = true">Manage Members</button>
       <button class="button-39 red" @click.prevent="showDeleteModal = true">Delete Org</button>
+      <button v-if="organization.admins.length > 1" class="button-39 red" @click.prevent="showLeaveModal = true">Leave Org</button>
       <teleport to="body">
         <AddMemberComponent :show="showAddModal" :organization="organization" @close="showAddModal = false" @add="addMembers" />
         <ManageMemberComponent :show="showManageModal" :organization="organization" @close="showManageModal = false" @manage="manageMember" />
         <DeleteOrganizationComponent :show="showDeleteModal" :organization="organization" @close="showDeleteModal = false" @delete="deleteOrg(), (showDeleteModal = false)" />
+        <div v-if="organization.admins.length > 1">
+          <LeaveOrganizationComponent :show="showLeaveModal" :organization="organization" @close="showLeaveModal = false" @leave="leaveOrg(), (showLeaveModal = false)" />
+        </div>
       </teleport>
     </div>
-    <div v-if="!organization.admins.includes(currentUsername) || (organization.admins.includes(currentUsername) && organization.admins.length > 1)">
+    <div v-else>
       <button class="button-39 red" @click.prevent="showLeaveModal = true">Leave Org</button>
       <teleport to="body">
         <LeaveOrganizationComponent :show="showLeaveModal" :organization="organization" @close="showLeaveModal = false" @leave="leaveOrg(), (showLeaveModal = false)" />
