@@ -5,12 +5,11 @@ import { computed, onBeforeMount, ref } from "vue";
 
 const props = defineProps(["show", "organization"]);
 const allUsers = ref<Array<{ label: string; value: string }>>([]);
-const admins: Set<string> = new Set(props.organization.admins);
-const members: Set<string> = new Set(props.organization.members);
 const emit = defineEmits(["close", "add"]);
 const usersToAdd = ref<Array<string>>([]);
 const nonTeamMembers = computed(() => {
-  return allUsers.value.filter((user) => !admins.has(user.label) && !members.has(user.label));
+  const adminsAndMembers = props.organization.admins.concat(props.organization.members);
+  return allUsers.value.filter((user) => !adminsAndMembers.includes(user.label));
 });
 
 onBeforeMount(async () => {
@@ -30,7 +29,7 @@ onBeforeMount(async () => {
     <div v-if="show" class="modal-mask">
       <div class="modal-container">
         <div class="modal-header">Settings for {{ props.organization.name }}</div>
-        Add Members: {{ organization }} {{ nonTeamMembers }}
+        Add Members:
 
         <Multiselect class="multiselect" v-model="usersToAdd" mode="tags" :options="nonTeamMembers" :searchable="true" required />
 

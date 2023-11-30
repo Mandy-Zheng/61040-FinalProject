@@ -1,16 +1,12 @@
 <script setup lang="ts">
-import { useOrganizationStore } from "@/stores/organization";
 import { useUserStore } from "@/stores/user";
 
-import { fetchy } from "@/utils/fetchy";
 import { storeToRefs } from "pinia";
-import { computed, onBeforeMount, ref } from "vue";
+import { computed, ref } from "vue";
 
 const { currentUsername } = storeToRefs(useUserStore());
-const { getOrganizations } = useOrganizationStore();
 
 const props = defineProps(["show", "organization"]);
-const allUsers = ref<Array<{ label: string; value: string }>>([]);
 
 const adminsAndMembers = computed(() => {
   return props.organization.admins.concat(props.organization.members).filter((u: string) => u !== currentUsername.value);
@@ -22,17 +18,6 @@ const currAction = ref<string>("");
 async function changeMember() {
   currAction.value = "";
 }
-
-onBeforeMount(async () => {
-  try {
-    const users = await fetchy(`/api/users`, "GET");
-    allUsers.value = users.map((user: any) => {
-      return { label: user.username, value: user._id };
-    });
-  } catch {
-    return;
-  }
-});
 </script>
 
 <template>
@@ -40,7 +25,7 @@ onBeforeMount(async () => {
     <div v-if="show" class="modal-mask">
       <div class="modal-container">
         <div class="modal-header">Settings for {{ props.organization.name }}</div>
-        Choose member: {{ organization }} {{ adminsAndMembers }}
+        Choose member:
         <select v-if="adminsAndMembers.length !== 0" v-model="currMember" @change="changeMember">
           <option value="" :selected="currMember === ''" disabled>--select a member--</option>
           <option v-for="u in adminsAndMembers" :key="u" :selected="currMember === u" :value="u">{{ u }}</option>

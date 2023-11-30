@@ -10,7 +10,7 @@ import { storeToRefs } from "pinia";
 import { onBeforeMount, ref } from "vue";
 
 const { currentUsername } = storeToRefs(useUserStore());
-const { getOrganizations, deleteOrganization } = useOrganizationStore();
+const { deleteOrganization } = useOrganizationStore();
 const props = defineProps(["orgId"]);
 const showAddModal = ref<boolean>(false);
 const showManageModal = ref<boolean>(false);
@@ -76,7 +76,6 @@ onBeforeMount(async () => {
 <template>
   <div class="org" v-if="organization">
     <h4>{{ organization.name }}</h4>
-    {{ organization }}
     <p>Admins</p>
     <div v-for="admin in organization.admins" :key="admin">{{ admin }}</div>
     <p>Members</p>
