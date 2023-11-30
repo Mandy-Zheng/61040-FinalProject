@@ -86,8 +86,14 @@ onBeforeMount(async () => {
 
 <template>
   <div class="org" v-if="organization">
-    <h4 v-if="!isEditingName">{{ organization.name }} <button class="button-39" @click="isEditingName = true">Edit Name</button></h4>
-    <div v-else><input v-model.trim="orgName" /> <button class="button-39" @click="updateOrgName">Submit</button></div>
+    <div v-if="organization.admins.includes(currentUsername)">
+      <h4 v-if="!isEditingName">{{ organization.name }} <button class="button-39" @click="isEditingName = true">Edit Name</button></h4>
+      <div v-else><input v-model.trim="orgName" /> <button class="button-39" @click="updateOrgName">Submit</button></div>
+    </div>
+    <div v-else>
+      <h4>{{ organization.name }}</h4>
+    </div>
+
     <p>Admins</p>
     <div v-for="admin in organization.admins" :key="admin">{{ admin }}</div>
     <p>Members</p>
