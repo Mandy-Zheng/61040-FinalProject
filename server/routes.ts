@@ -111,9 +111,11 @@ class Routes {
 
   @Router.patch("/organization/addMember")
   async addMembersToOrganization(session: WebSessionDoc, orgId: ObjectId, newMembers: Array<string>) {
+    console.log("adding new members", newMembers);
     const user = WebSession.getUser(session);
     const org = new ObjectId(orgId);
     const memberIds = newMembers.map((member) => new ObjectId(member));
+    console.log("adding members", memberIds);
     await Promise.all(memberIds.map((member) => Team.addUserAsMember(org, member, user)));
     await Promise.all(memberIds.map((member) => Membership.addMembership(member, org)));
     return { msg: "Successfully Added Members To Organization!" };
@@ -137,6 +139,7 @@ class Routes {
     const user = WebSession.getUser(session);
     const orgIds = new ObjectId(orgId);
     const memberIds = new ObjectId(member);
+    console.log("removing Member", memberIds);
     const msg = await Team.removeUserFromTeam(orgIds, memberIds, user);
     await Membership.removeMembership(memberIds, orgIds);
     return msg;

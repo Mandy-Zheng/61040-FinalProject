@@ -80,12 +80,16 @@ export default class TeamConcept {
     return { msg: "Successfully Removed User From Team" };
   }
 
-  async addUserAsMember(_id: ObjectId, member: ObjectId, editor: ObjectId) {
+  async removeUsersFromTeam(_id: ObjectId, newMembers: Array<ObjectId>, editor: ObjectId) {
+    return "hi";
+  }
+  async addUsersAsMembers(_id: ObjectId, newMembers: Array<ObjectId>, editor: ObjectId) {
+    await this.removeUsersFromTeam(_id, newMembers, editor);
     const oldTeam = await this.isAdmin(_id, editor);
-    const members = oldTeam.members.filter((user) => user.toString() !== member.toString());
-    const admins = oldTeam.admins.filter((user) => user.toString() !== member.toString());
-    members.push(member);
-    await this.teams.updateOne({ _id }, { members, admins });
+
+    const uniqueMembers = new Set([...oldTeam.members.map((user) => user.toString()), ...newMembers.map((user) => user.toString())]);
+    const members = [...uniqueMembers].map((member) => new ObjectId(member));
+    await this.teams.updateOne({ _id }, { members });
     return { msg: "Successfully Added New Member to Team!" };
   }
 
