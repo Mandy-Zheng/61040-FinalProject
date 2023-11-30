@@ -62,6 +62,7 @@ async function manageMember(member: any, action: any) {
 
 async function deleteOrg() {
   await deleteOrganization(props.orgId);
+  router.go();
 }
 async function leaveOrg() {
   try {
