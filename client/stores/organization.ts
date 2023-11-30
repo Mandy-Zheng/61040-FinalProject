@@ -12,7 +12,7 @@ export const useOrganizationStore = defineStore(
     const getOrganizations = async () => {
       try {
         const orgs = await fetchy(`/api/organization`, "GET");
-        allOrgs.value = orgs.map((org) => {
+        allOrgs.value = orgs.map((org: any) => {
           return { id: org.id, name: org.name };
         });
       } catch (error) {
@@ -57,6 +57,16 @@ export const useOrganizationStore = defineStore(
       }
     };
 
+    const leaveOrganization = async (orgId: any, member: any) => {
+      try {
+        const body = { orgId: orgId, member: member };
+        await fetchy("/api/organization/removeMember", "PATCH", { body: body });
+        await getOrganizations();
+      } catch (_) {
+        return;
+      }
+    };
+
     return {
       allOrgs,
       selectedOrg,
@@ -65,6 +75,7 @@ export const useOrganizationStore = defineStore(
       updateOrganizationName,
       createOrganization,
       deleteOrganization,
+      leaveOrganization,
     };
   },
   { persist: true },

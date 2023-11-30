@@ -1,8 +1,6 @@
 <script setup lang="ts">
-
 const props = defineProps(["show", "organization"]);
 const emit = defineEmits(["close", "leave"]);
-
 </script>
 
 <template>
