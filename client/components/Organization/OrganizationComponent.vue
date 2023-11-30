@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import AddMemberComponent from "@/components/Organization/AddMemberComponent.vue";
 import DeleteOrganizationComponent from "@/components/Organization/DeleteOrganizationComponent.vue";
+import LeaveOrganizationComponent from "@/components/Organization/LeaveOrganizationComponent.vue";
 import ManageMemberComponent from "@/components/Organization/ManageMembersComponent.vue";
 import { useOrganizationStore } from "@/stores/organization";
 import { useUserStore } from "@/stores/user";
@@ -14,6 +15,7 @@ const props = defineProps(["orgId"]);
 const showAddModal = ref<boolean>(false);
 const showManageModal = ref<boolean>(false);
 const showDeleteModal = ref<boolean>(false);
+const showLeaveModal = ref<boolean>(false);
 const organization = ref<any>(undefined);
 async function addMembers(members: any) {
   const body = { orgId: props.orgId, newMembers: members };
@@ -53,6 +55,15 @@ async function manageMember(member: any, action: any) {
 async function deleteOrg() {
   await deleteOrganization(props.orgId);
 }
+async function leaveOrg() {
+  try {
+    const id = await fetchy(`/api/users/${currentUsername.value}`, "GET");
+    const body = { orgId: props.orgId, member: id._id };
+    await fetchy("/api/organization/removeMember", "PATCH", { body: body });
+  } catch (_) {
+    return;
+  }
+}
 onBeforeMount(async () => {
   try {
     organization.value = await fetchy(`/api/organization/${props.orgId}`, "GET");
@@ -78,6 +89,12 @@ onBeforeMount(async () => {
         <AddMemberComponent :show="showAddModal" :organization="organization" @close="showAddModal = false" @add="addMembers" />
         <ManageMemberComponent :show="showManageModal" :organization="organization" @close="showManageModal = false" @manage="manageMember" />
         <DeleteOrganizationComponent :show="showDeleteModal" :organization="organization" @close="showDeleteModal = false" @delete="deleteOrg(), (showDeleteModal = false)" />
+      </teleport>
+    </div>
+    <div v-if="!organization.admins.includes(currentUsername)">
+      <button class="button-39 red" @click.prevent="showLeaveModal = true">Leave Org</button>
+      <teleport to="body">
+        <LeaveOrganizationComponent :show="showLeaveModal" :organization="organization" @close="showLeaveModal = false" @leave="leaveOrg(), (showLeaveModal = false)" />
       </teleport>
     </div>
   </div>

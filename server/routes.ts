@@ -80,10 +80,11 @@ class Routes {
 
   @Router.get("/organization/:orgId")
   async getOrganizationById(session: WebSessionDoc, orgId: ObjectId) {
-    const org = await Team.get(orgId);
+    const orgI = new ObjectId(orgId);
+    const org = await Team.get(orgI);
     const admins = await User.idsToUsernames(org.admins);
     const members = await User.idsToUsernames(org.members);
-    return { id: orgId, name: org.name, admins: admins, members: members };
+    return { id: orgI, name: org.name, admins: admins, members: members };
   }
 
   @Router.get("/organization")
@@ -101,18 +102,20 @@ class Routes {
   @Router.patch("/organization")
   async updateOrganizationName(session: WebSessionDoc, orgId: ObjectId, orgName: string) {
     const user = WebSession.getUser(session);
+    const org = new ObjectId(orgId);
     if (!orgName) {
       throw new BadValuesError("Missing Organization Name");
     }
-    return await Team.updateName(orgId, orgName, user);
+    return await Team.updateName(org, orgName, user);
   }
 
   @Router.patch("/organization/addMember")
   async addMembersToOrganization(session: WebSessionDoc, orgId: ObjectId, newMembers: Array<string>) {
     const user = WebSession.getUser(session);
+    const org = new ObjectId(orgId);
     const memberIds = newMembers.map((member) => new ObjectId(member));
-    await Promise.all(memberIds.map((member) => Team.addUserAsMember(orgId, member, user)));
-    await Promise.all(memberIds.map((member) => Membership.addMembership(member, orgId)));
+    await Promise.all(memberIds.map((member) => Team.addUserAsMember(org, member, user)));
+    await Promise.all(memberIds.map((member) => Membership.addMembership(member, org)));
     return { msg: "Successfully Added Members To Organization!" };
   }
 
@@ -120,19 +123,23 @@ class Routes {
   async updateMemberStatus(session: WebSessionDoc, orgId: ObjectId, member: ObjectId, isPromoting: Boolean) {
     const user = WebSession.getUser(session);
     console.log("promoting", member);
-    await Team.isTeamMember(orgId, member);
+    const org = new ObjectId(orgId);
+    const memberId = new ObjectId(member);
+    await Team.isTeamMember(org, memberId);
     if (isPromoting) {
-      return Team.addUserAsAdmin(orgId, member, user);
+      return Team.addUserAsAdmin(org, memberId, user);
     } else {
-      return Team.addUserAsMember(orgId, member, user);
+      return Team.addUserAsMember(org, memberId, user);
     }
   }
 
   @Router.patch("/organization/removeMember")
   async removeUserFromOrganization(session: WebSessionDoc, orgId: ObjectId, member: ObjectId) {
     const user = WebSession.getUser(session);
-    const msg = await Team.removeUserFromTeam(orgId, member, user);
-    await Membership.removeMembership(member, orgId);
+    const orgIds = new ObjectId(orgId);
+    const memberIds = new ObjectId(member);
+    const msg = await Team.removeUserFromTeam(orgIds, memberIds, user);
+    await Membership.removeMembership(memberIds, orgIds);
     return msg;
     //todo decide what to do if all admins leave?
   }
@@ -140,22 +147,24 @@ class Routes {
   @Router.delete("/organization/:orgId")
   async deleteOrganization(session: WebSessionDoc, orgId: ObjectId) {
     const user = WebSession.getUser(session);
-    await Team.isAdmin(orgId, user);
-    const { admins, members } = await Team.get(orgId);
+    const org = new ObjectId(orgId);
+    await Team.isAdmin(org, user);
+    const { admins, members } = await Team.get(org);
     const allMembers = members.concat(admins);
-    console.log(allMembers);
     allMembers.forEach(async (member) => {
-      await Membership.removeMembership(member, orgId);
+      await Membership.removeMembership(member, org);
     });
-    return Team.delete(orgId, user);
+    console.log("Hi");
+    return Team.delete(org, user);
   }
 
   // reset all visits for all households in organization
   @Router.patch("/organization/reset")
   async resetAllVisits(session: WebSessionDoc, orgId: ObjectId) {
     const user = WebSession.getUser(session);
-    await Team.isAdmin(orgId, user);
-    const households = await Household.getProfilesByOwner(orgId);
+    const org = new ObjectId(orgId);
+    await Team.isAdmin(org, user);
+    const households = await Household.getProfilesByOwner(org);
     for (const h of households) {
       await Household.resetVisits(h._id);
     }
@@ -165,78 +174,88 @@ class Routes {
   @Router.post("/profile/:id")
   async createHouseholdProfile(session: WebSessionDoc, orgId: ObjectId, name: string, birthday: Date, img: string, diet: Array<DietaryRestrictions>, lang: Language, req: string) {
     const user = WebSession.getUser(session);
-    await Team.isTeamMember(orgId, user);
+    const org = new ObjectId(orgId);
+    await Team.isTeamMember(org, user);
     const patron = await Patron.create(name, birthday, img);
-    return await Household.create(orgId, [patron.patron._id], diet, lang, req);
+    return await Household.create(org, [patron.patron._id], diet, lang, req);
   }
 
   // update household members, diet restrictions, language, special requests
   @Router.patch("/profile/:id")
   async updateHouseholdDetails(session: WebSessionDoc, id: ObjectId, update: Partial<HouseholdDoc>) {
     const household = await Household.getProfileById(id);
+    const ID = new ObjectId(id);
     const user = WebSession.getUser(session);
     await Team.isTeamMember(household.organization, user);
-    return await Household.update(id, update);
+    return await Household.update(ID, update);
   }
 
   @Router.patch("/profile/addPatron/:id")
   async addPatronToHousehold(session: WebSessionDoc, id: ObjectId, name: string, birthday: string, img: string) {
     const user = WebSession.getUser(session);
-    const household = await Household.getProfileById(id);
+    const ID = new ObjectId(id);
+    const household = await Household.getProfileById(ID);
     await Team.isTeamMember(household.organization, user);
     const date = new Date(birthday);
     const patron = (await Patron.create(name, date, img)).patron;
-    return await Household.addMember(id, patron._id);
+    return await Household.addMember(ID, patron._id);
   }
 
   @Router.patch("/profile/removePatron/:id")
   async removePatronFromHousehold(session: WebSessionDoc, id: ObjectId, patronId: ObjectId) {
     const household = await Household.getProfileById(id);
+    const ID = new ObjectId(id);
+    const patron = new ObjectId(patronId);
     const user = WebSession.getUser(session);
     await Team.isTeamMember(household.organization, user);
-    return await Household.removeMember(id, patronId);
+    return await Household.removeMember(ID, patron);
   }
 
   @Router.patch("/profile/updatePatron/:id")
   async updatePatron(session: WebSessionDoc, id: ObjectId, patronId: ObjectId, update: Partial<PatronDoc>) {
-    const household = await Household.getProfileById(id);
+    const ID = new ObjectId(id);
+    const patron = new ObjectId(patronId);
+    const household = await Household.getProfileById(ID);
     const user = WebSession.getUser(session);
     await Team.isTeamMember(household.organization, user);
-    return await Patron.updatePatron(patronId, update);
+    return await Patron.updatePatron(patron, update);
   }
 
   // return household and add visit
   @Router.get("/profile/:id")
   async signInHousehold(session: WebSessionDoc, id: ObjectId) {
-    const household = await Household.getProfileById(id);
+    const ID = new ObjectId(id);
+    const household = await Household.getProfileById(ID);
     const user = WebSession.getUser(session);
     await Team.isTeamMember(household.organization, user);
-    await Household.addVisit(id);
+    await Household.addVisit(ID);
     return household;
   }
 
   @Router.delete("/profile/:id")
   async removeHouseholdProfile(session: WebSessionDoc, id: ObjectId) {
-    const household = await Household.getProfileById(id);
+    const ID = new ObjectId(id);
+    const household = await Household.getProfileById(ID);
     const user = WebSession.getUser(session);
     await Team.isTeamMember(household.organization, user);
     for (const patron of household.members) {
       await Patron.deletePatron(patron);
     }
-    return await Household.delete(id);
+    return await Household.delete(ID);
   }
 
   // return inventory of given organization, including the max per day allocation
   @Router.get("/inventory/:orgId")
   async getOrganizationInventory(session: WebSessionDoc, orgId: ObjectId, item?: string) {
     const user = WebSession.getUser(session);
-    await Team.isTeamMember(orgId, user);
+    const org = new ObjectId(orgId);
+    await Team.isTeamMember(org, user);
     let inventory;
     if (item) {
-      inventory = await Stock.getStockByItem(orgId, item);
+      inventory = await Stock.getStockByItem(org, item);
       return { ...(await Responses.stock(inventory)), maxPerDay: Stock.getTodaysAllocation(inventory.count) };
     } else {
-      inventory = await Stock.getStocksByOwner(orgId);
+      inventory = await Stock.getStocksByOwner(org);
       const maxPDs = inventory.map((stock) => Stock.getTodaysAllocation(stock.count));
       const response = await Responses.stocks(inventory);
       return response.map((stock, i) => ({ ...stock, maxPerDay: maxPDs[i] }));
@@ -247,30 +266,33 @@ class Routes {
   @Router.patch("/inventory")
   async updateInventoryItem(session: WebSessionDoc, id: ObjectId, update: Partial<StockDoc>) {
     const user = WebSession.getUser(session);
-    const stock = await Stock.getStockById(id);
+    const ID = new ObjectId(id);
+    const stock = await Stock.getStockById(ID);
     await Team.isTeamMember(stock.owner, user);
     if (update.count) {
-      await Stock.updateStockQuantity(id, update.count);
+      await Stock.updateStockQuantity(ID, update.count);
     }
     // eslint-disable-next-line
     const { count, ...rest } = update; // remove count
-    await Stock.updateStockDetails(id, rest);
+    await Stock.updateStockDetails(ID, rest);
     return { msg: "Stock successfully updated!" };
   }
 
   @Router.post("/inventory")
   async addNewInventoryItem(session: WebSessionDoc, owner: ObjectId, item: string, count: number, diet: Array<DietaryRestrictions>, link?: string, img?: string, maxp?: number) {
     const user = WebSession.getUser(session);
-    await Team.isTeamMember(owner, user);
-    return await Stock.createStock(owner, item, count, diet, link, img, maxp);
+    const Owner = new ObjectId(owner);
+    await Team.isTeamMember(Owner, user);
+    return await Stock.createStock(Owner, item, count, diet, link, img, maxp);
   }
 
   @Router.delete("/inventory")
   async deleteInventoryItem(session: WebSessionDoc, id: ObjectId) {
     const user = WebSession.getUser(session);
-    const stock = await Stock.getStockById(id);
+    const ID = new ObjectId(id);
+    const stock = await Stock.getStockById(ID);
     await Team.isTeamMember(stock.owner, user);
-    return await Stock.deleteStock(id);
+    return await Stock.deleteStock(ID);
   }
 }
 
