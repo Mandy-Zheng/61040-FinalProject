@@ -4,11 +4,13 @@ import DeleteOrganizationComponent from "@/components/Organization/DeleteOrganiz
 import LeaveOrganizationComponent from "@/components/Organization/LeaveOrganizationComponent.vue";
 import ManageMemberComponent from "@/components/Organization/ManageMembersComponent.vue";
 import { useOrganizationStore } from "@/stores/organization";
+import { useRouter } from 'vue-router';
 import { useUserStore } from "@/stores/user";
 import { fetchy } from "@/utils/fetchy";
 import { storeToRefs } from "pinia";
 import { onBeforeMount, ref } from "vue";
 
+const router = useRouter();
 const { currentUsername } = storeToRefs(useUserStore());
 const { updateOrganizationName, deleteOrganization } = useOrganizationStore();
 const props = defineProps(["orgId"]);
@@ -70,6 +72,7 @@ async function leaveOrg() {
   } catch (_) {
     return;
   }
+  router.go();
 }
 
 onBeforeMount(async () => {
