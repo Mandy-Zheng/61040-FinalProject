@@ -15,8 +15,23 @@ const emit = defineEmits(["close", "manage"]);
 const currMember = ref<string>("");
 const currAction = ref<string>("");
 
-async function changeMember() {
+function changeMember() {
   currAction.value = "";
+}
+
+function resetForm() {
+  currMember.value = "";
+  currAction.value = "";
+}
+
+function close() {
+  resetForm();
+  emit("close");
+}
+
+function update() {
+  emit("manage", currMember.value, currAction.value);
+  resetForm();
 }
 </script>
 
@@ -41,8 +56,8 @@ async function changeMember() {
           </select>
         </div>
         <div class="modal-footer">
-          <button class="button-39" @click="emit('close')">Close</button>
-          <button class="button-39" @click="emit('manage', currMember, currAction)">Update</button>
+          <button class="button-39" @click="close">Close</button>
+          <button class="button-39" @click="update">Update</button>
         </div>
       </div>
     </div>

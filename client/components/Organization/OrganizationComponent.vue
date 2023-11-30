@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import AddMemberComponent from "@/components/Organization/AddMemberComponent.vue";
-import DeleteOrganizationComponent from "@/components/Organization/DeleteOrganizationComponent.vue";
-import LeaveOrganizationComponent from "@/components/Organization/LeaveOrganizationComponent.vue";
-import ManageMemberComponent from "@/components/Organization/ManageMembersComponent.vue";
+import AddMemberComponent from "@/components/Organization/AddMemberModal.vue";
+import DeleteOrganizationComponent from "@/components/Organization/DeleteOrganizationModal.vue";
+import LeaveOrganizationComponent from "@/components/Organization/LeaveOrganizationModal.vue";
+import ManageMemberComponent from "@/components/Organization/ManageMembersModal.vue";
 import { useOrganizationStore } from "@/stores/organization";
 import { useUserStore } from "@/stores/user";
 import { fetchy } from "@/utils/fetchy";
