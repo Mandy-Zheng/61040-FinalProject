@@ -14,6 +14,7 @@ const router = useRouter();
 const { currentUsername } = storeToRefs(useUserStore());
 const { updateOrganizationName, deleteOrganization } = useOrganizationStore();
 const props = defineProps(["orgId"]);
+const emit = defineEmits(["refreshDelete"]);
 const showAddModal = ref<boolean>(false);
 const showManageModal = ref<boolean>(false);
 const showDeleteModal = ref<boolean>(false);
@@ -69,6 +70,7 @@ async function leaveOrg() {
     const body = { orgId: props.orgId, member: id._id };
     await fetchy("/api/organization/removeMember", "PATCH", { body: body });
     organization.value = await fetchy(`/api/organization/${props.orgId}`, "GET");
+    emit("refreshDelete");
   } catch (_) {
     return;
   }

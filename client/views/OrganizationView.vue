@@ -7,8 +7,9 @@ import { computed, onBeforeMount, ref } from "vue";
 
 const { allOrgs, selectedOrg } = storeToRefs(useOrganizationStore());
 const { getOrganizations, setOrganization } = useOrganizationStore();
-const allOrgNames = computed(() => allOrgs.value.map((org: any) => org.name));
-const curOrg = ref<string>(selectedOrg.value !== undefined ? allOrgNames.value[selectedOrg.value] : "");
+const allOrgsComputed = computed(() => allOrgs.value.map((org: any) => org));
+// const curOrg = ref<string>(selectedOrg.value !== undefined ? allOrgNames.value[selectedOrg.value] : "");
+const curOrg = ref<string>(selectedOrg.value !== undefined ? allOrgs.value[selectedOrg.value].name : "");
 
 async function changeOrganization() {
   if (curOrg.value !== "") {
@@ -36,7 +37,7 @@ onBeforeMount(async () => {
     </select>
     <p v-else>You are currently not a part of organization</p>
     <h3>Manage Your Organizations</h3>
-    <div v-for="org in allOrgs" :key="org"><OrganizationComponent :orgId="org.id" /></div>
+    <div v-for="org in allOrgsComputed" :key="org"><OrganizationComponent :orgId="org.id" /></div>
     <RegisterOrganizationForm />
     <section></section>
   </main>
