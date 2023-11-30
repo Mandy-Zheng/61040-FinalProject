@@ -64,15 +64,16 @@ export default class TeamConcept {
     return { msg: "Successfully Updated Team Name" };
   }
 
-  async removeUserFromTeam(_id: ObjectId, member: ObjectId, editor: ObjectId) {
+  async removeUsersFromTeam(_id: ObjectId, exMembers: Array<ObjectId>, editor: ObjectId) {
     let oldTeam;
-    if (member.toString() === editor.toString()) {
+    const memberIds = new Set(exMembers.map((member) => member.toString()));
+    if (exMembers.length === 1 && memberIds.has(editor.toString())) {
       oldTeam = await this.get(_id);
     } else {
       oldTeam = await this.isAdmin(_id, editor);
     }
-    const members = oldTeam.members.filter((user) => user.toString() !== member.toString());
-    const admins = oldTeam.admins.filter((user) => user.toString() !== member.toString());
+    const members = oldTeam.members.filter((member) => !memberIds.has(member.toString()));
+    const admins = oldTeam.admins.filter((member) => !memberIds.has(member.toString()));
     if (admins.length === 0) {
       throw new NotAllowedError("Organization must have at least one admin");
     }
@@ -80,26 +81,22 @@ export default class TeamConcept {
     return { msg: "Successfully Removed User From Team" };
   }
 
-  async removeUsersFromTeam(_id: ObjectId, newMembers: Array<ObjectId>, editor: ObjectId) {
-    return "hi";
-  }
   async addUsersAsMembers(_id: ObjectId, newMembers: Array<ObjectId>, editor: ObjectId) {
     await this.removeUsersFromTeam(_id, newMembers, editor);
     const oldTeam = await this.isAdmin(_id, editor);
-
     const uniqueMembers = new Set([...oldTeam.members.map((user) => user.toString()), ...newMembers.map((user) => user.toString())]);
     const members = [...uniqueMembers].map((member) => new ObjectId(member));
     await this.teams.updateOne({ _id }, { members });
     return { msg: "Successfully Added New Member to Team!" };
   }
 
-  async addUserAsAdmin(_id: ObjectId, member: ObjectId, editor: ObjectId) {
+  async addUsersAsAdmins(_id: ObjectId, newMembers: Array<ObjectId>, editor: ObjectId) {
+    await this.removeUsersFromTeam(_id, newMembers, editor);
     const oldTeam = await this.isAdmin(_id, editor);
-    const members = oldTeam.members.filter((user) => user.toString() !== member.toString());
-    const admins = oldTeam.admins.filter((user) => user.toString() !== member.toString());
-    admins.push(member);
-    await this.teams.updateOne({ _id }, { members, admins });
-    return { msg: "Successfully Added New Admin to Team!" };
+    const uniqueMembers = new Set([...oldTeam.admins.map((user) => user.toString()), ...newMembers.map((user) => user.toString())]);
+    const admins = [...uniqueMembers].map((member) => new ObjectId(member));
+    await this.teams.updateOne({ _id }, { admins });
+    return { msg: "Successfully Added New Member to Team!" };
   }
 
   async delete(_id: ObjectId, editor: ObjectId) {

@@ -40,7 +40,7 @@ export default class MembershipConcept {
 
   async removeMembership(user: ObjectId, orgId: ObjectId) {
     const memberships = await this.get(user);
-    const organizations = memberships.organizations.filter((org) => !org.equals(orgId));
+    const organizations = memberships.organizations.filter((org) => org.toString() !== orgId.toString());
     await this.memberships.updateOne({ user }, { organizations });
     return { msg: "Successfully Removed Membership!" };
   }

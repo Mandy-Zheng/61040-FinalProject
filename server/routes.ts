@@ -49,7 +49,7 @@ class Routes {
     WebSession.end(session);
     const msg = await User.delete(user);
     const { organizations } = await Membership.get(user);
-    await Promise.all(organizations.map((orgId) => Team.removeUserFromTeam(orgId, user, user)));
+    await Promise.all(organizations.map((orgId) => Team.removeUsersFromTeam(orgId, [user], user)));
     await Membership.deleteUserMembership(user);
     //Todo --> shifts
     return msg;
@@ -116,7 +116,7 @@ class Routes {
     const org = new ObjectId(orgId);
     const memberIds = newMembers.map((member) => new ObjectId(member));
     console.log("adding members", memberIds);
-    await Promise.all(memberIds.map((member) => Team.addUserAsMember(org, member, user)));
+    await Team.addUsersAsMembers(org, memberIds, user);
     await Promise.all(memberIds.map((member) => Membership.addMembership(member, org)));
     return { msg: "Successfully Added Members To Organization!" };
   }
@@ -128,20 +128,20 @@ class Routes {
     const memberId = new ObjectId(member);
     await Team.isTeamMember(org, memberId);
     if (isPromoting) {
-      return Team.addUserAsAdmin(org, memberId, user);
+      return Team.addUsersAsAdmins(org, [memberId], user);
     } else {
-      return Team.addUserAsMember(org, memberId, user);
+      return Team.addUsersAsMembers(org, [memberId], user);
     }
   }
 
   @Router.patch("/organization/removeMember")
   async removeUserFromOrganization(session: WebSessionDoc, orgId: ObjectId, member: ObjectId) {
     const user = WebSession.getUser(session);
-    const orgIds = new ObjectId(orgId);
+    const id = new ObjectId(orgId);
     const memberIds = new ObjectId(member);
     console.log("removing Member", memberIds);
-    const msg = await Team.removeUserFromTeam(orgIds, memberIds, user);
-    await Membership.removeMembership(memberIds, orgIds);
+    const msg = await Team.removeUsersFromTeam(id, [memberIds], user);
+    await Membership.removeMembership(memberIds, id);
     return msg;
     //todo decide what to do if all admins leave?
   }
@@ -153,9 +153,7 @@ class Routes {
     await Team.isAdmin(org, user);
     const { admins, members } = await Team.get(org);
     const allMembers = members.concat(admins);
-    allMembers.forEach(async (member) => {
-      await Membership.removeMembership(member, org);
-    });
+    await Promise.all(allMembers.map((member) => Membership.removeMembership(member, org)));
     return Team.delete(org, user);
   }
 
