@@ -81,6 +81,7 @@ onBeforeMount(async () => {
   } catch (error) {
     return;
   }
+  console.log(organization.admins);
 });
 </script>
 
@@ -102,7 +103,7 @@ onBeforeMount(async () => {
         <DeleteOrganizationComponent :show="showDeleteModal" :organization="organization" @close="showDeleteModal = false" @delete="deleteOrg(), (showDeleteModal = false)" />
       </teleport>
     </div>
-    <div v-if="!organization.admins.includes(currentUsername)">
+    <div v-if="!organization.admins.includes(currentUsername)||(organization.admins.includes(currentUsername)&&organization.admins.length>1)">
       <button class="button-39 red" @click.prevent="showLeaveModal = true">Leave Org</button>
       <teleport to="body">
         <LeaveOrganizationComponent :show="showLeaveModal" :organization="organization" @close="showLeaveModal = false" @leave="leaveOrg(), (showLeaveModal = false)" />
