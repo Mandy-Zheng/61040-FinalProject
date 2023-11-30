@@ -122,6 +122,7 @@ class Routes {
   @Router.patch("/organization/updateMember")
   async updateMemberStatus(session: WebSessionDoc, orgId: ObjectId, member: ObjectId, isPromoting: Boolean) {
     const user = WebSession.getUser(session);
+    console.log("promoting", member);
     const org = new ObjectId(orgId);
     const memberId = new ObjectId(member);
     await Team.isTeamMember(org, memberId);

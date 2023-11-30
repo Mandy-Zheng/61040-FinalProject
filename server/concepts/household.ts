@@ -63,7 +63,7 @@ export default class HouseholdConcept {
   async addMember(_id: ObjectId, member: ObjectId) {
     const household = await this.getProfileById(_id);
     household.members.forEach((id) => {
-      if (id.equals(member)) throw new BadValuesError("Member of household already exists!");
+      if (id.toString() === member.toString()) throw new BadValuesError("Member of household already exists!");
     });
     const newMembers = new Array<ObjectId>();
     household.members.forEach((id) => {
@@ -77,7 +77,7 @@ export default class HouseholdConcept {
     const household = await this.getProfileById(_id);
     const idxList = new Array<number>();
     household.members.forEach((id, idx) => {
-      if (id.equals(member)) idxList.push(idx);
+      if (id.toString() === member.toString()) idxList.push(idx);
     });
     const newMembers = new Array<ObjectId>();
     household.members.forEach((id) => {
