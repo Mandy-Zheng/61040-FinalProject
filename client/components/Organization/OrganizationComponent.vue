@@ -37,6 +37,8 @@ async function updateOrgName() {
   const body = { orgId: props.orgId, orgName: orgName.value };
   try {
     await fetchy("/api/organization", "PATCH", { body: body });
+    organization.value = await fetchy(`/api/organization/${props.orgId}`, "GET");
+    orgName.value = organization.value.name;
   } catch (_) {
     return;
   }
