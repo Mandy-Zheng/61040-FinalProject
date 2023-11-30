@@ -12,7 +12,9 @@ export const useOrganizationStore = defineStore(
     const getOrganizations = async () => {
       try {
         const orgs = await fetchy(`/api/organization`, "GET");
-        allOrgs.value = orgs;
+        allOrgs.value = orgs.map((org) => {
+          return { id: org.id, name: org.name };
+        });
       } catch (error) {
         return;
       }

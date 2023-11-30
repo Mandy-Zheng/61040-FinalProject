@@ -111,6 +111,7 @@ class Routes {
   async addMembersToOrganization(session: WebSessionDoc, orgId: ObjectId, newMembers: Array<string>) {
     const user = WebSession.getUser(session);
     const memberIds = newMembers.map((member) => new ObjectId(member));
+    console.log(memberIds);
     await Promise.all(memberIds.map((member) => Team.addUserAsMember(orgId, member, user)));
     await Promise.all(memberIds.map((member) => Membership.addMembership(member, orgId)));
     return { msg: "Successfully Added Members To Organization!" };
@@ -143,10 +144,10 @@ class Routes {
     const { admins, members } = await Team.get(orgId);
     const allMembers = members.concat(admins);
     console.log(allMembers);
-    allMembers.forEach(async member => {
+    allMembers.forEach(async (member) => {
       await Membership.removeMembership(member, orgId);
     });
-    console.log('Hi');
+    console.log("Hi");
     return Team.delete(orgId, user);
   }
 

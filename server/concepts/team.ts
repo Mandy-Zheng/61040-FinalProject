@@ -82,6 +82,7 @@ export default class TeamConcept {
 
   async addUserAsMember(_id: ObjectId, member: ObjectId, editor: ObjectId) {
     const oldTeam = await this.isAdmin(_id, editor);
+    console.log(oldTeam);
     const members = oldTeam.members.filter((user) => !user.equals(member));
     const admins = oldTeam.admins.filter((user) => !user.equals(member));
     members.push(member);
