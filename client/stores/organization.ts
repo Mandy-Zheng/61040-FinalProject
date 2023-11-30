@@ -57,10 +57,10 @@ export const useOrganizationStore = defineStore(
       }
     };
 
-    const leaveOrganization = async (orgId: any, member: any) => {
+    const leaveOrganization = async (orgId: any) => {
       try {
-        const body = { orgId: orgId, member: member };
-        await fetchy("/api/organization/removeMember", "PATCH", { body: body });
+        const body = { orgId: orgId };
+        await fetchy("/api/organization/leaveOrganization", "PATCH", { body: body });
         await getOrganizations();
       } catch (_) {
         return;

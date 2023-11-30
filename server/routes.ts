@@ -134,14 +134,24 @@ class Routes {
     }
   }
 
+  @Router.patch("/organization/leaveOrganization")
+  async leaveOrganization(session: WebSessionDoc, orgId: ObjectId) {
+    const user = WebSession.getUser(session);
+    const id = new ObjectId(orgId);
+    const msg = await Team.removeUsersFromTeam(id, [user], user);
+    await Membership.removeMembership(user, id);
+    return msg;
+    //todo decide what to do if all admins leave?
+  }
+
   @Router.patch("/organization/removeMember")
   async removeUserFromOrganization(session: WebSessionDoc, orgId: ObjectId, member: ObjectId) {
     const user = WebSession.getUser(session);
     const id = new ObjectId(orgId);
-    const memberIds = new ObjectId(member);
-    console.log("removing Member", memberIds);
-    const msg = await Team.removeUsersFromTeam(id, [memberIds], user);
-    await Membership.removeMembership(memberIds, id);
+    const memberId = new ObjectId(member);
+    console.log("removing Member", memberId);
+    const msg = await Team.removeUsersFromTeam(id, [memberId], user);
+    await Membership.removeMembership(memberId, id);
     return msg;
     //todo decide what to do if all admins leave?
   }

@@ -66,8 +66,7 @@ async function deleteOrg() {
 
 async function leaveOrg() {
   try {
-    const user = await fetchy(`/api/users/${currentUsername.value}`, "GET");
-    await leaveOrganization(props.orgId, user._id);
+    await leaveOrganization(props.orgId);
   } catch (_) {
     return;
   }
