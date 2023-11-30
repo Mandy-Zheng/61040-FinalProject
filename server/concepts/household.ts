@@ -57,7 +57,7 @@ export default class HouseholdConcept {
 
   async updateMembers(_id: ObjectId, members: Array<ObjectId>) {
     await this.getProfileById(_id);
-    this.households.updateOne({_id},{members:members});
+    await this.households.updateOne({_id},{members:members});
   }
 
   async addMember(_id: ObjectId, member: ObjectId) {
@@ -70,7 +70,7 @@ export default class HouseholdConcept {
       newMembers.push(id);
     });
     newMembers.push(member);
-    this.households.updateOne({_id},{members:newMembers});
+    await this.households.updateOne({_id},{members:newMembers});
   }
 
   async removeMember(_id: ObjectId, member: ObjectId) {
@@ -84,7 +84,7 @@ export default class HouseholdConcept {
       newMembers.push(id);
     });
     for (let i = idxList.length - 1; i >= 0; i--) newMembers.splice(idxList[i], 1);
-    this.households.updateOne({_id},{members:newMembers});
+    await this.households.updateOne({_id},{members:newMembers});
   }
 
   async addVisit(_id: ObjectId) {
@@ -94,12 +94,12 @@ export default class HouseholdConcept {
       newVisits.push(id);
     });
     newVisits.push(new Date());
-    this.households.updateOne({_id},{pastVisits:newVisits});
+    await this.households.updateOne({_id},{pastVisits:newVisits});
   }
 
   async resetVisits(_id: ObjectId) {
     await this.getProfileById(_id);
-    this.households.updateOne({_id},{pastVisits:new Array<Date>});
+    await this.households.updateOne({_id},{pastVisits:new Array<Date>});
   }
 
   async countVisits(_id: ObjectId) {
@@ -109,12 +109,12 @@ export default class HouseholdConcept {
 
   async updateLanguage(_id: ObjectId, lang: Language) {
     await this.getProfileById(_id);
-    this.households.updateOne({_id},{preferredLanguage:lang});
+    await this.households.updateOne({_id},{preferredLanguage:lang});
   }
 
   async updateRequests(_id: ObjectId, req: string) {
     await this.getProfileById(_id);
-    this.households.updateOne({_id},{specialRequests:req});
+    await this.households.updateOne({_id},{specialRequests:req});
   }
 
   async addDietaryRestriction(_id: ObjectId, diet: DietaryRestrictions) {
@@ -127,7 +127,7 @@ export default class HouseholdConcept {
       newRestrictions.push(id);
     });
     newRestrictions.push(diet);
-    this.households.updateOne({_id},{dietaryRestrictions:newRestrictions});
+    await this.households.updateOne({_id},{dietaryRestrictions:newRestrictions});
   }
 
   async removeDietaryRestriction(_id: ObjectId, diet: DietaryRestrictions) {
@@ -141,12 +141,12 @@ export default class HouseholdConcept {
       newRestrictions.push(id);
     });
     for (let i = idxList.length - 1; i >= 0; i--) newRestrictions.splice(idxList[i], 1);
-    this.households.updateOne({_id},{dietaryRestrictions:newRestrictions});
+    await this.households.updateOne({_id},{dietaryRestrictions:newRestrictions});
   }
 
   async updateDietaryRestrictions(_id: ObjectId, diets: Array<DietaryRestrictions>) {
     await this.getProfileById(_id);
-    this.households.updateOne({_id},{dietaryRestrictions:diets});
+    await this.households.updateOne({_id},{dietaryRestrictions:diets});
   }
 
   async update(_id: ObjectId, update: Partial<HouseholdDoc>) {
