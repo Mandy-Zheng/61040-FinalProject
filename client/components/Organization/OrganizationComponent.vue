@@ -8,13 +8,10 @@ import { useUserStore } from "@/stores/user";
 import { fetchy } from "@/utils/fetchy";
 import { storeToRefs } from "pinia";
 import { onBeforeMount, ref } from "vue";
-import { useRouter } from "vue-router";
 
-const router = useRouter();
 const { currentUsername } = storeToRefs(useUserStore());
-const { updateOrganizationName, deleteOrganization } = useOrganizationStore();
+const { updateOrganizationName, deleteOrganization, leaveOrganization } = useOrganizationStore();
 const props = defineProps(["orgId"]);
-const emit = defineEmits(["refreshDelete"]);
 const showAddModal = ref<boolean>(false);
 const showManageModal = ref<boolean>(false);
 const showDeleteModal = ref<boolean>(false);
@@ -22,6 +19,7 @@ const showLeaveModal = ref<boolean>(false);
 const organization = ref<any>(undefined);
 const isEditingName = ref<boolean>(false);
 const orgName = ref<string>("");
+
 async function addMembers(members: any) {
   const body = { orgId: props.orgId, newMembers: members };
   showAddModal.value = false;
@@ -37,6 +35,7 @@ async function updateOrgName() {
   await updateOrganizationName({ orgId: props.orgId, orgName: orgName.value });
   isEditingName.value = false;
 }
+
 async function manageMember(member: any, action: any) {
   showManageModal.value = false;
   if (action === "remove") {
@@ -64,13 +63,11 @@ async function manageMember(member: any, action: any) {
 async function deleteOrg() {
   await deleteOrganization(props.orgId);
 }
+
 async function leaveOrg() {
   try {
-    const id = await fetchy(`/api/users/${currentUsername.value}`, "GET");
-    const body = { orgId: props.orgId, member: id._id };
-    await fetchy("/api/organization/removeMember", "PATCH", { body: body });
-    organization.value = await fetchy(`/api/organization/${props.orgId}`, "GET");
-    emit("refreshDelete");
+    const user = await fetchy(`/api/users/${currentUsername.value}`, "GET");
+    await leaveOrganization(props.orgId, user._id);
   } catch (_) {
     return;
   }
@@ -83,7 +80,7 @@ onBeforeMount(async () => {
   } catch (error) {
     return;
   }
-  console.log(organization.admins);
+  console.log(organization.value.admins);
 });
 </script>
 
@@ -105,7 +102,7 @@ onBeforeMount(async () => {
         <DeleteOrganizationComponent :show="showDeleteModal" :organization="organization" @close="showDeleteModal = false" @delete="deleteOrg(), (showDeleteModal = false)" />
       </teleport>
     </div>
-    <div v-if="!organization.admins.includes(currentUsername)||(organization.admins.includes(currentUsername)&&organization.admins.length>1)">
+    <div v-if="!organization.admins.includes(currentUsername) || (organization.admins.includes(currentUsername) && organization.admins.length > 1)">
       <button class="button-39 red" @click.prevent="showLeaveModal = true">Leave Org</button>
       <teleport to="body">
         <LeaveOrganizationComponent :show="showLeaveModal" :organization="organization" @close="showLeaveModal = false" @leave="leaveOrg(), (showLeaveModal = false)" />
