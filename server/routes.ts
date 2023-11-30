@@ -106,7 +106,7 @@ class Routes {
     if (!orgName) {
       throw new BadValuesError("Missing Organization Name");
     }
-    return await Team.updateName(orgId, orgName, user);
+    return await Team.updateName(org, orgName, user);
   }
 
   @Router.patch("/organization/addMember")
