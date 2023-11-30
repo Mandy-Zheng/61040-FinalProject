@@ -2,10 +2,10 @@
 
 <template>
   <main>
-    <div class="background">
-      <img src="../assets/images/vegetables.png" />
-    </div>
-    <div class="left">
+    <div class="cover">
+      <div class="background">
+        <img src="../assets/images/vegetables.png" />
+      </div>
       <h1 class="title">Cornucopia</h1>
       <button class="button-39">
         <a href="#info">Learn More</a>
@@ -54,10 +54,9 @@ h1 {
   font-weight: 400;
 }
 
-.left {
-  display: flex;
-  justify-content: flex-start;
+.cover {
   text-align: flex-start;
+  display: inline-block;
 }
 
 .info {
