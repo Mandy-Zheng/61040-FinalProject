@@ -27,7 +27,7 @@ export default class MembershipConcept {
 
   async addMembership(user: ObjectId, organization: ObjectId) {
     const oldOrganizations = await this.get(user);
-    const organizations = oldOrganizations.organizations.filter((org) => !org.equals(organization));
+    const organizations = oldOrganizations.organizations.filter((org) => org.toString() !== organization.toString());
     organizations.push(organization);
     await this.memberships.updateOne({ user }, { organizations });
     return { msg: "Successfully Added Membership!" };
@@ -35,13 +35,13 @@ export default class MembershipConcept {
 
   async hasMembership(user: ObjectId, organization: ObjectId) {
     const membership = await this.get(user);
-    return membership.organizations.some((org) => org.equals(organization));
+    return membership.organizations.some((org) => org.toString() === organization.toString());
   }
 
   async removeMembership(user: ObjectId, orgId: ObjectId) {
     const oldOrganizations = await this.get(user);
     const organization = orgId.toString();
-    const organizations = oldOrganizations.organizations.filter((org) => !org.equals(organization));
+    const organizations = oldOrganizations.organizations.filter((org) => org.toString() !== organization.toString());
     await this.memberships.updateOne({ user }, { organizations });
     return { msg: "Successfully Removed Membership!" };
   }

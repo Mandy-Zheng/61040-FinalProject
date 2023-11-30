@@ -35,9 +35,9 @@ onBeforeMount(async () => {
       <option v-for="org in allOrgs" :key="org.name" :selected="curOrg === org.name" :value="org.name">{{ org.name }}</option>
     </select>
     <p v-else>You are currently not a part of organization</p>
+    <h3>Manage Your Organizations</h3>
     <div v-for="org in allOrgs" :key="org"><OrganizationComponent :orgId="org.id" /></div>
     <RegisterOrganizationForm />
-    <p>Manage Organization</p>
     <section></section>
   </main>
 </template>

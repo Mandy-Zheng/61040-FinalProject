@@ -119,6 +119,7 @@ class Routes {
   @Router.patch("/organization/updateMember")
   async updateMemberStatus(session: WebSessionDoc, orgId: ObjectId, member: ObjectId, isPromoting: Boolean) {
     const user = WebSession.getUser(session);
+    console.log("promoting", member);
     await Team.isTeamMember(orgId, member);
     if (isPromoting) {
       return Team.addUserAsAdmin(orgId, member, user);
@@ -143,10 +144,9 @@ class Routes {
     const { admins, members } = await Team.get(orgId);
     const allMembers = members.concat(admins);
     console.log(allMembers);
-    allMembers.forEach(async member => {
+    allMembers.forEach(async (member) => {
       await Membership.removeMembership(member, orgId);
     });
-    console.log('Hi');
     return Team.delete(orgId, user);
   }
 

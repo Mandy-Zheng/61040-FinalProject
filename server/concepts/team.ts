@@ -42,7 +42,7 @@ export default class TeamConcept {
     if (!team) {
       throw new NotFoundError("Team Not Found");
     }
-    if (!team.admins.some((member) => member.equals(editor))) {
+    if (!team.admins.some((member) => member.toString() === editor.toString())) {
       throw new NotAllowedError("Non Admins Cannot Edit Team");
     }
     return team;
@@ -53,7 +53,7 @@ export default class TeamConcept {
     if (!team) {
       throw new NotFoundError("Team Not Found");
     }
-    if (!team.admins.some((member) => member.equals(user)) || team.members.some((member) => member.equals(user))) {
+    if (!(team.admins.some((member) => member.toString() === user.toString()) || team.members.some((member) => member.toString() === user.toString()))) {
       throw new NotAllowedError(`${user} is not a member of organization ${_id}!`);
     }
   }
@@ -66,13 +66,13 @@ export default class TeamConcept {
 
   async removeUserFromTeam(_id: ObjectId, member: ObjectId, editor: ObjectId) {
     let oldTeam;
-    if (member.equals(editor)) {
+    if (member.toString() === editor.toString()) {
       oldTeam = await this.get(_id);
     } else {
       oldTeam = await this.isAdmin(_id, editor);
     }
-    const members = oldTeam.members.filter((user) => !user.equals(member));
-    const admins = oldTeam.admins.filter((user) => !user.equals(member));
+    const members = oldTeam.members.filter((user) => user.toString() !== member.toString());
+    const admins = oldTeam.admins.filter((user) => user.toString() !== member.toString());
     if (admins.length === 0) {
       throw new NotAllowedError("Organization must have at least one admin");
     }
@@ -82,8 +82,8 @@ export default class TeamConcept {
 
   async addUserAsMember(_id: ObjectId, member: ObjectId, editor: ObjectId) {
     const oldTeam = await this.isAdmin(_id, editor);
-    const members = oldTeam.members.filter((user) => !user.equals(member));
-    const admins = oldTeam.admins.filter((user) => !user.equals(member));
+    const members = oldTeam.members.filter((user) => user.toString() !== member.toString());
+    const admins = oldTeam.admins.filter((user) => user.toString() !== member.toString());
     members.push(member);
     await this.teams.updateOne({ _id }, { members, admins });
     return { msg: "Successfully Added New Member to Team!" };
@@ -91,8 +91,8 @@ export default class TeamConcept {
 
   async addUserAsAdmin(_id: ObjectId, member: ObjectId, editor: ObjectId) {
     const oldTeam = await this.isAdmin(_id, editor);
-    const members = oldTeam.members.filter((user) => !user.equals(member));
-    const admins = oldTeam.admins.filter((user) => !user.equals(member));
+    const members = oldTeam.members.filter((user) => user.toString() !== member.toString());
+    const admins = oldTeam.admins.filter((user) => user.toString() !== member.toString());
     admins.push(member);
     await this.teams.updateOne({ _id }, { members, admins });
     return { msg: "Successfully Added New Admin to Team!" };

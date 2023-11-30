@@ -1,17 +1,27 @@
 <script setup lang="ts">
+import { useOrganizationStore } from "@/stores/organization";
+import { useUserStore } from "@/stores/user";
+
 import { fetchy } from "@/utils/fetchy";
-import Multiselect from "@vueform/multiselect";
+import { storeToRefs } from "pinia";
 import { computed, onBeforeMount, ref } from "vue";
+
+const { currentUsername } = storeToRefs(useUserStore());
+const { getOrganizations } = useOrganizationStore();
 
 const props = defineProps(["show", "organization"]);
 const allUsers = ref<Array<{ label: string; value: string }>>([]);
-const admins: Set<string> = new Set(props.organization.admins);
-const members: Set<string> = new Set(props.organization.members);
-const emit = defineEmits(["close", "add"]);
-const usersToAdd = ref<Array<string>>([]);
-const nonTeamMembers = computed(() => {
-  return allUsers.value.filter((user) => !admins.has(user.label) && !members.has(user.label));
+
+const adminsAndMembers = computed(() => {
+  return props.organization.admins.concat(props.organization.members).filter((u: string) => u !== currentUsername.value);
 });
+const emit = defineEmits(["close", "manage"]);
+const currMember = ref<string>("");
+const currAction = ref<string>("");
+
+async function changeMember() {
+  currAction.value = "";
+}
 
 onBeforeMount(async () => {
   try {
@@ -30,13 +40,24 @@ onBeforeMount(async () => {
     <div v-if="show" class="modal-mask">
       <div class="modal-container">
         <div class="modal-header">Settings for {{ props.organization.name }}</div>
-        Add Members: {{ organization }} {{ nonTeamMembers }}
-
-        <Multiselect class="multiselect" v-model="usersToAdd" mode="tags" :options="nonTeamMembers" :searchable="true" required />
-
+        Choose member: {{ organization }} {{ adminsAndMembers }}
+        <select v-if="adminsAndMembers.length !== 0" v-model="currMember" @change="changeMember">
+          <option value="" :selected="currMember === ''" disabled>--select a member--</option>
+          <option v-for="u in adminsAndMembers" :key="u" :selected="currMember === u" :value="u">{{ u }}</option>
+        </select>
+        <div v-else>No members yet!</div>
+        <div v-if="currMember !== ''">
+          Action:
+          <select v-model="currAction">
+            <option value="" :selected="currAction === ''" disabled>--select an action--</option>
+            <option value="demote" v-if="organization.admins.includes(currMember)">demote to volunteer</option>
+            <option value="promote" v-else-if="organization.members.includes(currMember)">promote to admin</option>
+            <option value="remove">remove member</option>
+          </select>
+        </div>
         <div class="modal-footer">
           <button class="button-39" @click="emit('close')">Close</button>
-          <button class="button-39" @click="emit('add', usersToAdd)">Add Members</button>
+          <button class="button-39" @click="emit('manage', currMember, currAction)">Update</button>
         </div>
       </div>
     </div>
