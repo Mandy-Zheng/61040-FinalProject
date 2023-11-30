@@ -10,8 +10,9 @@ import { storeToRefs } from "pinia";
 import { onBeforeMount, ref } from "vue";
 
 const { currentUsername } = storeToRefs(useUserStore());
-const { updateOrganizationName, deleteOrganization, leaveOrganization } = useOrganizationStore();
+const { deleteOrganization, leaveOrganization } = useOrganizationStore();
 const props = defineProps(["orgId"]);
+const emit = defineEmits(["updateName"]);
 const showAddModal = ref<boolean>(false);
 const showManageModal = ref<boolean>(false);
 const showDeleteModal = ref<boolean>(false);
@@ -32,8 +33,14 @@ async function addMembers(members: any) {
 }
 
 async function updateOrgName() {
-  await updateOrganizationName({ orgId: props.orgId, orgName: orgName.value });
   isEditingName.value = false;
+  const body = { orgId: props.orgId, orgName: orgName.value };
+  try {
+    await fetchy("/api/organization", "PATCH", { body: body });
+  } catch (_) {
+    return;
+  }
+  emit("updateName");
 }
 
 async function manageMember(member: any, action: any) {
@@ -85,11 +92,11 @@ onBeforeMount(async () => {
 <template>
   <div class="org" v-if="organization">
     <div v-if="organization.admins.includes(currentUsername)">
-      <h4 v-if="!isEditingName">{{ organization.name }} <button class="button-39" @click="isEditingName = true">Edit Name</button></h4>
+      <h4 v-if="!isEditingName">{{ orgName }} <button class="button-39" @click="isEditingName = true">Edit Name</button></h4>
       <div v-else><input v-model.trim="orgName" /> <button class="button-39" @click="updateOrgName">Submit</button></div>
     </div>
     <div v-else>
-      <h4>{{ organization.name }}</h4>
+      <h4>{{ orgName }}</h4>
     </div>
 
     <p>Admins</p>

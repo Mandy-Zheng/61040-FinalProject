@@ -92,10 +92,8 @@ class Routes {
     const user = WebSession.getUser(session);
     const { organizations } = await Membership.get(user);
     const allOrgs = await Promise.all(organizations.map((id) => Team.get(id)));
-    const allAdmins = await Promise.all(allOrgs.map((org) => User.idsToUsernames(org.admins)));
-    const allMembers = await Promise.all(allOrgs.map((org) => User.idsToUsernames(org.members)));
-    return allOrgs.map((org, idx) => {
-      return { id: org._id, name: org.name, admins: allAdmins[idx], members: allMembers[idx] };
+    return allOrgs.map((org) => {
+      return { id: org._id, name: org.name };
     });
   }
 
@@ -117,6 +115,7 @@ class Routes {
     const memberIds = newMembers.map((member) => new ObjectId(member));
     console.log("adding members", memberIds);
     await Team.addUsersAsMembers(org, memberIds, user);
+    console.log("hello");
     await Promise.all(memberIds.map((member) => Membership.addMembership(member, org)));
     return { msg: "Successfully Added Members To Organization!" };
   }
