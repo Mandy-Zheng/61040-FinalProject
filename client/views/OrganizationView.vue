@@ -4,25 +4,36 @@ import RegisterOrganizationForm from "@/components/Organization/RegisterOrganiza
 import { useOrganizationStore } from "@/stores/organization";
 import { fetchy } from "@/utils/fetchy";
 import { storeToRefs } from "pinia";
-import { computed, onBeforeMount, ref } from "vue";
+import { onBeforeMount, ref } from "vue";
 
-const { allOrgs, selectedOrg } = storeToRefs(useOrganizationStore());
-const { getOrganizations, setOrganization } = useOrganizationStore();
+const { selectedOrg } = storeToRefs(useOrganizationStore());
+const { setOrganization } = useOrganizationStore();
 const orgWithNames = ref<Array<any>>([]);
-const allOrgsComputed = computed(() => allOrgs.value.map((org: any) => org));
+const allOrgs = ref<Array<string>>([]);
 // const curOrg = ref<string>(selectedOrg.value !== undefined ? allOrgNames.value[selectedOrg.value] : "");
-const curOrg = ref<string>(selectedOrg.value !== undefined ? allOrgs.value[selectedOrg.value].id : "");
+const curOrg = ref<string | undefined>(selectedOrg.value?.id);
 
 async function changeOrganization() {
-  if (curOrg.value !== "") {
-    await setOrganization(curOrg.value);
+  if (curOrg.value) {
+    const selected = orgWithNames.value.filter((org) => org.id === curOrg.value);
+    if (selected) {
+      await setOrganization(selected[0]);
+    }
     console.log(selectedOrg.value);
   }
 }
 
+async function leavingOrganizations() {
+  curOrg.value = "";
+  await getUserOrganizations();
+}
+
 async function getUserOrganizations() {
   try {
+    console.log("hi");
     orgWithNames.value = await fetchy(`/api/organization`, "GET");
+    allOrgs.value = orgWithNames.value.map((org) => org.id);
+    console.log(orgWithNames);
   } catch (_) {
     return;
   }
@@ -30,7 +41,6 @@ async function getUserOrganizations() {
 
 onBeforeMount(async () => {
   try {
-    await getOrganizations();
     await getUserOrganizations();
   } catch {
     return;
@@ -45,12 +55,12 @@ onBeforeMount(async () => {
     <!-- <Multiselect class="multiselect" v-model="selected" :options="allOrgNames" :searchable="true" required /> -->
     <select v-if="allOrgs.length !== 0" v-model="curOrg" @change="changeOrganization">
       <option value="" :selected="curOrg === ''" disabled>--Select an Organization--</option>
-      <option v-for="org in orgWithNames" :key="org" :selected="curOrg === org" :value="org.id">{{ org.name }}</option>
+      <option v-for="org in orgWithNames" :key="org" :selected="curOrg === org.id" :value="org.id">{{ org.name }}</option>
     </select>
     <p v-else>You are currently not a part of organization</p>
     <h3>Manage Your Organizations</h3>
-    <div v-for="org in allOrgsComputed" :key="org"><OrganizationComponent :orgId="org.id" @updateName="getUserOrganizations" /></div>
-    <RegisterOrganizationForm />
+    <div v-for="org in allOrgs" :key="org"><OrganizationComponent :orgId="org" @leaveOrg="leavingOrganizations" @updateName="getUserOrganizations" /></div>
+    <RegisterOrganizationForm @addOrg="getUserOrganizations" />
     <section></section>
   </main>
 </template>

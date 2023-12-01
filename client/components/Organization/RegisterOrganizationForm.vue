@@ -1,13 +1,19 @@
 <script setup lang="ts">
-import { useOrganizationStore } from "@/stores/organization";
+import { fetchy } from "@/utils/fetchy";
 import { ref } from "vue";
-const { createOrganization } = useOrganizationStore();
-
+// const { createOrganization } = useOrganizationStore();
+const emit = defineEmits(["addOrg"]);
 const orgName = ref<string>("");
 async function register() {
-  const body = { name: orgName.value };
-  await createOrganization(body);
-  orgName.value = "";
+  try {
+    const body = { name: orgName.value };
+    //await createOrganization(body);
+    await fetchy("/api/organization", "POST", { body: body });
+    orgName.value = "";
+    emit("addOrg");
+  } catch (_) {
+    return;
+  }
 }
 </script>
 

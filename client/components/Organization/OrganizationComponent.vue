@@ -10,9 +10,10 @@ import { storeToRefs } from "pinia";
 import { onBeforeMount, ref } from "vue";
 
 const { currentUsername } = storeToRefs(useUserStore());
-const { deleteOrganization, leaveOrganization } = useOrganizationStore();
+const { setOrganization } = useOrganizationStore();
+const { selectedOrg } = storeToRefs(useOrganizationStore());
 const props = defineProps(["orgId"]);
-const emit = defineEmits(["updateName"]);
+const emit = defineEmits(["updateName", "leaveOrg"]);
 const showAddModal = ref<boolean>(false);
 const showManageModal = ref<boolean>(false);
 const showDeleteModal = ref<boolean>(false);
@@ -34,15 +35,18 @@ async function addMembers(members: any) {
 
 async function updateOrgName() {
   isEditingName.value = false;
-  const body = { orgId: props.orgId, orgName: orgName.value };
   try {
+    const body = { orgId: props.orgId, orgName: orgName.value };
     await fetchy("/api/organization", "PATCH", { body: body });
     organization.value = await fetchy(`/api/organization/${props.orgId}`, "GET");
     orgName.value = organization.value.name;
+    if (selectedOrg.value && selectedOrg.value.id === props.orgId) {
+      await setOrganization({ id: props.orgId, name: orgName.value });
+    }
+    emit("updateName");
   } catch (_) {
     return;
   }
-  emit("updateName");
 }
 
 async function manageMember(member: any, action: any) {
@@ -70,12 +74,19 @@ async function manageMember(member: any, action: any) {
 }
 
 async function deleteOrg() {
-  await deleteOrganization(props.orgId);
+  try {
+    await fetchy(`/api/organization/${props.orgId}`, "DELETE");
+    emit("leaveOrg");
+  } catch (_) {
+    return;
+  }
 }
 
 async function leaveOrg() {
   try {
-    await leaveOrganization(props.orgId);
+    const body = { orgId: props.orgId };
+    await fetchy("/api/organization/leaveOrganization", "PATCH", { body: body });
+    emit("leaveOrg");
   } catch (_) {
     return;
   }
