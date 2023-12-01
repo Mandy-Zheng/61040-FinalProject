@@ -30,7 +30,7 @@ onBeforeMount(async () => {
       <div class="title">
         <img src="@/assets/images/logo.jpg" />
         <RouterLink :to="{ name: 'Home' }">
-          <h1>{{ selectedOrg ? selectedOrg.name : "" }}</h1>
+          <h1 v-if="isLoggedIn">{{ selectedOrg ? selectedOrg.name : "" }}</h1>
         </RouterLink>
       </div>
       <ul>
