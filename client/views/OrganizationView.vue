@@ -50,7 +50,7 @@ onBeforeMount(async () => {
     <h3>Current Selected Organization</h3>
     <!-- <Multiselect class="multiselect" v-model="selected" :options="allOrgNames" :searchable="true" required /> -->
     <select v-if="allOrgs.length !== 0" v-model="curOrg" @change="changeOrganization">
-      <option value="" :selected="curOrg === ''" disabled>--Select an Organization--</option>
+      <option :value="undefined" :selected="curOrg === undefined" disabled>--Select an Organization--</option>
       <option v-for="org in orgWithNames" :key="org" :selected="curOrg === org.id" :value="org.id">{{ org.name }}</option>
     </select>
     <p v-else>You are currently not a part of organization</p>
