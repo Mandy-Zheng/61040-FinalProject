@@ -24,7 +24,10 @@
 h1 {
   text-align: center;
 }
-
+img {
+  height: auto;
+  width: 100%;
+}
 .background {
   display: flex;
   justify-content: center;
