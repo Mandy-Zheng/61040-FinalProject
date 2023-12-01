@@ -21,8 +21,11 @@ async function changeOrganization() {
   }
 }
 
-async function leavingOrganizations() {
-  curOrg.value = "";
+async function leavingOrganizations(org: any) {
+  if (org === curOrg.value) {
+    curOrg.value = "";
+    selectedOrg.value = undefined;
+  }
   await getUserOrganizations();
 }
 
