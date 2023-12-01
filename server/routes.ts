@@ -49,9 +49,16 @@ class Routes {
     WebSession.end(session);
     const msg = await User.delete(user);
     const { organizations } = await Membership.get(user);
-    await Promise.all(organizations.map((orgId) => Team.removeUsersFromTeam(orgId, [user], user)));
+    for (const orgId of organizations) {
+      const oldTeam = await Team.get(orgId);
+      if (oldTeam.admins.length === 1 && oldTeam.admins[0].toString() === user.toString()) {
+        await Team.delete(orgId, user);
+        await Promise.all(oldTeam.members.map((member) => Membership.removeMembership(member, orgId)));
+      } else {
+        await Team.removeUsersFromTeam(orgId, [user], user);
+      }
+    }
     await Membership.deleteUserMembership(user);
-    //Todo --> shifts
     return msg;
   }
 
@@ -134,10 +141,8 @@ class Routes {
   async leaveOrganization(session: WebSessionDoc, orgId: ObjectId) {
     const user = WebSession.getUser(session);
     const id = new ObjectId(orgId);
-    const msg = await Team.removeUsersFromTeam(id, [user], user);
     await Membership.removeMembership(user, id);
-    return msg;
-    //todo decide what to do if all admins leave?
+    return { msg: "Successfully Removed User From Team" };
   }
 
   @Router.patch("/organization/removeMember")
@@ -148,7 +153,6 @@ class Routes {
     const msg = await Team.removeUsersFromTeam(id, [memberId], user);
     await Membership.removeMembership(memberId, id);
     return msg;
-    //todo decide what to do if all admins leave?
   }
 
   @Router.delete("/organization/:orgId")
