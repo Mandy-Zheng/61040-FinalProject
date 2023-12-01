@@ -62,6 +62,7 @@ onBeforeMount(async () => {
 
 <style scoped>
 @import "./assets/toast.css";
+@import url("https://fonts.googleapis.com/css2?family=Exo+2&display=swap");
 
 nav {
   padding: 0.5em 2em;
@@ -72,8 +73,8 @@ nav {
 
 h1 {
   font-size: 1.5em;
-  font-family: "Inter", sans-serif;
-  font-weight: 500;
+  font-family: "Exo 2", sans-serif;
+  font-weight: 600;
   margin: 0;
   color: var(--primary);
 }
@@ -81,7 +82,7 @@ h1 {
 .title {
   display: flex;
   align-items: center;
-  gap: 3em;
+  gap: 2em;
 }
 
 img {
