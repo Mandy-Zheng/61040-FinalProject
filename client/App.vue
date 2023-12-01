@@ -30,7 +30,7 @@ onBeforeMount(async () => {
       <div class="title">
         <img src="@/assets/images/logo.jpg" />
         <RouterLink :to="{ name: 'Home' }">
-          <h1></h1>
+          <h1>{{ selectedOrg ? selectedOrg.name : "" }}</h1>
         </RouterLink>
       </div>
       <ul>
@@ -71,14 +71,17 @@ nav {
 }
 
 h1 {
-  font-size: 2em;
+  font-size: 1.5em;
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
   margin: 0;
+  color: var(--primary);
 }
 
 .title {
   display: flex;
   align-items: center;
-  gap: 0.5em;
+  gap: 3em;
 }
 
 img {
