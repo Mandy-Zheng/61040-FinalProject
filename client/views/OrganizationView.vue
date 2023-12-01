@@ -10,7 +10,6 @@ const { selectedOrg } = storeToRefs(useOrganizationStore());
 const { setOrganization } = useOrganizationStore();
 const orgWithNames = ref<Array<any>>([]);
 const allOrgs = ref<Array<string>>([]);
-// const curOrg = ref<string>(selectedOrg.value !== undefined ? allOrgNames.value[selectedOrg.value] : "");
 const curOrg = ref<string | undefined>(selectedOrg.value?.id);
 
 async function changeOrganization() {
@@ -19,7 +18,6 @@ async function changeOrganization() {
     if (selected) {
       await setOrganization(selected[0]);
     }
-    console.log(selectedOrg.value);
   }
 }
 
@@ -30,10 +28,8 @@ async function leavingOrganizations() {
 
 async function getUserOrganizations() {
   try {
-    console.log("hi");
     orgWithNames.value = await fetchy(`/api/organization`, "GET");
     allOrgs.value = orgWithNames.value.map((org) => org.id);
-    console.log(orgWithNames);
   } catch (_) {
     return;
   }
