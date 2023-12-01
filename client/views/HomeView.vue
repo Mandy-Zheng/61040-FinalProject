@@ -59,7 +59,7 @@ img {
 
 .cover {
   text-align: flex-start;
-  display: inline-block;
+  display: block;
 }
 
 .info {
