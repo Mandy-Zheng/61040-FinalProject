@@ -76,7 +76,7 @@ async function manageMember(member: any, action: any) {
 async function deleteOrg() {
   try {
     await fetchy(`/api/organization/${props.orgId}`, "DELETE");
-    emit("leaveOrg");
+    emit("leaveOrg", organization.value.id);
   } catch (_) {
     return;
   }
@@ -86,7 +86,7 @@ async function leaveOrg() {
   try {
     const body = { orgId: props.orgId };
     await fetchy("/api/organization/leaveOrganization", "PATCH", { body: body });
-    emit("leaveOrg");
+    emit("leaveOrg", organization.value.id);
   } catch (_) {
     return;
   }

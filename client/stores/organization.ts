@@ -12,7 +12,6 @@ export const useOrganizationStore = defineStore(
 
     return {
       selectedOrg,
-
       setOrganization,
     };
   },
