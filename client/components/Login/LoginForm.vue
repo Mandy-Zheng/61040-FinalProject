@@ -10,7 +10,7 @@ const { loginUser, updateSession } = useUserStore();
 const { setOrganization } = useOrganizationStore();
 async function login() {
   await loginUser(username.value, password.value);
-  await setOrganization(""); // reset organization each login to force user selection
+  await setOrganization(undefined); // reset organization each login to force user selection
   await void updateSession();
   void router.push({ name: "Home" });
 }
