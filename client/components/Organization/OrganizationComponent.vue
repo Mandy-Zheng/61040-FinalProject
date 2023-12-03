@@ -166,8 +166,11 @@ onBeforeMount(async () => {
 
 <style scoped>
 .org {
-  background: linear-gradient(90deg, rgba(255, 140, 84, 0.5) 100%, rgba(255, 194, 0, 0.5) 100%);
-  border-radius: 8px;
+  /* background: linear-gradient(90deg, rgba(255, 140, 84, 0.5) 100%, rgba(255, 194, 0, 0.5) 100%); */
+  background-color: #fff;
+  border: solid;
+  border-width: 1.5px;
+  border-color: rgb(186, 185, 185);
   padding: 1em 1em;
   width: 24em;
   height: 15em;
