@@ -1,6 +1,7 @@
 import { Team, User } from "./app";
 import { AlreadyFriendsError, FriendNotFoundError, FriendRequestAlreadyExistsError, FriendRequestDoc, FriendRequestNotFoundError } from "./concepts/friend";
 import { PostAuthorNotMatchError, PostDoc } from "./concepts/post";
+import { ShiftDoc } from "./concepts/shift";
 import { StockDoc } from "./concepts/stock";
 import { Router } from "./framework/router";
 
@@ -45,6 +46,31 @@ export default class Responses {
   static async stocks(stocks: StockDoc[]) {
     const owners = await Team.idsToNames(stocks.map((s) => s.owner));
     return stocks.map((stock, i) => ({ ...stock, owner: owners[i] }));
+  }
+
+  /**
+   * Convert ShiftDoc into more readable format for the frontend by converting the org id into a name
+   * and volunteer IDs into usernames.
+   */
+  static async shift(shift: ShiftDoc | null) {
+    if (!shift) {
+      return shift;
+    }
+    const owner = await Team.get(shift.owner);
+    const volunteers = await User.idsToUsernames(shift.volunteers);
+    return { ...shift, owner: owner.name, volunteers: volunteers };
+  }
+
+  /**
+   * Same as {@link shift} but for an array of ShiftDoc.
+   */
+  static async shifts(shifts: ShiftDoc[]) {
+    const result = [];
+    for (const s of shifts) {
+      const shiftResp = await Responses.shift(s);
+      result.push(shiftResp);
+    }
+    return result;
   }
 
   /**

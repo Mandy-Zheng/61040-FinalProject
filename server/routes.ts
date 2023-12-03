@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 
 import { Router, getExpressRouter } from "./framework/router";
 
-import { Household, Membership, Patron, Stock, Team, User, WebSession } from "./app";
+import { Household, Membership, Patron, Shift, Stock, Team, User, WebSession } from "./app";
 import { BadValuesError } from "./concepts/errors";
 import { DietaryRestrictions, HouseholdDoc, Language } from "./concepts/household";
 import { PatronDoc } from "./concepts/patron";
@@ -59,7 +59,7 @@ class Routes {
       }
     }
     await Membership.deleteUserMembership(user);
-    // TODO delete user's shifts
+    await Shift.unclaimShiftsByUser(user);
     return msg;
   }
 
@@ -142,9 +142,11 @@ class Routes {
   async leaveOrganization(session: WebSessionDoc, orgId: ObjectId) {
     const user = WebSession.getUser(session);
     const id = new ObjectId(orgId);
+    const shiftsWithOrg = (await Shift.getShiftsByUser(user)).filter((s) => s.owner.toString() === orgId.toString());
+    shiftsWithOrg.forEach((s) => Shift.unclaimShift(s._id, user));
+    await Team.removeUsersFromTeam(orgId, [user], user);
     await Membership.removeMembership(user, id);
-    return { msg: "Successfully Removed User From Team" };
-    // TODO remove user's shifts from this org
+    return { msg: "Successfully left organization" };
   }
 
   @Router.patch("/organization/removeMember")
@@ -152,10 +154,11 @@ class Routes {
     const user = WebSession.getUser(session);
     const id = new ObjectId(orgId);
     const memberId = new ObjectId(member);
+    const shiftsWithOrg = (await Shift.getShiftsByUser(user)).filter((s) => s.owner.toString() === orgId.toString());
+    shiftsWithOrg.forEach((s) => Shift.unclaimShift(s._id, user));
     const msg = await Team.removeUsersFromTeam(id, [memberId], user);
     await Membership.removeMembership(memberId, id);
     return msg;
-    // TODO remove user's shifts from this org
   }
 
   @Router.delete("/organization/:orgId")
@@ -165,9 +168,9 @@ class Routes {
     await Team.isAdmin(org, user);
     const { admins, members } = await Team.get(org);
     const allMembers = members.concat(admins);
+    await Shift.deleteShiftsByOwner(orgId);
     await Promise.all(allMembers.map((member) => Membership.removeMembership(member, org)));
     return Team.delete(org, user);
-    // TODO delete org's shifts
   }
 
   // reset all visits for all households in organization
@@ -316,6 +319,63 @@ class Routes {
     const stock = await Stock.getStockById(ID);
     await Team.isTeamMember(stock.owner, user);
     return await Stock.deleteStock(ID);
+  }
+
+  @Router.get("/shift/:orgId")
+  async getOrganizationShifts(session: WebSessionDoc, orgId: ObjectId, futureOnly: boolean = false) {
+    const user = WebSession.getUser(session);
+    await Team.isTeamMember(orgId, user);
+    let shifts;
+    if (futureOnly) {
+      shifts = await Shift.getFutureShiftsByOwner(orgId);
+    } else {
+      shifts = await Shift.getShiftsByOwner(orgId);
+    }
+    return Responses.shifts(shifts);
+  }
+
+  @Router.get("/shift/user/:id")
+  async getUserShifts(session: WebSessionDoc, futureOnly: boolean = false) {
+    const user = WebSession.getUser(session);
+    let shifts;
+    if (futureOnly) {
+      shifts = await Shift.getFutureShiftsByUser(user);
+    } else {
+      shifts = await Shift.getShiftsByUser(user);
+    }
+    return Responses.shifts(shifts);
+  }
+
+  @Router.post("/shift")
+  async createNewShift(session: WebSessionDoc, orgId: ObjectId, start: string, end: string) {
+    const user = WebSession.getUser(session);
+    await Team.isAdmin(orgId, user);
+    const created = await Shift.createShift(orgId, new Date(start), new Date(end));
+    return { msg: created.msg, shift: Responses.shift(created.shift) };
+  }
+
+  @Router.patch("/shift/claim")
+  async claimShift(session: WebSessionDoc, id: ObjectId) {
+    const user = WebSession.getUser(session);
+    const shift = await Shift.getShiftById(id);
+    await Team.isTeamMember(shift.owner, user);
+    return await Shift.claimShift(id, user);
+  }
+
+  @Router.patch("/shift/unclaim")
+  async unclaimShift(session: WebSessionDoc, id: ObjectId) {
+    const user = WebSession.getUser(session);
+    const shift = await Shift.getShiftById(id);
+    await Team.isTeamMember(shift.owner, user);
+    return await Shift.unclaimShift(id, user);
+  }
+
+  @Router.delete("/shift/:id")
+  async deleteShift(session: WebSessionDoc, id: ObjectId) {
+    const user = WebSession.getUser(session);
+    const shift = await Shift.getShiftById(id);
+    await Team.isAdmin(shift.owner, user);
+    return await Shift.deleteShift(id);
   }
 }
 
