@@ -59,6 +59,7 @@ onBeforeMount(async () => {
       <p v-else>You are currently not a part of organization</p>
       <h3>Manage Your Organizations</h3>
       <div class="grid">
+        <!-- <div v-for="org in allOrgs" :key="org"><OrganizationComponent :orgId="org" @leaveOrg="leavingOrganizations" @updateName="getUserOrganizations" /></div> -->
         <div v-for="org in allOrgs" :key="org"><OrganizationComponent :orgId="org" @leaveOrg="leavingOrganizations" @updateName="getUserOrganizations" /></div>
       </div>
       <RegisterOrganizationForm @addOrg="getUserOrganizations" />

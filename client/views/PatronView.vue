@@ -1,5 +1,7 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import PatronComponent from "../components/Patron/PatronComponent.vue";
+</script>
 
 <template>
-  <main>Patrons</main>
+  <main><PatronComponent /></main>
 </template>

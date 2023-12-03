@@ -166,11 +166,21 @@ onBeforeMount(async () => {
 
 <style scoped>
 .org {
-  background-color: rgba(233, 187, 147, 0.504);
+  background: linear-gradient(90deg, rgba(255, 140, 84, 0.5) 100%, rgba(255, 194, 0, 0.5) 100%);
   border-radius: 8px;
   padding: 1em 1em;
   width: 24em;
   height: 15em;
+  border-radius: 0.4rem;
+  overflow: hidden;
+  box-shadow: 0 3rem 6rem rgba(0, 0, 0, 0.028);
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.org:hover {
+  transform: translateY(-0.5%);
+  box-shadow: 0 4rem 8rem rgba(0, 0, 0, 0.1);
 }
 
 .button-39 {
