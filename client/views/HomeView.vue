@@ -31,12 +31,12 @@ h1 {
   margin: 5px;
 }
 
-.background {
+/* .background {
   background: url(../assets/images/vegetables.png) no-repeat center fixed;
   background-size: cover;
   height: 32em;
   width: 100%;
-}
+} */
 
 .title {
   color: #fff;
@@ -52,10 +52,11 @@ h1 {
 }
 
 .cover {
-  text-align: flex-start;
   background-image: url("../assets/images/vegetables.png");
   background-size: cover;
   display: block;
+  height: 32em;
+  width: 100%;
 }
 .float-button {
   float: left top;
