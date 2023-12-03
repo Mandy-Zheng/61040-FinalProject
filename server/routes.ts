@@ -305,7 +305,7 @@ class Routes {
     return await Stock.createStock(Owner, item, count, diet, link, img, maxp);
   }
 
-  @Router.delete("/inventory")
+  @Router.delete("/inventory/:id")
   async deleteInventoryItem(session: WebSessionDoc, id: ObjectId) {
     const user = WebSession.getUser(session);
     const ID = new ObjectId(id);
