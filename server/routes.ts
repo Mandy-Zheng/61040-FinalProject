@@ -229,6 +229,11 @@ class Routes {
     return await Patron.updatePatron(patron, update);
   }
 
+  @Router.get("/patron/:id")
+  async getPatronById(id: ObjectId) {
+    return await Patron.getPatronById(id);
+  }
+
   // return household and add visit
   @Router.get("/profile/:id")
   async signInHousehold(session: WebSessionDoc, id: ObjectId) {
