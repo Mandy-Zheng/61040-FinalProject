@@ -26,7 +26,7 @@ onBeforeMount(async () => {
 
 <template>
   <transition name="modal">
-    <div v-if="show" class="modal-mask">
+    <div v-if="props.show" class="modal-mask">
       <div class="modal-container">
         <div class="modal-header">Settings for {{ props.organization.name }}</div>
         Add Members:
@@ -43,25 +43,9 @@ onBeforeMount(async () => {
 </template>
 
 <style scoped>
-img {
-  width: 20px;
-  height: 20px;
-  position: absolute;
-  right: 0;
-  top: 0;
-}
 .modal-footer {
   display: flex;
   justify-content: space-between;
-}
-
-.edit-btn {
-  width: 20px;
-  height: 20px;
-  position: absolute;
-  right: 0;
-  top: 0;
-  cursor: pointer;
 }
 
 .modal-mask {

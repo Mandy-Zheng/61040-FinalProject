@@ -3,9 +3,7 @@
 <template>
   <main>
     <div class="cover">
-      <div class="background">
-        <img src="../assets/images/vegetables.png" />
-      </div>
+      <div class="background"></div>
       <h1 class="title">Cornucopia</h1>
       <button class="button-39">
         <a href="#info">Learn More</a>
@@ -59,6 +57,8 @@ img {
 
 .cover {
   text-align: flex-start;
+  background-image: url("../assets/images/vegetables.png");
+  background-size: cover;
   display: block;
 }
 

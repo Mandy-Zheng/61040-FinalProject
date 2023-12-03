@@ -3,17 +3,14 @@ import { ObjectId } from "mongodb";
 import DocCollection, { BaseDoc } from "../framework/doc";
 import { BadValuesError, NotAllowedError, NotFoundError } from "./errors";
 export enum DietaryRestrictions {
-  None = 0,
-  Meat = 1,
-  AnimalBased = 2,
-  Gluten = 3,
-  Nut = 4,
-  Wheat = 5,
-  Fish = 6,
-  Eggs = 7,
-  Soy = 8,
-  Dairy = 9,
-  Kosher = 10,
+  Vegetarian = "Vegetarian",
+  Halal = "Halal",
+  GlutenFree = "Gluten-Free",
+  NutFree = "Nut-Free",
+  LowSodium = "Low-Sodium",
+  Seafood = "Seafood",
+  DairyFree = "Dairy-Free",
+  Kosher = "Kosher",
 }
 export enum Language {
   English = 0,
