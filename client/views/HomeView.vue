@@ -5,9 +5,11 @@
     <div class="cover">
       <div class="background"></div>
       <h1 class="title">Cornucopia</h1>
-      <button class="button-39">
-        <a href="#info">Learn More</a>
-      </button>
+      <div class="float-button">
+        <button class="button-39">
+          <a href="#info">Learn More</a>
+        </button>
+      </div>
     </div>
     <div class="info" id="info">
       <p>
@@ -20,36 +22,30 @@
 
 <style scoped>
 h1 {
-  text-align: center;
-}
-img {
-  height: auto;
-  width: 100%;
-}
-.background {
+  text-align: left;
   display: flex;
-  justify-content: center;
+  float: left;
+  width: 100%;
+  padding-left: 60px;
+  padding-top: 150px;
+  margin: 5px;
+}
+
+.background {
+  background: url(../assets/images/vegetables.png) no-repeat center fixed;
+  background-size: cover;
   height: 32em;
+  width: 100%;
 }
 
 .title {
-  position: absolute;
-  top: 30%;
-  left: 30%;
-  transform: translate(-50%, -50%);
   color: #fff;
-  padding: 10px 20px;
+  font-family: "Gowun Batang", serif;
   font-size: 150px;
   font-weight: 400;
-  text-align: flex-start;
-  font-family: "Gowun Batang", serif;
 }
 
 .button-39 {
-  position: absolute;
-  top: 60%;
-  left: 12%;
-  transform: translate(-50%, -50%);
   font-size: x-large;
   padding: 15px;
   font-weight: 400;
@@ -60,6 +56,10 @@ img {
   background-image: url("../assets/images/vegetables.png");
   background-size: cover;
   display: block;
+}
+.float-button {
+  float: left top;
+  padding-left: 70px;
 }
 
 .info {

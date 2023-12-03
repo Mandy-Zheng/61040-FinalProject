@@ -6,9 +6,7 @@ const props = defineProps(["stockId"]);
 const item = ref<any>(undefined);
 async function getItem() {
   try {
-    console.log("id", props.stockId);
     item.value = await fetchy(`/api/inventory/stocks/${props.stockId}`, "GET");
-    console.log(item.value);
   } catch (error) {
     return;
   }
