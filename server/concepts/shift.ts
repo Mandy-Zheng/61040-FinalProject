@@ -19,7 +19,7 @@ export default class ShiftConcept {
     }
     await this.isFutureShift(end);
     const _id = await this.shifts.createOne({ owner: owner, volunteers: [], start: start, end: end });
-    return { msg: "Shift successfully created!", household: await this.shifts.readOne({ _id }) };
+    return { msg: "Shift successfully created!", shift: await this.shifts.readOne({ _id }) };
   }
 
   async getShiftsByOwner(owner: ObjectId) {
@@ -54,11 +54,6 @@ export default class ShiftConcept {
     return shift;
   }
 
-  async deleteShift(_id: ObjectId) {
-    await this.shifts.deleteOne({ _id });
-    return { msg: "Succesfully deleted shift!" };
-  }
-
   async claimShift(_id: ObjectId, user: ObjectId) {
     const shift = await this.shifts.readOne({ _id });
     if (!shift) {
@@ -89,6 +84,16 @@ export default class ShiftConcept {
     return { msg: "Unclaimed shifts successfully!" };
   }
 
+  async deleteShift(_id: ObjectId) {
+    await this.shifts.deleteOne({ _id });
+    return { msg: "Succesfully deleted shift!" };
+  }
+
+  async deleteShiftsByOwner(orgId: ObjectId) {
+    await this.shifts.deleteMany({ owner: orgId });
+    return { msg: "Succesfully deleted shifts!" };
+  }
+
   // throw error if user has already claimed shift
   private async notClaimed(shift: ShiftDoc, user: ObjectId) {
     for (const u of shift.volunteers) {
@@ -111,11 +116,5 @@ export default class ShiftConcept {
     if (end <= today) {
       throw new NotAllowedError("Cannot create shifts in the past");
     }
-  }
-
-  // return list of shifts that end in the future
-  private async futureOnly(shifts: ShiftDoc[]) {
-    const today = new Date();
-    return shifts.filter((s: ShiftDoc) => s.end > today);
   }
 }
