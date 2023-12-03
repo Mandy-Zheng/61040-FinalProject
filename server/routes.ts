@@ -59,6 +59,7 @@ class Routes {
       }
     }
     await Membership.deleteUserMembership(user);
+    // TODO delete user's shifts
     return msg;
   }
 
@@ -143,6 +144,7 @@ class Routes {
     const id = new ObjectId(orgId);
     await Membership.removeMembership(user, id);
     return { msg: "Successfully Removed User From Team" };
+    // TODO remove user's shifts from this org
   }
 
   @Router.patch("/organization/removeMember")
@@ -153,6 +155,7 @@ class Routes {
     const msg = await Team.removeUsersFromTeam(id, [memberId], user);
     await Membership.removeMembership(memberId, id);
     return msg;
+    // TODO remove user's shifts from this org
   }
 
   @Router.delete("/organization/:orgId")
@@ -164,6 +167,7 @@ class Routes {
     const allMembers = members.concat(admins);
     await Promise.all(allMembers.map((member) => Membership.removeMembership(member, org)));
     return Team.delete(org, user);
+    // TODO delete org's shifts
   }
 
   // reset all visits for all households in organization
