@@ -25,7 +25,6 @@ async function register() {
         <label for="aligned-name">Organization Name</label>
         <input v-model.trim="orgName" type="text" id="aligned-name" placeholder="Organization Name" required />
       </div>
-
       <div class="pure-controls">
         <button class="button-39">Register</button>
       </div>

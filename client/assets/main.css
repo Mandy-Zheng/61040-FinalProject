@@ -35,6 +35,12 @@ a.button {
   text-decoration: none;
 }
 
+.icon {
+  background-color: transparent;
+  border: none;
+  touch-action: manipulation;
+  cursor: pointer;
+}
 
 
 

@@ -105,8 +105,30 @@ onBeforeMount(async () => {
 <template>
   <div class="org" v-if="organization">
     <div v-if="organization.admins.includes(currentUsername)">
-      <h4 v-if="!isEditingName">{{ orgName }} <button class="button-39" @click="isEditingName = true">Edit Name</button></h4>
-      <div v-else><input v-model.trim="orgName" /> <button class="button-39" @click="updateOrgName">Submit</button></div>
+      <h4 v-if="!isEditingName">
+        {{ orgName }}
+        <button class="icon" @click="isEditingName = true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+            <path
+              d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"
+            />
+            <path
+              fill-rule="evenodd"
+              d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"
+            />
+          </svg>
+        </button>
+      </h4>
+      <div v-else>
+        <input style="padding: 0.5em; border-radius: 0.5em; border-color: rgb(197, 197, 197); border-width: 0.5px" v-model.trim="orgName" />
+        <button class="icon" @click="updateOrgName">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
+            <path
+              d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022"
+            />
+          </svg>
+        </button>
+      </div>
     </div>
     <div v-else>
       <h4>{{ orgName }}</h4>
@@ -117,10 +139,12 @@ onBeforeMount(async () => {
     <p>Members</p>
     <div v-for="member in organization.members" :key="member">{{ member }}</div>
     <div v-if="organization.admins.includes(currentUsername)">
-      <button class="button-39" @click.prevent="showAddModal = true">Add Members</button>
-      <button class="button-39" @click.prevent="showManageModal = true">Manage Members</button>
-      <button class="button-39 red" @click.prevent="showDeleteModal = true">Delete Org</button>
-      <button v-if="organization.admins.length > 1" class="button-39 red" @click.prevent="showLeaveModal = true">Leave Org</button>
+      <div class="modify">
+        <button class="button-39" @click.prevent="showAddModal = true">Add Members</button>
+        <button class="button-39" @click.prevent="showManageModal = true">Manage Members</button>
+        <button class="button-39 red" @click.prevent="showDeleteModal = true">Delete Org</button>
+        <button v-if="organization.admins.length > 1" class="button-39 red" @click.prevent="showLeaveModal = true">Leave Org</button>
+      </div>
       <teleport to="body">
         <AddMemberComponent :show="showAddModal" :organization="organization" @close="showAddModal = false" @add="addMembers" />
         <ManageMemberComponent :show="showManageModal" :organization="organization" @close="showManageModal = false" @manage="manageMember" />
@@ -142,19 +166,28 @@ onBeforeMount(async () => {
 
 <style scoped>
 .org {
-  background-color: #9b9b9b;
+  background-color: rgba(233, 187, 147, 0.504);
   border-radius: 8px;
-  margin-left: 8em;
-  margin-top: 0.5em;
-  padding: 0.5em;
+  padding: 1em 1em;
   width: 24em;
+  height: 15em;
 }
+
 .button-39 {
   margin-left: 5px;
   background-color: var(--primary);
   color: white;
+  font-weight: 300;
+  border: none;
+  margin: 5px;
+  padding: 7px;
 }
 .red {
   background-color: var(--red);
+}
+
+.modify {
+  display: flex;
+  gap: 1em;
 }
 </style>

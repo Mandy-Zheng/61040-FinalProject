@@ -1,7 +1,4 @@
-<script setup lang="ts">
-const props = defineProps(["stockId"]);
-</script>
-
+<script setup lang="ts"></script>
 <template>
   <main>
     <p>Stock</p>
