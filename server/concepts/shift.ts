@@ -17,6 +17,7 @@ export default class ShiftConcept {
     if (end <= start) {
       throw new BadValuesError("Invalid start/end times for shift");
     }
+    await this.isFutureShift(end);
     const _id = await this.shifts.createOne({ owner: owner, volunteers: [], start: start, end: end });
     return { msg: "Shift successfully created!", household: await this.shifts.readOne({ _id }) };
   }
@@ -26,8 +27,21 @@ export default class ShiftConcept {
     return shifts;
   }
 
+  async getFutureShiftsByOwner(owner: ObjectId) {
+    const today = new Date();
+    const shifts = await this.shifts.readMany({ owner: owner, end: { $gt: today } });
+    return shifts;
+  }
+
   async getShiftsByUser(user: ObjectId) {
     const shifts = await this.shifts.readMany({});
+    const claimedShifts = shifts.filter((s) => s.volunteers.map((v) => v.toString()).includes(user.toString()));
+    return claimedShifts;
+  }
+
+  async getFutureShiftsByUser(user: ObjectId) {
+    const today = new Date();
+    const shifts = await this.shifts.readMany({ end: { $gt: today } });
     const claimedShifts = shifts.filter((s) => s.volunteers.map((v) => v.toString()).includes(user.toString()));
     return claimedShifts;
   }
@@ -50,6 +64,7 @@ export default class ShiftConcept {
     if (!shift) {
       throw new NotFoundError(`Shift not found`);
     }
+    await this.isFutureShift(shift.end);
     await this.notClaimed(shift, user);
     const newVolunteers = shift.volunteers;
     newVolunteers.push(user);
@@ -88,5 +103,19 @@ export default class ShiftConcept {
     if (shift.volunteers.every((u) => u.toString() !== user.toString())) {
       throw new NotAllowedError(`${user} has not claimed shift ${shift._id}`);
     }
+  }
+
+  // throw error if shift has already passed
+  private async isFutureShift(end: Date) {
+    const today = new Date();
+    if (end <= today) {
+      throw new NotAllowedError("Cannot create shifts in the past");
+    }
+  }
+
+  // return list of shifts that end in the future
+  private async futureOnly(shifts: ShiftDoc[]) {
+    const today = new Date();
+    return shifts.filter((s: ShiftDoc) => s.end > today);
   }
 }
