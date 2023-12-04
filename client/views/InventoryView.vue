@@ -53,6 +53,6 @@ onBeforeMount(async () => {
   margin-right: 10%;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
 }
 </style>
