@@ -35,7 +35,8 @@ async function register() {
   height: 2.5em;
   align-content: center;
   text-align: center;
-  padding-bottom: 2em;
+  padding-bottom: 2.2em;
+  border: none;
 }
 .align {
   display: flex;

@@ -3,8 +3,13 @@
 :root {
   --red: rgb(208, 67, 12);
   --base-bg: #f1f3f5;
-  --primary: rgb(255, 128, 31);
-  --secondary: rgb(255, 213, 0);
+  --primary: #52c07c;;
+  --secondary: rgba(71, 155, 126, 0.872);
+  --citrine: #EED724ff;
+  --apple-green: #809F1Cff;
+  --dark-moss-green: #606900ff;
+  --tiffany-blue: #84C5B5ff;
+  --sinopia: #DD320Bff;
   --xs: 5px;
   --sm: 576px;
   --md: 768px;
