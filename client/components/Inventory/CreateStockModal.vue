@@ -27,7 +27,7 @@ onBeforeMount(async () => {});
           <img v-if="!imgLink.length" src="../../assets/images/image.svg" />
           <img v-else :src="imgLink" alt="Having Trouble uploading item picture" />
           <div class="item">
-            <div class="form-input">Name<input v-model="name" /></div>
+            <div class="form-input">Name<input v-model="name" required /></div>
             <div class="form-input">Diet <Multiselect class="multiselect" v-model="diet" mode="tags" :options="multiselectDietTags" :searchable="true" required /></div>
             <div class="form-input">Image Link<input v-model="imgLink" /></div>
             <div class="form-input">Purchase Link<input v-model="purchaseLink" /></div>

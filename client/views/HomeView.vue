@@ -14,7 +14,7 @@
     <div class="info" id="info">
       <p>
         Food insecurity affects the well-being of individuals and communities and it's especially prominent since the pandemic, with over 40 million adults and children in the US facing food
-        insecurity in 2020. To address these challenges we present Cornucopia, an app that helps streamline food pantry operations.
+        insecurity in 2020. To address these challenges, we present Cornucopia, an app that helps streamline food pantry operations.
       </p>
     </div>
   </main>
@@ -31,12 +31,12 @@ h1 {
   margin: 5px;
 }
 
-.background {
+/* .background {
   background: url(../assets/images/vegetables.png) no-repeat center fixed;
   background-size: cover;
   height: 32em;
   width: 100%;
-}
+} */
 
 .title {
   color: #fff;
@@ -52,10 +52,11 @@ h1 {
 }
 
 .cover {
-  text-align: flex-start;
   background-image: url("../assets/images/vegetables.png");
   background-size: cover;
   display: block;
+  height: 32em;
+  width: 100%;
 }
 .float-button {
   float: left top;

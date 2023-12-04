@@ -3,8 +3,8 @@ import CreateHouseholdComponent from "@/components/Household/CreateHouseholdComp
 import { useOrganizationStore } from "@/stores/organization";
 import { storeToRefs } from "pinia";
 import { ref } from "vue";
+import PatronComponent from "../components/Patron/PatronComponent.vue";
 const { selectedOrg } = storeToRefs(useOrganizationStore());
-
 const showCreateModal = ref<boolean>(false);
 async function getHousehold() {
   try {
@@ -32,11 +32,10 @@ async function addHousehold() {
     <button class="button-39 red" @click.prevent="showCreateModal = true">Create New Household</button>
 
     <CreateHouseholdComponent :show="showCreateModal" @close="showCreateModal = false" @add="addHousehold" />
-
-    <!-- <div v-for="stock in inventory" :key="stock" class="stocks"><StockComponent :stockId="stock._id" /></div> -->
   </div>
-</template>
 
+  <PatronComponent />
+</template>
 <style scoped>
 .household {
   margin-left: 4em;

@@ -43,4 +43,8 @@ async function delete_() {
   flex: 50%;
   padding: 10px;
 }
+
+.button-39 {
+  border: none;
+}
 </style>

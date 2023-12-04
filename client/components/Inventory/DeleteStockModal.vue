@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const props = defineProps(["show", "organization"]);
+const props = defineProps(["show", "stock"]);
 const emit = defineEmits(["close", "delete"]);
 </script>
 
@@ -7,11 +7,11 @@ const emit = defineEmits(["close", "delete"]);
   <transition name="modal">
     <div v-if="show" class="modal-mask">
       <div class="modal-container">
-        <div class="modal-header">Delete {{ props.organization.name }}</div>
-        This action will delete the organization permanently. Are you sure?
+        <div class="modal-header">Delete {{ props.stock.item }}</div>
+        This action will delete the stock permanently. Are you sure?
         <div class="modal-footer">
           <button class="button-39" @click="emit('close')">Close</button>
-          <button class="button-39 red" @click="emit('delete')">Delete Organization</button>
+          <button class="button-39" @click="emit('delete')">Delete Stock</button>
         </div>
       </div>
     </div>

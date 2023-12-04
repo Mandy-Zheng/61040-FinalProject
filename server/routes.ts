@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 
 import { Router, getExpressRouter } from "./framework/router";
 
-import { Household, Membership, Patron, Stock, Team, User, WebSession } from "./app";
+import { Household, Membership, Patron, Shift, Stock, Team, User, WebSession } from "./app";
 import { BadValuesError } from "./concepts/errors";
 import { DietaryRestrictions, HouseholdDoc, Language } from "./concepts/household";
 import { PatronDoc } from "./concepts/patron";
@@ -59,6 +59,7 @@ class Routes {
       }
     }
     await Membership.deleteUserMembership(user);
+    await Shift.unclaimShiftsByUser(user);
     return msg;
   }
 
@@ -141,8 +142,11 @@ class Routes {
   async leaveOrganization(session: WebSessionDoc, orgId: ObjectId) {
     const user = WebSession.getUser(session);
     const id = new ObjectId(orgId);
+    const shiftsWithOrg = (await Shift.getShiftsByUser(user)).filter((s) => s.owner.toString() === orgId.toString());
+    shiftsWithOrg.forEach((s) => Shift.unclaimShift(s._id, user));
+    await Team.removeUsersFromTeam(orgId, [user], user);
     await Membership.removeMembership(user, id);
-    return { msg: "Successfully Removed User From Team" };
+    return { msg: "Successfully left organization" };
   }
 
   @Router.patch("/organization/removeMember")
@@ -150,6 +154,8 @@ class Routes {
     const user = WebSession.getUser(session);
     const id = new ObjectId(orgId);
     const memberId = new ObjectId(member);
+    const shiftsWithOrg = (await Shift.getShiftsByUser(user)).filter((s) => s.owner.toString() === orgId.toString());
+    shiftsWithOrg.forEach((s) => Shift.unclaimShift(s._id, user));
     const msg = await Team.removeUsersFromTeam(id, [memberId], user);
     await Membership.removeMembership(memberId, id);
     return msg;
@@ -162,6 +168,7 @@ class Routes {
     await Team.isAdmin(org, user);
     const { admins, members } = await Team.get(org);
     const allMembers = members.concat(admins);
+    await Shift.deleteShiftsByOwner(orgId);
     await Promise.all(allMembers.map((member) => Membership.removeMembership(member, org)));
     return Team.delete(org, user);
   }
@@ -234,14 +241,23 @@ class Routes {
     return await Patron.updatePatron(patron, update);
   }
 
+  @Router.get("/patron/:id")
+  async getPatronById(id: ObjectId) {
+    return await Patron.getPatronById(id);
+  }
+
   // return household and add visit
   @Router.get("/profile/:id")
   async signInHousehold(session: WebSessionDoc, id: ObjectId) {
+    console.log("HEY");
     const ID = new ObjectId(id);
     const household = await Household.getProfileById(ID);
     const user = WebSession.getUser(session);
+    console.log("HEY");
     await Team.isTeamMember(household.organization, user);
-    await Household.addVisit(ID);
+    console.log("HEY");
+    //await Household.addVisit(ID); //TO-DO i think this should be a separate sync?
+    console.log("HEY");
     return household;
   }
 
@@ -305,13 +321,70 @@ class Routes {
     return await Stock.createStock(Owner, item, count, diet, link, img, maxp);
   }
 
-  @Router.delete("/inventory")
+  @Router.delete("/inventory/:id")
   async deleteInventoryItem(session: WebSessionDoc, id: ObjectId) {
     const user = WebSession.getUser(session);
     const ID = new ObjectId(id);
     const stock = await Stock.getStockById(ID);
     await Team.isTeamMember(stock.owner, user);
     return await Stock.deleteStock(ID);
+  }
+
+  @Router.get("/shift/:orgId")
+  async getOrganizationShifts(session: WebSessionDoc, orgId: ObjectId, futureOnly: boolean = false) {
+    const user = WebSession.getUser(session);
+    await Team.isTeamMember(orgId, user);
+    let shifts;
+    if (futureOnly) {
+      shifts = await Shift.getFutureShiftsByOwner(orgId);
+    } else {
+      shifts = await Shift.getShiftsByOwner(orgId);
+    }
+    return Responses.shifts(shifts);
+  }
+
+  @Router.get("/shift/user/:id")
+  async getUserShifts(session: WebSessionDoc, futureOnly: boolean = false) {
+    const user = WebSession.getUser(session);
+    let shifts;
+    if (futureOnly) {
+      shifts = await Shift.getFutureShiftsByUser(user);
+    } else {
+      shifts = await Shift.getShiftsByUser(user);
+    }
+    return Responses.shifts(shifts);
+  }
+
+  @Router.post("/shift")
+  async createNewShift(session: WebSessionDoc, orgId: ObjectId, start: string, end: string) {
+    const user = WebSession.getUser(session);
+    await Team.isAdmin(orgId, user);
+    const created = await Shift.createShift(orgId, new Date(start), new Date(end));
+    return { msg: created.msg, shift: Responses.shift(created.shift) };
+  }
+
+  @Router.patch("/shift/claim")
+  async claimShift(session: WebSessionDoc, id: ObjectId) {
+    const user = WebSession.getUser(session);
+    const shift = await Shift.getShiftById(id);
+    await Team.isTeamMember(shift.owner, user);
+    return await Shift.claimShift(id, user);
+  }
+
+  @Router.patch("/shift/unclaim")
+  async unclaimShift(session: WebSessionDoc, id: ObjectId) {
+    const user = WebSession.getUser(session);
+    const shift = await Shift.getShiftById(id);
+    await Team.isTeamMember(shift.owner, user);
+    return await Shift.unclaimShift(id, user);
+  }
+
+  @Router.delete("/shift/:id")
+  async deleteShift(session: WebSessionDoc, id: ObjectId) {
+    const user = WebSession.getUser(session);
+    const shift = await Shift.getShiftById(id);
+    await Team.isAdmin(shift.owner, user);
+    return await Shift.deleteShift(id);
   }
 }
 

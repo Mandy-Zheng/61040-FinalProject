@@ -1,9 +1,13 @@
 <script setup lang="ts">
+import { fetchy } from "@/utils/fetchy";
 import { onBeforeMount, ref } from "vue";
-import { fetchy } from "../../utils/fetchy";
+import DeleteStockModal from "./DeleteStockModal.vue";
 
 const props = defineProps(["stockId"]);
 const item = ref<any>(undefined);
+const emit = defineEmits(["refreshStocks"]);
+const showDeleteModal = ref<boolean>(false);
+
 async function getItem() {
   try {
     item.value = await fetchy(`/api/inventory/stocks/${props.stockId}`, "GET");
@@ -11,6 +15,16 @@ async function getItem() {
     return;
   }
 }
+
+const deleteStock = async () => {
+  try {
+    await fetchy(`/api/inventory/${props.stockId}`, "DELETE");
+  } catch {
+    return;
+  }
+  emit("refreshStocks");
+};
+
 onBeforeMount(async () => {
   await getItem();
 });
@@ -37,6 +51,12 @@ onBeforeMount(async () => {
         </div>
         <div v-if="item.supplyLink">Purchase Link: {{ item.supplyLink }}</div>
       </div>
+      <div class="modify">
+        <button class="button-39 red" @click.prevent="showDeleteModal = true">Delete</button>
+      </div>
+      <teleport to="body">
+        <DeleteStockModal :show="showDeleteModal" :stock="item" @close="showDeleteModal = false" @delete="deleteStock(), (showDeleteModal = false)" />
+      </teleport>
     </div>
   </div>
 </template>
@@ -93,7 +113,5 @@ img {
   border-radius: 20px;
   border: 1px solid var(--primary);
   margin-right: 4em;
-}
-.item-img {
 }
 </style>
