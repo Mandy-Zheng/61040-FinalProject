@@ -11,7 +11,7 @@ const emit = defineEmits(["close", "leave"]);
         This action will make you leave from {{ props.organization.name }}. Are you sure you wish to continue?
         <div class="modal-footer">
           <button class="button-39" @click="emit('close')">Close</button>
-          <button class="button-39" @click="emit('leave')">Leave</button>
+          <button class="button-39 red" @click="emit('leave')">Leave</button>
         </div>
       </div>
     </div>
