@@ -28,16 +28,26 @@ async function addHousehold() {
 
 <template>
   <div class="household" v-if="selectedOrg">
-    <h3>Patrons</h3>
-    <button class="button-39 red" @click.prevent="showCreateModal = true">Create New Household</button>
-
+    <div class="right">
+      <button class="button-39" @click.prevent="showCreateModal = true">Create New Household</button>
+    </div>
+    <PatronComponent />
     <CreateHouseholdComponent :show="showCreateModal" @close="showCreateModal = false" @add="addHousehold" />
   </div>
-
-  <PatronComponent />
 </template>
 <style scoped>
 .household {
   margin-left: 4em;
+}
+
+.button-39 {
+  background-color: var(--primary);
+  color: white;
+}
+.right {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 2em;
+  margin-right: 10em;
 }
 </style>

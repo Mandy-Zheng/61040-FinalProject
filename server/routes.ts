@@ -243,7 +243,8 @@ class Routes {
 
   @Router.get("/patron/:id")
   async getPatronById(id: ObjectId) {
-    return await Patron.getPatronById(id);
+    const _id = new ObjectId(id);
+    return await Patron.getPatronById(_id);
   }
 
   // return household and add visit

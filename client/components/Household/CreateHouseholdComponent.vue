@@ -79,7 +79,7 @@ onBeforeMount(async () => {});
               <option v-for="lang in LANGUAGES" :key="lang" :selected="language === lang" :value="lang">{{ lang }}</option>
             </select>
           </div>
-          <div class="form-input">Diet <Multiselect class="multiselect" v-model="diet" mode="tags" :options="multiselectDietTags" :searchable="true" required /></div>
+          <div class="form-input">Dietary Restrictions <Multiselect class="multiselect" v-model="diet" mode="tags" :options="multiselectDietTags" :searchable="true" required /></div>
           <div class="special-request">Special Requests<textarea v-model="specialRequests"></textarea></div>
         </div>
         <div class="member-add">
@@ -113,6 +113,13 @@ onBeforeMount(async () => {});
 
 <style scoped>
 .container {
+}
+
+select {
+  height: 35px;
+  padding: 5px;
+  border-color: rgb(188, 188, 188);
+  border-radius: 5px;
 }
 .overview {
   height: 100%;

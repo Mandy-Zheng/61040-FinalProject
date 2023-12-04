@@ -35,10 +35,14 @@ async function search() {
         </div>
       </fieldset>
     </form>
-    <div v-if="household" class="column">
-      <HouseholdComponent />
-      <div v-for="patron in household.members" :key="patron" class="column">
-        <PatronCardComponent :patronId="patron" />
+    <div v-if="household" class="row">
+      <div>
+        <HouseholdComponent />
+      </div>
+      <div class="column">
+        <div v-for="patron in household.members" :key="patron">
+          <PatronCardComponent :patronId="patron" />
+        </div>
       </div>
     </div>
   </main>
@@ -53,6 +57,13 @@ async function search() {
 .column {
   display: flex;
   flex-direction: column;
+  gap: 1em;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
 }
 
 .search {
