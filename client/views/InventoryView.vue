@@ -37,7 +37,7 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <main>
+  <main v-if="selectedOrg">
     <h3>Inventory</h3>
     <button class="button-39 red" @click.prevent="showCreateModal = true">Create New Item</button>
     <teleport to="body">

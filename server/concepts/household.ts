@@ -13,10 +13,21 @@ export enum DietaryRestrictions {
   Kosher = "Kosher",
 }
 export enum Language {
-  English = 0,
-  Korean = 1,
-  Mandarin = 2,
-  Cantonese = 3,
+  English = "English",
+  Spanish = "Spanish",
+  French = "French",
+  Portuguese = "Portuguese",
+  Arabic = "Arabic",
+  Russian = "Russian",
+  Japanese = "Japanese",
+  Bengali = "Bengali",
+  Dutch = "Dutch",
+  Urdu = "Urdu",
+  Polish = "Polish",
+  Indonesian = "Indonesian",
+  Korean = "Korean",
+  Mandarin = "Mandarin",
+  Cantonese = "Cantonese",
   //TODO: Add more languages
 }
 export interface HouseholdDoc extends BaseDoc {

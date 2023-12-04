@@ -179,13 +179,19 @@ class Routes {
     return { msg: "Successfully reset all visits!" };
   }
 
-  @Router.post("/profile/:id")
-  async createHouseholdProfile(session: WebSessionDoc, orgId: ObjectId, name: string, birthday: Date, img: string, diet: Array<DietaryRestrictions>, lang: Language, req: string) {
+  @Router.post("/profile")
+  async createHouseholdProfile(session: WebSessionDoc, orgId: ObjectId, patrons: Array<[string, string, string]>, diet: Array<DietaryRestrictions>, lang: Language, req: string) {
     const user = WebSession.getUser(session);
     const org = new ObjectId(orgId);
     await Team.isTeamMember(org, user);
-    const patron = await Patron.create(name, birthday, img);
-    return await Household.create(org, [patron.patron._id], diet, lang, req);
+    const info = await Promise.all(patrons.map((patron) => Patron.create(patron[0], patron[1], patron[2])));
+    return await Household.create(
+      org,
+      info.map((patron) => patron.patron._id),
+      diet,
+      lang,
+      req,
+    );
   }
 
   // update household members, diet restrictions, language, special requests
@@ -204,8 +210,7 @@ class Routes {
     const ID = new ObjectId(id);
     const household = await Household.getProfileById(ID);
     await Team.isTeamMember(household.organization, user);
-    const date = new Date(birthday);
-    const patron = (await Patron.create(name, date, img)).patron;
+    const patron = (await Patron.create(name, birthday, img)).patron;
     return await Household.addMember(ID, patron._id);
   }
 
