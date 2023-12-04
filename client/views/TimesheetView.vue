@@ -59,57 +59,56 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <div v-if="selectedOrg?.isAdmin">
-    <CreateShiftForm @refreshShifts="getAllShifts" />
-  </div>
-  <div class="row">
-    <button v-if="hidePastShifts" class="button-39" @click="toggleFuturePref">show past and future shifts</button>
-    <button v-else class="button-39" @click="toggleFuturePref">show only future shifts</button>
-    <button v-if="showOnlyMyShifts" class="button-39" @click="toggleMyShiftsPref">show claimed and unclaimed shifts</button>
-    <button v-else class="button-39" @click="toggleMyShiftsPref">show only claimed shifts</button>
-  </div>
-  <div v-if="showOnlyMyShifts && myShifts.length !== 0">
-    <article v-for="shift in myShifts" :key="shift._id">
-      <ShiftComponent :shift="shift" @refreshShifts="getAllShifts" />
-    </article>
-  </div>
-  <div v-else-if="!showOnlyMyShifts && shifts.length !== 0">
-    <article v-for="shift in shifts" :key="shift._id">
-      <ShiftComponent :shift="shift" @refreshShifts="getAllShifts" />
-    </article>
-  </div>
-  <div v-else>
-    <h3>no shifts found</h3>
+  <div style="margin-left: 50px">
+    <div v-if="selectedOrg?.isAdmin">
+      <CreateShiftForm @refreshShifts="getAllShifts" />
+    </div>
+    <div class="row">
+      <button v-if="hidePastShifts" class="button-39" @click="toggleFuturePref">show past and future shifts</button>
+      <button v-else class="button-39" @click="toggleFuturePref">show only future shifts</button>
+      <button v-if="showOnlyMyShifts" class="button-39" @click="toggleMyShiftsPref">show claimed and unclaimed shifts</button>
+      <button v-else class="button-39" @click="toggleMyShiftsPref">show only claimed shifts</button>
+    </div>
+    <div class="grid" v-if="showOnlyMyShifts && myShifts.length !== 0">
+      <article v-for="shift in myShifts" :key="shift._id">
+        <ShiftComponent :shift="shift" @refreshShifts="getAllShifts" />
+      </article>
+    </div>
+    <div class="grid" v-else-if="!showOnlyMyShifts && shifts.length !== 0">
+      <article v-for="shift in shifts" :key="shift._id">
+        <ShiftComponent :shift="shift" @refreshShifts="getAllShifts" />
+      </article>
+    </div>
+    <p v-else>You are currently not a part of organization</p>
   </div>
 </template>
 
 <style scoped>
-section {
-  display: flex;
-  flex-direction: column;
-  gap: 1em;
+.button-39 {
+  margin: 1em;
 }
-
-section,
-p,
 .row {
+  display: flex;
+  justify-content: center;
   margin: 0 auto;
   max-width: 60em;
-}
-
-article {
-  background-color: var(--base-bg);
-  border-radius: 1em;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5em;
   padding: 1em;
 }
 
-.row {
+h1 {
+  text-align: center;
+}
+
+select {
+  height: 35px;
+  padding: 5px;
+  border-color: rgb(188, 188, 188);
+  border-radius: 5px;
+}
+.grid {
   display: flex;
-  justify-content: space-between;
-  margin: 0 auto;
-  max-width: 60em;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 2em 2em;
 }
 </style>

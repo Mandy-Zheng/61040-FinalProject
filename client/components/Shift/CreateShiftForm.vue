@@ -35,12 +35,11 @@ const emptyForm = () => {
 
 <template>
   <form class="pure-form pure-form-aligned" @submit.prevent="createShift">
-    <h3>Create shift</h3>
     <fieldset>
       <div class="pure-control-group align">
         <p>Start: <input v-model.trim="start" type="datetime-local" id="start-date" :min="today" required /></p>
         <p>End: <input v-model.trim="end" type="datetime-local" :min="start.slice(0, new Date().toISOString().lastIndexOf(':'))" required /></p>
-        <button class="button-39">create shift</button>
+        <button class="button-39">Create shift</button>
       </div>
     </fieldset>
   </form>
