@@ -55,21 +55,20 @@ form {
   padding: 1em;
 }
 
-textarea {
-  font-family: inherit;
-  font-size: 0.9em;
-  height: 7em;
-  padding: 0.5em;
-  border-radius: 10px;
-  resize: none;
+.button-39 {
+  background-color: var(--primary);
+  color: white;
+  height: 2.5em;
+  align-content: center;
+  text-align: center;
+  padding-bottom: 2.2em;
   border: none;
-  background-color: white;
 }
-
-.pure-button {
-  background-color: var(--cadet);
-  border-radius: 8px;
-  width: auto;
-  font-size: 0.9em;
+.align {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  align-content: center;
+  gap: 1em;
 }
 </style>

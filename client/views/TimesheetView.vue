@@ -59,7 +59,7 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <div style="margin-left: 50px">
+  <div class="shifts">
     <div v-if="selectedOrg?.isAdmin">
       <CreateShiftForm @refreshShifts="getAllShifts" />
     </div>
@@ -84,6 +84,9 @@ onBeforeMount(async () => {
 </template>
 
 <style scoped>
+.shifts {
+  margin: 50px;
+}
 .button-39 {
   margin: 1em;
 }
