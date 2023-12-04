@@ -23,25 +23,28 @@ export default class ShiftConcept {
   }
 
   async getShiftsByOwner(owner: ObjectId) {
-    const shifts = await this.shifts.readMany({ owner: owner });
+    const shifts = await this.shifts.readMany({ owner: owner }, { sort: { start: 1 } });
+    // const posts = await this.posts.readMany(query, {
+    //   sort: { dateUpdated: -1 },
+    // });
     return shifts;
   }
 
   async getFutureShiftsByOwner(owner: ObjectId) {
     const today = new Date();
-    const shifts = await this.shifts.readMany({ owner: owner, end: { $gt: today } });
+    const shifts = await this.shifts.readMany({ owner: owner, end: { $gt: today } }, { sort: { start: 1 } });
     return shifts;
   }
 
   async getShiftsByUser(user: ObjectId) {
-    const shifts = await this.shifts.readMany({});
+    const shifts = await this.shifts.readMany({}, { sort: { start: 1 } });
     const claimedShifts = shifts.filter((s) => s.volunteers.map((v) => v.toString()).includes(user.toString()));
     return claimedShifts;
   }
 
   async getFutureShiftsByUser(user: ObjectId) {
     const today = new Date();
-    const shifts = await this.shifts.readMany({ end: { $gt: today } });
+    const shifts = await this.shifts.readMany({ end: { $gt: today } }, { sort: { start: 1 } });
     const claimedShifts = shifts.filter((s) => s.volunteers.map((v) => v.toString()).includes(user.toString()));
     return claimedShifts;
   }

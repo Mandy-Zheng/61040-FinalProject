@@ -101,7 +101,8 @@ class Routes {
     const { organizations } = await Membership.get(user);
     const allOrgs = await Promise.all(organizations.map((id) => Team.get(id)));
     return allOrgs.map((org) => {
-      return { id: org._id, name: org.name };
+      const isAdmin = org.admins.some((a) => a.toString() === user.toString());
+      return { id: org._id, name: org.name, isAdmin: isAdmin };
     });
   }
 
@@ -331,8 +332,8 @@ class Routes {
     return await Stock.deleteStock(ID);
   }
 
-  @Router.get("/shift/:orgId")
-  async getOrganizationShifts(session: WebSessionDoc, orgId: ObjectId, futureOnly: boolean = false) {
+  @Router.get("/shift/org/:orgId/:futureOnly")
+  async getOrganizationShifts(session: WebSessionDoc, orgId: ObjectId, futureOnly: Boolean) {
     const user = WebSession.getUser(session);
     await Team.isTeamMember(orgId, user);
     let shifts;
@@ -344,8 +345,8 @@ class Routes {
     return Responses.shifts(shifts);
   }
 
-  @Router.get("/shift/user/:id")
-  async getUserShifts(session: WebSessionDoc, futureOnly: boolean = false) {
+  @Router.get("/shift/user/:futureOnly")
+  async getUserShifts(session: WebSessionDoc, futureOnly: Boolean) {
     const user = WebSession.getUser(session);
     let shifts;
     if (futureOnly) {
