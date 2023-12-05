@@ -43,6 +43,7 @@
     "vue-tsc": "^1.8.11"
   },
   "dependencies": {
+    "@trevoreyre/autocomplete-vue": "^2.4.1",
     "@vueform/multiselect": "^2.6.6",
     "connect-mongo": "^5.0.0",
     "cors": "^2.8.5",
@@ -58,7 +59,9 @@
     "reflect-metadata": "^0.1.13",
     "vue": "^3.3.4",
     "vue-router": "^4.2.4",
-    "vue-scrollto": "^2.20.0"
+    "vue-scrollto": "^2.20.0",
+    "vue-simple-search-dropdown": "^1.0.1",
+    "vuetify": "^3.4.4"
   },
   "prettier": {
     "trailingComma": "all",

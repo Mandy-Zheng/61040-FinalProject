@@ -21,7 +21,6 @@ const showLeaveModal = ref<boolean>(false);
 const organization = ref<any>(undefined);
 const isEditingName = ref<boolean>(false);
 const orgName = ref<string>("");
-const colors = ["#fde4cf", "#ffcfd2", "#f1c0e8", "#cfbaf0", "#a3c4f3", "#8eecf5", "#98f5e1", "#b9fbc0", "#fbf8cc"];
 
 async function addMembers(members: any) {
   const body = { orgId: props.orgId, newMembers: members };

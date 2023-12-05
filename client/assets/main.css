@@ -96,3 +96,24 @@ a.button {
   gap: 1em;
 }
 
+
+.theme--light.v-list-item:hover:before {
+    opacity: 0.14;
+}
+
+
+.v-overlay-container {
+  background-color: white;
+  color:white;
+}
+
+.v-list .v-list-item--active { 
+  background-color: white!important; 
+}
+.v-list .v-list-item--active .v-list-item__title {
+  color: white !important;
+}
+
+.v-icon {
+  color: black;
+}

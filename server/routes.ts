@@ -280,6 +280,12 @@ class Routes {
     return await Stock.getStockById(new ObjectId(stockId));
   }
 
+  @Router.get("/stock/:org")
+  async getItemByName(session: WebSessionDoc, org: string, name: string) {
+    WebSession.getUser(session);
+    return await Stock.getStockByItem(new ObjectId(org), name);
+  }
+
   // return inventory of given organization, including the max per day allocation
   @Router.get("/inventory/:orgId")
   async getOrganizationInventory(session: WebSessionDoc, orgId: ObjectId, item?: string) {
