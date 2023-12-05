@@ -1,114 +1,74 @@
 <script setup lang="ts">
-import { fetchy } from "@/utils/fetchy";
-import { formatDate } from "@/utils/formatDate";
-const props = defineProps(["household"]);
-const emit = defineEmits(["refreshHousehold"]);
+import { ref } from "vue";
+import { fetchy } from "../../utils/fetchy";
+import HouseholdInfoComponent from "./HouseholdInfoComponent.vue";
+import PatronCardComponent from "./PatronCardComponent.vue";
 
-const tagColors = new Map([
-  ["Vegetarian", "#b9fbc0"],
-  ["Halal", "#fde4cf"],
-  ["Gluten-Free", "#fbf8cc"],
-  ["Nut-Free", "#ffcfd2"],
-  ["Low-Sodium", "#8eecf5"],
-  ["Seafood", "#90dbf4"],
-  ["Dairy-Free", "#a3c4f3"],
-  ["Kosher", "#cfbaf0"],
-]);
+const searchId = ref("");
+const household = ref<any>(undefined);
 
-const addVisit = async () => {
+async function search() {
+  let householdResult;
   try {
-    await fetchy(`/api/profile/visit/${props.household._id}`, "PATCH");
-  } catch {
+    householdResult = await fetchy(`/api/profile/${searchId.value}`, "GET");
+    console.log(householdResult);
+  } catch (_) {
     return;
   }
-  emit("refreshHousehold");
-};
+  household.value = householdResult;
+}
 </script>
 
 <template>
-  <div v-if="household" class="item-card">
-    <div class="item">
+  <main style="margin-left: 50px">
+    <form class="pure-form pure-form-aligned" @submit.prevent="search">
+      <fieldset>
+        <div class="pure-control-group">
+          <input v-model.trim="searchId" type="text" id="aligned-name" placeholder="Household ID" style="border-radius: 2em; width: 25em" required />
+          <button class="icon search">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="gray" class="bi bi-search" viewBox="0 0 16 16">
+              <path
+                d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"
+              />
+            </svg>
+          </button>
+        </div>
+      </fieldset>
+    </form>
+    <div v-if="household" class="row">
       <div>
-        <h2>{{ household._id }}</h2>
-        <div class="info">
-          <p>Past visits: {{ household.pastVisits.length }}</p>
-          <ul v-if="household.pastVisits.length > 0">
-            <div v-for="visit in household.pastVisits" :key="visit">{{ formatDate(visit) }}</div>
-          </ul>
-          <!-- <button class="button-39" @click="addVisit">add visit</button> -->
-        </div>
-        <div class="info">
-          <p class="diet-title">Dietary Restrictions:</p>
-          <div class="row">
-            <div v-for="tag in household.dietaryRestrictions" :key="tag">
-              <p class="tag" v-bind:style="{ backgroundColor: tagColors.get(tag) }">{{ tag }}</p>
-            </div>
-          </div>
-        </div>
-        <div class="info">
-          <p>Language: {{ household.preferredLanguage }}</p>
-          <!-- TODO relevant audio -->
-        </div>
-        <div class="info" v-if="household.specialRequests">
-          <p>Requests: {{ household.specialRequests }}</p>
+        <HouseholdInfoComponent :household="household" />
+      </div>
+      <div class="column">
+        <div v-for="patron in household.members" :key="patron">
+          <PatronCardComponent :patronId="patron" />
         </div>
       </div>
     </div>
-  </div>
+  </main>
 </template>
 
 <style scoped>
-.modify {
+.button-39 {
+  margin: 10px;
+  padding: 10px;
+}
+
+.column {
   display: flex;
-  height: fit-content;
-}
-.item-card {
-  display: flex;
-  flex-direction: row;
-  padding: 1em;
-}
-
-.item {
-  display: flex;
-  flex-direction: row;
-  height: max-content;
-  width: 45em;
-  justify-content: space-between;
-}
-
-.tag {
-  border: 1px solid rgba(0, 0, 0, 0.296);
-  font-size: smaller;
-  padding: 5px;
-  border-radius: 64px;
-  width: fit-content;
-}
-
-.info {
-  padding: 0;
-  padding-left: 0em;
-  border-radius: 16px;
-  margin-bottom: 1em;
-}
-.diet-title {
-  margin-bottom: 1em;
-  margin-top: 1em;
-}
-
-h2 {
-  margin-bottom: 1;
-  font-weight: lighter;
+  flex-direction: column;
+  gap: 1em;
+  padding-right: 2em;
 }
 
 .row {
   display: flex;
   flex-direction: row;
-  gap: 0.5em;
-  flex-wrap: wrap;
-  row-gap: 0.5em;
+  justify-content: space-around;
 }
 
-p {
-  margin: 0px;
+.search {
+  margin-left: -35px;
+  margin-top: 5px;
 }
 </style>
