@@ -41,7 +41,7 @@ async function updateOrgName() {
     organization.value = await fetchy(`/api/organization/${props.orgId}`, "GET");
     orgName.value = organization.value.name;
     if (selectedOrg.value && selectedOrg.value.id === props.orgId) {
-      await setOrganization({ id: props.orgId, name: orgName.value });
+      await setOrganization({ id: props.orgId, name: orgName.value, isAdmin: selectedOrg.value.isAdmin });
     }
     emit("updateName");
   } catch (_) {

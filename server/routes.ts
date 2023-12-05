@@ -101,7 +101,8 @@ class Routes {
     const { organizations } = await Membership.get(user);
     const allOrgs = await Promise.all(organizations.map((id) => Team.get(id)));
     return allOrgs.map((org) => {
-      return { id: org._id, name: org.name };
+      const isAdmin = org.admins.some((a) => a.toString() === user.toString());
+      return { id: org._id, name: org.name, isAdmin: isAdmin };
     });
   }
 
@@ -154,8 +155,8 @@ class Routes {
     const user = WebSession.getUser(session);
     const id = new ObjectId(orgId);
     const memberId = new ObjectId(member);
-    const shiftsWithOrg = (await Shift.getShiftsByUser(user)).filter((s) => s.owner.toString() === orgId.toString());
-    shiftsWithOrg.forEach((s) => Shift.unclaimShift(s._id, user));
+    const shiftsWithOrg = (await Shift.getShiftsByUser(member)).filter((s) => s.owner.toString() === orgId.toString());
+    shiftsWithOrg.forEach((s) => Shift.unclaimShift(s._id, member));
     const msg = await Team.removeUsersFromTeam(id, [memberId], user);
     await Membership.removeMembership(memberId, id);
     return msg;
@@ -337,8 +338,8 @@ class Routes {
     return await Stock.deleteStock(ID);
   }
 
-  @Router.get("/shift/:orgId")
-  async getOrganizationShifts(session: WebSessionDoc, orgId: ObjectId, futureOnly: boolean = false) {
+  @Router.get("/shift/org/:orgId/:futureOnly")
+  async getOrganizationShifts(session: WebSessionDoc, orgId: ObjectId, futureOnly: Boolean) {
     const user = WebSession.getUser(session);
     await Team.isTeamMember(orgId, user);
     let shifts;
@@ -350,8 +351,8 @@ class Routes {
     return Responses.shifts(shifts);
   }
 
-  @Router.get("/shift/user/:id")
-  async getUserShifts(session: WebSessionDoc, futureOnly: boolean = false) {
+  @Router.get("/shift/user/:futureOnly")
+  async getUserShifts(session: WebSessionDoc, futureOnly: Boolean) {
     const user = WebSession.getUser(session);
     let shifts;
     if (futureOnly) {
@@ -370,7 +371,7 @@ class Routes {
     return { msg: created.msg, shift: Responses.shift(created.shift) };
   }
 
-  @Router.patch("/shift/claim")
+  @Router.patch("/shift/claim/:id")
   async claimShift(session: WebSessionDoc, id: ObjectId) {
     const user = WebSession.getUser(session);
     const shift = await Shift.getShiftById(id);
@@ -378,7 +379,7 @@ class Routes {
     return await Shift.claimShift(id, user);
   }
 
-  @Router.patch("/shift/unclaim")
+  @Router.patch("/shift/unclaim/:id")
   async unclaimShift(session: WebSessionDoc, id: ObjectId) {
     const user = WebSession.getUser(session);
     const shift = await Shift.getShiftById(id);
