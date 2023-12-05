@@ -79,7 +79,7 @@ onBeforeMount(async () => {
         <ShiftComponent :shift="shift" @refreshShifts="getAllShifts" />
       </article>
     </div>
-    <p v-else>You are currently not a part of organization</p>
+    <p v-else>No shifts yet! Only admins can create shifts.</p>
   </div>
 </template>
 
