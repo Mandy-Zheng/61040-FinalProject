@@ -1,12 +1,17 @@
 <script setup lang="ts">
-import { fetchy } from "@/utils/fetchy";
+import { BodyT, fetchy } from "@/utils/fetchy";
+import { storeToRefs } from "pinia";
 import { onBeforeMount, ref } from "vue";
+import { useOrganizationStore } from "../../stores/organization";
 import DeleteStockModal from "./DeleteStockModal.vue";
+import EditStockModal from "./EditStockModal.vue";
 
+const { selectedOrg } = storeToRefs(useOrganizationStore());
 const props = defineProps(["stockId"]);
-const item = ref<any>(undefined);
+const item = ref();
 const emit = defineEmits(["refreshStocks"]);
 const showDeleteModal = ref<boolean>(false);
+const showEditModal = ref<boolean>(false);
 
 const tagColors = new Map([
   ["Vegetarian", "#b9fbc0"],
@@ -36,6 +41,17 @@ const deleteStock = async () => {
   emit("refreshStocks");
 };
 
+async function editStock(name: string, imgLink: string, purchaseLink: string, units: number, diet: Array<string>, maxPerPerson: number) {
+  const update: BodyT = { item: name, count: units, supplyLink: purchaseLink, image: imgLink, diet: diet, maxPerPerson: maxPerPerson };
+  showEditModal.value = false;
+  try {
+    await fetchy(`/api/inventory/${props.stockId}`, "PATCH", { body: { update: update } });
+  } catch (e) {
+    return;
+  }
+  emit("refreshStocks");
+}
+
 onBeforeMount(async () => {
   await getItem();
 });
@@ -46,7 +62,7 @@ onBeforeMount(async () => {
     <img :src="item.image" />
     <div class="item">
       <div>
-        <div class="row" style="align-items: center; gap: 23em">
+        <div class="row" style="align-items: center; gap: 20em">
           <h2>{{ item.item }}</h2>
           <h3 v-if="item.count <= 5" style="color: rgb(203, 1, 1)">Low in stock!</h3>
         </div>
@@ -65,9 +81,10 @@ onBeforeMount(async () => {
       </div>
       <teleport to="body">
         <DeleteStockModal :show="showDeleteModal" :stock="item" @close="showDeleteModal = false" @delete="deleteStock(), (showDeleteModal = false)" />
+        <EditStockModal :show="showEditModal" :stock="item" @close="showEditModal = false" @update="editStock" />
       </teleport>
     </div>
-    <div class="row" style="gap: 2em">
+    <div class="row" style="gap: 1em">
       <div class="link">
         <a :href="item.supplyLink" v-if="item.supplyLink"
           ><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="black" class="bi bi-cart-fill" viewBox="0 0 16 16">
@@ -76,6 +93,19 @@ onBeforeMount(async () => {
             />
           </svg>
         </a>
+      </div>
+      <div>
+        <button class="icon" @click.prevent="showEditModal = true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+            <path
+              d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"
+            />
+            <path
+              fill-rule="evenodd"
+              d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"
+            />
+          </svg>
+        </button>
       </div>
       <div class="modify">
         <button class="icon" @click.prevent="showDeleteModal = true">
@@ -162,6 +192,8 @@ img {
   gap: 0.5em;
   flex-wrap: wrap;
   row-gap: 0.5em;
+  align-items: flex-start;
+  align-content: flex-start;
 }
 
 p {

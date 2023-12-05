@@ -322,7 +322,7 @@ class Routes {
   }
 
   // update an inventory item's count or other details (link, image, etc)
-  @Router.patch("/inventory")
+  @Router.patch("/inventory/:id")
   async updateInventoryItem(session: WebSessionDoc, id: ObjectId, update: Partial<StockDoc>) {
     const user = WebSession.getUser(session);
     const ID = new ObjectId(id);
