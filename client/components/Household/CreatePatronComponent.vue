@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const props = defineProps(["idx", "name", "birthday", "image"]);
 const emit = defineEmits(["updateName", "updateBirthday", "updateImage", "delete"]);
-
+const today = new Date().toISOString().split("T")[0];
 function updateName(event: any) {
   emit("updateName", props.idx, event.target.value);
 }
@@ -20,7 +20,7 @@ function updateImage(event: any) {
     <div class="title"><span>Patron</span><button @click="emit('delete', props.idx)">Delete</button></div>
     <div class="form-input"><span>Name:</span> <input @input="updateName" :value="props.name" /></div>
 
-    <div class="form-input"><span>Birthday:</span> <input type="date" :value="props.birthday" @input="updateBirthday" /></div>
+    <div class="form-input"><span>Birthday:</span> <input type="date" :max="today" :value="props.birthday" @input="updateBirthday" /></div>
     <div class=""><span>Image:</span> <input @input="updateImage" :value="props.image" /></div>
   </div>
 </template>
@@ -52,8 +52,5 @@ input {
   padding-left: 0.5em;
   margin-left: 1em;
   border-radius: 64px;
-}
-
-span {
 }
 </style>
