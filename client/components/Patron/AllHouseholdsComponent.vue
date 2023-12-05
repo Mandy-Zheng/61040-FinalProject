@@ -69,7 +69,7 @@ section,
 p,
 .row {
   margin: 0 auto;
-  max-width: 60em;
+  max-width: 55em;
 }
 
 article {
@@ -78,7 +78,7 @@ article {
   display: flex;
   flex-direction: column;
   gap: 0.5em;
-  padding: 1em;
+  padding: 1em 2em;
 }
 
 .posts {
@@ -100,6 +100,7 @@ article {
   background-color: var(--primary);
   color: black;
   margin: 1em;
+  border: none;
 }
 .reset {
   background-color: var(--secondary);

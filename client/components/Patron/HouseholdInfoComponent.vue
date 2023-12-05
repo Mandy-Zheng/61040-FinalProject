@@ -18,7 +18,7 @@ const tagColors = new Map([
   <div v-if="props.household" class="item-card">
     <div class="item">
       <div>
-        <h2>{{ props.household._id }}</h2>
+        <h3>{{ props.household._id }}</h3>
         <div class="info">
           <p>Past visits: {{ props.household.pastVisits.length }}</p>
           <ul v-if="props.household.pastVisits.length > 0">
@@ -53,14 +53,13 @@ const tagColors = new Map([
 .item-card {
   display: flex;
   flex-direction: row;
-  padding: 1em;
+  padding: 0em;
 }
 
 .item {
   display: flex;
   flex-direction: row;
   height: max-content;
-  width: 45em;
   justify-content: space-between;
 }
 

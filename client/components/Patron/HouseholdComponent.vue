@@ -20,7 +20,7 @@ const deleteHousehold = async () => {
 </script>
 
 <template>
-  <main style="margin: 50px">
+  <main style="margin: 10px 0px">
     <div class="row">
       <div>
         <HouseholdInfoComponent :household="household" />
@@ -62,9 +62,7 @@ const deleteHousehold = async () => {
 .row {
   display: flex;
   flex-direction: row;
-  justify-content: center;
-  padding-left: 5em;
-  padding-right: 5em;
+  justify-content: space-between;
 }
 
 main {
