@@ -175,7 +175,7 @@ class Routes {
   }
 
   // reset all visits for all households in organization
-  @Router.patch("/organization/reset")
+  @Router.patch("/organization/reset/:orgId")
   async resetAllVisits(session: WebSessionDoc, orgId: ObjectId) {
     const user = WebSession.getUser(session);
     const org = new ObjectId(orgId);
@@ -256,6 +256,24 @@ class Routes {
     const user = WebSession.getUser(session);
     await Team.isTeamMember(household.organization, user);
     return household;
+  }
+
+  // return household
+  @Router.get("/profile/one/:id")
+  async singleHousehold(session: WebSessionDoc, id: ObjectId) {
+    const ID = new ObjectId(id);
+    const household = await Household.getProfileById(ID);
+    const user = WebSession.getUser(session);
+    await Team.isTeamMember(household.organization, user);
+    return [household];
+  }
+
+  @Router.get("/profile/org/:orgId")
+  async getHouseholdsByOrg(session: WebSessionDoc, orgId: ObjectId) {
+    const id = new ObjectId(orgId);
+    const user = WebSession.getUser(session);
+    await Team.isTeamMember(id, user);
+    return await Household.getProfilesByOwner(id);
   }
 
   @Router.patch("/profile/visit/:id")

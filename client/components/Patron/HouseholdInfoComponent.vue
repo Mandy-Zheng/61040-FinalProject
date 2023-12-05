@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import { fetchy } from "@/utils/fetchy";
 import { formatDate } from "@/utils/formatDate";
 const props = defineProps(["household"]);
-const emit = defineEmits(["refreshHousehold"]);
 
 const tagColors = new Map([
   ["Vegetarian", "#b9fbc0"],
@@ -14,43 +12,33 @@ const tagColors = new Map([
   ["Dairy-Free", "#a3c4f3"],
   ["Kosher", "#cfbaf0"],
 ]);
-
-const addVisit = async () => {
-  try {
-    await fetchy(`/api/profile/visit/${props.household._id}`, "PATCH");
-  } catch {
-    return;
-  }
-  emit("refreshHousehold");
-};
 </script>
 
 <template>
-  <div v-if="household" class="item-card">
+  <div v-if="props.household" class="item-card">
     <div class="item">
       <div>
-        <h2>{{ household._id }}</h2>
+        <h2>{{ props.household._id }}</h2>
         <div class="info">
-          <p>Past visits: {{ household.pastVisits.length }}</p>
-          <ul v-if="household.pastVisits.length > 0">
-            <div v-for="visit in household.pastVisits" :key="visit">{{ formatDate(visit) }}</div>
+          <p>Past visits: {{ props.household.pastVisits.length }}</p>
+          <ul v-if="props.household.pastVisits.length > 0">
+            <div v-for="visit in props.household.pastVisits" :key="visit">{{ formatDate(visit) }}</div>
           </ul>
-          <!-- <button class="button-39" @click="addVisit">add visit</button> -->
         </div>
         <div class="info">
           <p class="diet-title">Dietary Restrictions:</p>
           <div class="row">
-            <div v-for="tag in household.dietaryRestrictions" :key="tag">
+            <div v-for="tag in props.household.dietaryRestrictions" :key="tag">
               <p class="tag" v-bind:style="{ backgroundColor: tagColors.get(tag) }">{{ tag }}</p>
             </div>
           </div>
         </div>
         <div class="info">
-          <p>Language: {{ household.preferredLanguage }}</p>
+          <p>Language: {{ props.household.preferredLanguage }}</p>
           <!-- TODO relevant audio -->
         </div>
         <div class="info" v-if="household.specialRequests">
-          <p>Requests: {{ household.specialRequests }}</p>
+          <p>Requests: {{ props.household.specialRequests }}</p>
         </div>
       </div>
     </div>

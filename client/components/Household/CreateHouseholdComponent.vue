@@ -7,7 +7,7 @@ import { fetchy } from "../../utils/fetchy";
 import CreatePatronComponent from "./CreatePatronComponent.vue";
 
 const props = defineProps(["show"]);
-const emit = defineEmits(["close", "add"]);
+const emit = defineEmits(["close", "refreshHouseholds"]);
 
 const { selectedOrg } = storeToRefs(useOrganizationStore());
 
@@ -57,6 +57,7 @@ async function addHousehold() {
     if (selectedOrg.value) {
       const body = { orgId: selectedOrg.value.id, patrons: members.value, diet: diet.value, lang: language.value, req: specialRequests.value };
       await fetchy(`/api/profile`, "POST", { body: body });
+      emit("refreshHouseholds");
       emit("close");
     }
   } catch (error) {
@@ -112,9 +113,6 @@ onBeforeMount(async () => {});
 </template>
 
 <style scoped>
-.container {
-}
-
 select {
   height: 35px;
   padding: 5px;
