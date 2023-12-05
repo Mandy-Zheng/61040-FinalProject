@@ -27,7 +27,7 @@ export default class StockConcept {
   }
 
   async getStocksByOwner(owner: ObjectId) {
-    const stocks = await this.stocks.readMany({ owner });
+    const stocks = await this.stocks.readMany({ owner }, { sort: { item: 1 } });
     return stocks;
   }
 

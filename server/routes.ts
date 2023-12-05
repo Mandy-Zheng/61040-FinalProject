@@ -281,21 +281,15 @@ class Routes {
     return await Stock.getStockById(new ObjectId(stockId));
   }
 
-  @Router.get("/stock/:org")
-  async getItemByName(session: WebSessionDoc, org: string, name: string) {
-    WebSession.getUser(session);
-    return await Stock.getStockByItem(new ObjectId(org), name);
-  }
-
   // return inventory of given organization, including the max per day allocation
   @Router.get("/inventory/:orgId")
-  async getOrganizationInventory(session: WebSessionDoc, orgId: ObjectId, item?: string) {
+  async getOrganizationInventory(session: WebSessionDoc, orgId: ObjectId, name?: string) {
     const user = WebSession.getUser(session);
     const org = new ObjectId(orgId);
     await Team.isTeamMember(org, user);
     let inventory;
-    if (item) {
-      inventory = await Stock.getStockByItem(org, item);
+    if (name) {
+      inventory = await Stock.getStockByItem(org, name);
       return { ...(await Responses.stock(inventory)), maxPerDay: Stock.getTodaysAllocation(inventory.count) };
     } else {
       inventory = await Stock.getStocksByOwner(org);
