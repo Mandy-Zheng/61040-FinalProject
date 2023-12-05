@@ -51,7 +51,8 @@ async function addItem(name: string, imgLink: string, purchaseLink: string, unit
   showCreateModal.value = false;
   try {
     await fetchy(`/api/inventory`, "POST", { body: body });
-    await getInventory();
+    await getAllInventories();
+    await getInventories();
   } catch (_) {
     return;
   }
@@ -81,7 +82,7 @@ onBeforeMount(async () => {
     <teleport to="body">
       <CreateStockModal :show="showCreateModal" @close="showCreateModal = false" @add="addItem" />
     </teleport>
-    <div v-for="stock in inventory" :key="stock" class="stocks"><StockComponent @refreshStocks="getInventory" :stockId="stock._id" /></div>
+    <div v-for="stock in inventory" :key="stock" class="stocks"><StockComponent @refreshStocks="getAllInventories(), getInventories()" :stockId="stock._id" /></div>
   </main>
 </template>
 

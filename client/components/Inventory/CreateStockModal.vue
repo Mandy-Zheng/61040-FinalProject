@@ -14,6 +14,16 @@ const units = ref<number>(0);
 const purchaseLink = ref<string>("");
 const diet = ref<Array<string>>([]);
 const maxPerPerson = ref<number>(0);
+
+async function emptyForm() {
+  name.value = "";
+  imgLink.value = "";
+  units.value = 0;
+  purchaseLink.value = "";
+  diet.value = [];
+  maxPerPerson.value = 0;
+}
+
 onBeforeMount(async () => {});
 //test link https://drive.google.com/uc?export=view&id=1K3GKKH13ZdvlpePlfIx62OFRsfjMxwoE
 </script>
@@ -28,7 +38,10 @@ onBeforeMount(async () => {});
           <img v-else :src="imgLink" alt="Having Trouble uploading item picture" />
           <div class="item">
             <div class="form-input">Name<input v-model="name" required /></div>
-            <div class="form-input">Diet <Multiselect class="multiselect" v-model="diet" mode="tags" :options="multiselectDietTags" :searchable="true" required /></div>
+            <div class="form-input">
+              Diet
+              <div><Multiselect class="multiselect" v-model="diet" mode="tags" :options="multiselectDietTags" :searchable="true" /></div>
+            </div>
             <div class="form-input">Image Link<input v-model="imgLink" /></div>
             <div class="form-input">Purchase Link<input v-model="purchaseLink" /></div>
             <div class="form-input">
@@ -37,8 +50,8 @@ onBeforeMount(async () => {});
           </div>
         </div>
         <div class="modal-footer">
-          <button class="button-39" @click="emit('close')">Cancel</button>
-          <button class="button-39" @click="emit('add', name, imgLink, purchaseLink, units, diet, maxPerPerson)">Add</button>
+          <button class="button-39" @click="emit('close'), emptyForm()">Cancel</button>
+          <button class="button-39" @click="emit('add', name, imgLink, purchaseLink, units, diet, maxPerPerson), emptyForm()">Add</button>
         </div>
       </div>
     </div>
@@ -55,7 +68,7 @@ onBeforeMount(async () => {});
 }
 
 .multiselect {
-  width: 16em;
+  width: 20em;
   --ms-radius: 32px;
   --ms-ring-color: #eb721630;
   padding-left: 8px;
@@ -77,6 +90,10 @@ input {
   padding-left: 0.5em;
   margin-left: 1em;
   border-radius: 64px;
+  border: solid;
+  border-color: rgb(216, 216, 216);
+  border-width: 1px;
+  height: 25px;
 }
 
 .number-input {
@@ -93,6 +110,8 @@ img {
   display: flex;
   justify-content: space-between;
   margin-bottom: 0.5em;
+  gap: 1em;
+  align-items: center;
 }
 
 .form {
