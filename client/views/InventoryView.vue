@@ -17,20 +17,25 @@ const item = ref("");
 async function getInventory() {
   try {
     if (selectedOrg.value) {
-      if (item.value === "") {
-        inventory.value = await fetchy(`/api/inventory/${selectedOrg.value.id}`, "GET");
-      } else {
-        let name = item.value;
-        let query: Record<string, string> = name !== undefined ? { name } : {};
-        inventory.value = [await fetchy(`/api/stock/${selectedOrg.value.id}`, "GET", { query })];
-        console.log(inventory.value);
-      }
+      let name = item.value;
+      let query: Record<string, string> = name !== undefined ? { name } : {};
+      inventory.value = [await fetchy(`/api/stock/${selectedOrg.value.id}`, "GET", { query })];
+      console.log(inventory.value);
     }
   } catch (error) {
     return;
   }
 }
 
+async function getAllInventories() {
+  try {
+    if (selectedOrg.value) {
+      inventory.value = await fetchy(`/api/inventory/${selectedOrg.value.id}`, "GET");
+    }
+  } catch (error) {
+    return;
+  }
+}
 async function getInventories() {
   try {
     if (selectedOrg.value) {
@@ -53,7 +58,7 @@ async function addItem(name: string, imgLink: string, purchaseLink: string, unit
 }
 
 onBeforeMount(async () => {
-  await getInventory();
+  await getAllInventories();
   await getInventories();
 });
 </script>
@@ -61,7 +66,15 @@ onBeforeMount(async () => {
 <template>
   <main v-if="selectedOrg" style="margin-left: 80px">
     <!-- <form class="pure-form pure-form-aligned" @submit.prevent="search"> -->
-    <Multiselect v-model="item" class="search" :searchable="true" :options="inventories.map((item) => item.item)" @select="getInventory" placeholder="Search for an item"></Multiselect>
+    <Multiselect
+      v-model="item"
+      class="search"
+      :searchable="true"
+      :options="inventories.map((item) => item.item)"
+      @clear="getAllInventories"
+      @select="getInventory"
+      placeholder="Search for an item"
+    ></Multiselect>
     <div style="display: flex; justify-content: flex-end">
       <button class="button-39" @click.prevent="showCreateModal = true">Create New Item</button>
     </div>
