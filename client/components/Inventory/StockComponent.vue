@@ -59,7 +59,8 @@ onBeforeMount(async () => {
 
 <template>
   <div v-if="item" class="item-card">
-    <img :src="item.image" />
+    <img v-if="item.image.length" :src="item.image" />
+    <img v-else src="../../assets/images/image.svg" />
     <div class="item">
       <div>
         <div class="row" style="align-items: center; gap: 20em">
