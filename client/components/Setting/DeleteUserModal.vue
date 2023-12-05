@@ -18,14 +18,7 @@ const emit = defineEmits(["close", "delete"]);
   </transition>
 </template>
 
-<style>
-img {
-  width: 20px;
-  height: 20px;
-  position: absolute;
-  right: 0;
-  top: 0;
-}
+<style scoped>
 .modal-footer {
   display: flex;
   justify-content: space-between;

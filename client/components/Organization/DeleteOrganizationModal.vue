@@ -5,7 +5,7 @@ const emit = defineEmits(["close", "delete"]);
 
 <template>
   <transition name="modal">
-    <div v-if="props.show" class="modal-mask">
+    <div v-if="show" class="modal-mask">
       <div class="modal-container">
         <div class="modal-header">Delete {{ props.organization.name }}</div>
         This action will delete the organization permanently. Are you sure?
