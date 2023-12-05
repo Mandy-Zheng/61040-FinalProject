@@ -71,6 +71,8 @@ article {
   font-weight: 400;
   font-size: small;
   gap: 2.5em;
+  width: 20em;
+  overflow: scroll;
 }
 
 .column {

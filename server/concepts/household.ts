@@ -48,7 +48,7 @@ export default class HouseholdConcept {
   }
 
   async getProfilesByOwner(org: ObjectId) {
-    const households = await this.households.readMany({ organization: org });
+    const households = await this.households.readMany({ organization: org }, { sort: { dateUpdated: -1 } });
     if (!households) {
       throw new NotFoundError("Household Profiles not found for organization");
     }
