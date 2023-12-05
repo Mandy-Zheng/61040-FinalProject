@@ -4,7 +4,6 @@ import { fetchy } from "../../utils/fetchy";
 import DeleteHouseholdModal from "./DeleteHouseholdModal.vue";
 import HouseholdInfoComponent from "./HouseholdInfoComponent.vue";
 import PatronCardComponent from "./PatronCardComponent.vue";
-
 const showDeleteModal = ref<boolean>(false);
 const props = defineProps(["household"]);
 const emit = defineEmits(["refreshHouseholds"]);
@@ -17,13 +16,22 @@ const deleteHousehold = async () => {
   }
   emit("refreshHouseholds");
 };
+
+const addVisit = async () => {
+  try {
+    await fetchy(`api/profile/visit/${props.household._id}`, "PATCH");
+  } catch {
+    return;
+  }
+  emit("refreshHouseholds");
+};
 </script>
 
 <template>
   <main style="margin: 10px 0px">
     <div class="row">
       <div>
-        <HouseholdInfoComponent :household="household" />
+        <HouseholdInfoComponent :household="household" @refreshHouseholds="emit('refreshHouseholds')" @refreshVisits="addVisit" />
       </div>
       <div class="column">
         <div v-for="patron in household.members" :key="patron">
