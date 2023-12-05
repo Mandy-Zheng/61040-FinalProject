@@ -48,18 +48,20 @@ onBeforeMount(async () => {
   </div>
   <CreateHouseholdComponent :show="showCreateModal" @close="showCreateModal = false" @refreshHouseholds="getHouseholds" />
   <ResetVisitsModal :show="showResetModal" @close="showResetModal = false" @refreshHouseholds="getHouseholds" />
-  <div class="row">
-    <h2 v-if="!searchId">Households:</h2>
-    <h2 v-else>{{ searchId }}:</h2>
-    <SearchHouseholdsForm @search="getHouseholds" />
+  <div v-if="!showCreateModal">
+    <div class="row">
+      <h2 v-if="!searchId">Households:</h2>
+      <h2 v-else>{{ searchId }}:</h2>
+      <SearchHouseholdsForm @search="getHouseholds" />
+    </div>
+    <section class="posts" v-if="loaded && households.length !== 0">
+      <article v-for="household in households" :key="household._id">
+        <HouseholdComponent :household="household" @refreshHouseholds="getHouseholds" />
+      </article>
+    </section>
+    <p v-else-if="loaded">No households yet!</p>
+    <p v-else>Loading...</p>
   </div>
-  <section class="posts" v-if="loaded && households.length !== 0">
-    <article v-for="household in households" :key="household._id">
-      <HouseholdComponent :household="household" @refreshHouseholds="getHouseholds" />
-    </article>
-  </section>
-  <p v-else-if="loaded">No households yet!</p>
-  <p v-else>Loading...</p>
 </template>
 
 <style scoped>
