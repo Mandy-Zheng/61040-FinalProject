@@ -1,24 +1,24 @@
 <script setup lang="ts">
-const props = defineProps(["show", "organization"]);
+const props = defineProps(["show"]);
 const emit = defineEmits(["close", "delete"]);
 </script>
 
 <template>
   <transition name="modal">
-    <div v-if="props.show" class="modal-mask">
+    <div v-if="show" class="modal-mask">
       <div class="modal-container">
-        <div class="modal-header">Delete {{ props.organization.name }}</div>
-        This action will delete the organization permanently. Are you sure?
+        <div class="modal-header">Delete user</div>
+        This action will delete your account permanently. Are you sure?
         <div class="modal-footer">
           <button class="button-39" @click="emit('close')">Close</button>
-          <button class="button-39 red" @click="emit('delete')">Delete Organization</button>
+          <button class="button-39 red" @click="emit('delete')">Delete</button>
         </div>
       </div>
     </div>
   </transition>
 </template>
 
-<style scoped>
+<style>
 img {
   width: 20px;
   height: 20px;

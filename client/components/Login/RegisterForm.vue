@@ -2,13 +2,16 @@
 import router from "@/router";
 import { useUserStore } from "@/stores/user";
 import { ref } from "vue";
+import { useOrganizationStore } from "../../stores/organization";
 
 const username = ref("");
 const password = ref("");
 const { registerUser, loginUser, updateSession } = useUserStore();
+const { setOrganization } = useOrganizationStore();
 
 async function register() {
   await registerUser(username.value, password.value);
+  await setOrganization(undefined); // reset organization each login to force user selection
   await loginUser(username.value, password.value);
   void updateSession();
   void router.push({ name: "Home" });
