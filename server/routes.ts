@@ -248,19 +248,23 @@ class Routes {
     return await Patron.getPatronById(_id);
   }
 
-  // return household and add visit
+  // return household
   @Router.get("/profile/:id")
   async signInHousehold(session: WebSessionDoc, id: ObjectId) {
-    console.log("HEY");
     const ID = new ObjectId(id);
     const household = await Household.getProfileById(ID);
     const user = WebSession.getUser(session);
-    console.log("HEY");
     await Team.isTeamMember(household.organization, user);
-    console.log("HEY");
-    //await Household.addVisit(ID); //TO-DO i think this should be a separate sync?
-    console.log("HEY");
     return household;
+  }
+
+  @Router.patch("/profile/visit/:id")
+  async addVisit(session: WebSessionDoc, id: ObjectId) {
+    const ID = new ObjectId(id);
+    const household = await Household.getProfileById(ID);
+    const user = WebSession.getUser(session);
+    await Team.isTeamMember(household.organization, user);
+    await Household.addVisit(ID);
   }
 
   @Router.delete("/profile/:id")

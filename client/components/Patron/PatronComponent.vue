@@ -37,7 +37,7 @@ async function search() {
     </form>
     <div v-if="household" class="row">
       <div>
-        <HouseholdComponent />
+        <HouseholdComponent :household="household" />
       </div>
       <div class="column">
         <div v-for="patron in household.members" :key="patron">
@@ -58,6 +58,7 @@ async function search() {
   display: flex;
   flex-direction: column;
   gap: 1em;
+  padding-right: 2em;
 }
 
 .row {

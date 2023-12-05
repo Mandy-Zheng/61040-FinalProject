@@ -43,7 +43,7 @@ export default class HouseholdConcept {
   public readonly households = new DocCollection<HouseholdDoc>("households");
 
   async create(org: ObjectId, members: Array<ObjectId>, diet: Array<DietaryRestrictions>, language: Language, requests: string) {
-    const _id = await this.households.createOne({ organization: org, members: members, dietaryRestrictions: diet, preferredLanguage: language, specialRequests: requests });
+    const _id = await this.households.createOne({ organization: org, members: members, dietaryRestrictions: diet, preferredLanguage: language, specialRequests: requests, pastVisits: [] });
     return { msg: "HouseholdProfile successfully created!", household: await this.households.readOne({ _id }) };
   }
 
