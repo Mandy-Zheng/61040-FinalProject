@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { formatDate } from "@/utils/formatDate";
+
 const props = defineProps(["household"]);
+const emit = defineEmits(["refreshVisits"]);
 
 const tagColors = new Map([
   ["Vegetarian", "#b9fbc0"],
@@ -20,7 +22,22 @@ const tagColors = new Map([
       <div>
         <h3>{{ props.household._id }}</h3>
         <div class="info">
-          <p>Past visits: {{ props.household.pastVisits.length }}</p>
+          <p>
+            Past visits: {{ props.household.pastVisits.length }}
+            <button class="icon" @click="emit('refreshVisits')" v-b-tooltip.hover title="Add visit">
+              <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" preserveAspectRatio="xMidYMid meet">
+                <g transform="translate(0.000000,25) scale(0.100000,-0.100000)" fill="#000000" stroke="none">
+                  <path
+                    d="M71 206 c-87 -48 -50 -186 49 -186 51 0 100 49 100 99 0 75 -83 124
+-149 87z m59 -61 c0 -8 7 -15 15 -15 8 0 15 -4 15 -10 0 -5 -7 -10 -15 -10 -8
+0 -15 -7 -15 -15 0 -8 -4 -15 -10 -15 -5 0 -10 7 -10 15 0 8 -7 15 -15 15 -8
+0 -15 5 -15 10 0 6 7 10 15 10 8 0 15 7 15 15 0 8 5 15 10 15 6 0 10 -7 10
+-15z"
+                  />
+                </g>
+              </svg>
+            </button>
+          </p>
           <ul v-if="props.household.pastVisits.length > 0">
             <div v-for="visit in props.household.pastVisits" :key="visit">{{ formatDate(visit) }}</div>
           </ul>

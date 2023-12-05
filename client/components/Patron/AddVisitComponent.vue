@@ -1,20 +1,29 @@
 <script setup lang="ts">
-// import { fetchy } from "@/utils/fetchy";
+import { fetchy } from "@/utils/fetchy";
 const props = defineProps(["household"]);
-const emit = defineEmits(["refreshHousehold", "add"]);
+const emit = defineEmits(["addedVisit"]);
 
-// const addVisit = async () => {
-//   try {
-//     await fetchy(`/api/profile/visit/${props.household._id}`, "PATCH");
-//   } catch {
-//     return;
-//   }
-//   emit("refreshHousehold");
-// };
+const addVisit = async () => {
+  try {
+    await fetchy(`/api/profile/visit/${props.household._id}`, "PATCH");
+    emit("addedVisit");
+  } catch {
+    return;
+  }
+};
 </script>
 
 <template>
-  <button class="button-39" @click="emit('add')">add visit</button>
+  <form class="pure-form pure-form-aligned" @submit.prevent="addVisit">
+    <!-- <h3>Register New Organization</h3> -->
+    <fieldset>
+      <div class="pure-control-group align">
+        <!-- <input v-model.trim="orgName" type="text" id="aligned-name" placeholder="Organization Name" required /> -->
+        <button class="button-39">add visit</button>
+      </div>
+    </fieldset>
+  </form>
+  <!-- <button class="button-39" @click="emit('add')">add visit</button> -->
 </template>
 
 <style scoped>

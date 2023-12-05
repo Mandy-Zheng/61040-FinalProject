@@ -283,6 +283,7 @@ class Routes {
     const user = WebSession.getUser(session);
     await Team.isTeamMember(household.organization, user);
     await Household.addVisit(ID);
+    return { msg: "Successfully added visit!" };
   }
 
   @Router.delete("/profile/:id")

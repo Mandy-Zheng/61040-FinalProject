@@ -4,6 +4,7 @@ import { fetchy } from "@/utils/fetchy";
 import { storeToRefs } from "pinia";
 import { onBeforeMount, ref } from "vue";
 import CreateHouseholdComponent from "../Household/CreateHouseholdComponent.vue";
+// import AddVisitComponent from "./AddVisitComponent.vue";
 import HouseholdComponent from "./HouseholdComponent.vue";
 import ResetVisitsModal from "./ResetVisitsModal.vue";
 import SearchHouseholdsForm from "./SearchHouseholdsForm.vue";
@@ -21,13 +22,16 @@ async function getHouseholds(_id?: string) {
   try {
     if (_id) {
       results = await fetchy(`/api/profile/one/${_id}`, "GET");
+      searchId.value = _id;
+    } else if (_id === undefined && searchId.value) {
+      results = await fetchy(`/api/profile/one/${searchId.value}`, "GET");
     } else if (selectedOrg.value) {
       results = await fetchy(`/api/profile/org/${selectedOrg.value.id}`, "GET");
+      searchId.value = "";
     }
   } catch (_) {
     return;
   }
-  searchId.value = _id ? _id : "";
   households.value = results;
 }
 
