@@ -7,10 +7,8 @@ import { ref } from "vue";
 const props = defineProps(["show","household","allocation"]);
 const emit = defineEmits(["close", "refreshHouseholds"]);
 const { selectedOrg } = storeToRefs(useOrganizationStore());
-const allocate = ref<Array>();
 
 async function allocateItems() {
-  console.log(props.allocation);
   props.allocation.forEach(stock => {
     console.log(stock.item);
   });
@@ -25,6 +23,9 @@ async function allocateItems() {
       <div class="modal-container">
         <div class="modal-header">Allocate the following items</div>
         This action will automatically update the inventory. Are you sure?
+        <article v-for="stock in props.allocation">
+          {{stock.item}}
+        </article>
         <div class="modal-footer">
           <button class="button-39" @click="emit('close')">Close</button>
           <button class="button-39 red" @click="allocateItems">Allocate</button>
