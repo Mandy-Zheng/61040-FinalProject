@@ -11,7 +11,7 @@ const { selectedOrg } = storeToRefs(useOrganizationStore());
 
 async function allocateItems() {
   props.allocation.forEach(stock => {
-    console.log(stock.item);
+    console.log(stock.allocation);
   });
   try{
     await fetchy(`/api/profile/visit/${props.household._id}`,'PATCH');

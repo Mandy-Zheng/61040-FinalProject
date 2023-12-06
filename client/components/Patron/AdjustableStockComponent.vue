@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { fetchy } from "@/utils/fetchy";
 import { storeToRefs } from "pinia";
-import { onBeforeMount,ref } from "vue";
+import { ref } from "vue";
 const props = defineProps(["household","stock"]);
 const emit = defineEmits([""]);
 const tagColors = new Map([
@@ -14,16 +14,6 @@ const tagColors = new Map([
   ["Dairy-Free", "#a3c4f3"],
   ["Kosher", "#cfbaf0"],
 ]);
-function changeCount(count) {
-    props.stock.allocation=count;
-}
-async function remove() {
-    changeCount(0);
-}
-
-onBeforeMount(async () => {
-  console.log(props.stock);
-});
 </script>
 
 <template>
@@ -37,7 +27,7 @@ onBeforeMount(async () => {
           <h3 v-if="props.stock.count <= 5" style="color: rgb(203, 1, 1)">Low in stock!</h3>
         </div>
         <div class="subtext">
-          <p class="count">{{ props.stock.allocation }} Units</p>
+          Units: <input class="number-input" type="number" v-model="props.stock.allocation" min="0" />
           <p class="maxp">Max for household: {{ props.stock.maxPerPerson*household.members.length }}</p>
         </div>
         <div class="diet">
@@ -59,19 +49,6 @@ onBeforeMount(async () => {
             />
           </svg>
         </a>
-      </div>
-      <div>
-        <button class="icon" @click.prevent="">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
-            <path
-              d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"
-            />
-            <path
-              fill-rule="evenodd"
-              d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"
-            />
-          </svg>
-        </button>
       </div>
     </div>
   </div>
@@ -97,6 +74,29 @@ onBeforeMount(async () => {
   height: max-content;
   width: 35em;
   justify-content: space-between;
+}
+
+.form {
+  height: fit-content;
+  margin-bottom: 1.5em;
+}
+
+input {
+  padding-left: 0.5em;
+  padding-left: 0.5em;
+  margin-left: 1em;
+  border-radius: 64px;
+  border: solid;
+  border-color: rgb(216, 216, 216);
+  border-width: 1px;
+  height: 25px;
+  color: black;
+  width: 20em;
+}
+
+.number-input {
+  border-radius: 4px;
+  width: 4em;
 }
 
 .tag {
