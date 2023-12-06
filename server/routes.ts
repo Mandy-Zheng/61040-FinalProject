@@ -376,6 +376,19 @@ class Routes {
     await Stock.updateStockDetails(ID, update);
     return { msg: "Stock successfully updated!" };
   }
+  
+  // update an inventory item's count or other details (link, image, etc)
+  @Router.patch("/inventory/allocate/:id")
+  async decrementInventoryItem(session: WebSessionDoc, id: ObjectId, update: Partial<StockDoc>) {
+    const user = WebSession.getUser(session);
+    const ID = new ObjectId(id);
+    const stock = await Stock.getStockById(ID);
+    await Team.isTeamMember(stock.owner, user);
+    if (update.count) {
+      await Stock.decrementStockQuantity(ID, update.count);
+    }
+    return { msg: "Stock successfully updated!" };
+  }
 
   @Router.post("/inventory")
   async addNewInventoryItem(session: WebSessionDoc, owner: ObjectId, item: string, count: number, diet: Array<DietaryRestrictions>, link?: string, img?: string, maxp?: number) {
