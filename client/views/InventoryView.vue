@@ -56,12 +56,13 @@ async function addItem(name: string, imgLink: string, purchaseLink: string, unit
     return;
   }
 }
-async function getMaxAllocation()
-{
+async function getMaxAllocation() {
   try {
-    await fetchy(`/api/inventory/${selectedOrg.value.id}`, "GET");
-    await getAllInventories();
-    await getInventories();
+    if (selectedOrg.value) {
+      await fetchy(`/api/inventory/${selectedOrg.value.id}`, "GET");
+      await getAllInventories();
+      await getInventories();
+    }
   } catch (_) {
     return;
   }
@@ -92,7 +93,7 @@ onBeforeMount(async () => {
     <teleport to="body">
       <CreateStockModal :show="showCreateModal" @close="showCreateModal = false" @add="addItem" />
     </teleport>
-    <div v-for="stock in inventory" :key="stock" class="stocks"> <StockComponent @refreshStocks="getAllInventories(), getInventories()" :stockId="stock._id" /></div>
+    <div v-for="stock in inventory" :key="stock" class="stocks"><StockComponent @refreshStocks="getAllInventories(), getInventories()" :stockId="stock._id" /></div>
   </main>
 </template>
 
@@ -128,6 +129,6 @@ onBeforeMount(async () => {
 .reset {
   background-color: var(--secondary);
   color: black;
-  margin-left:-30px;
+  margin-left: -30px;
 }
 </style>

@@ -204,7 +204,7 @@ class Routes {
   }
 
   // update household members, diet restrictions, language, special requests
-  @Router.patch("/profile/:id")
+  @Router.patch("/profile")
   async updateHouseholdDetails(session: WebSessionDoc, id: ObjectId, update: Partial<HouseholdDoc>) {
     const household = await Household.getProfileById(id);
     const ID = new ObjectId(id);
@@ -279,24 +279,24 @@ class Routes {
 
   @Router.patch("/profile/visit/:id")
   async addVisit(session: WebSessionDoc, id: ObjectId) {
-    const ID = new ObjectId(id);
-    const household = await Household.getProfileById(ID);
+    const orgId = new ObjectId(id);
+    const household = await Household.getProfileById(orgId);
     const user = WebSession.getUser(session);
     await Team.isTeamMember(household.organization, user);
-    await Household.addVisit(ID);
+    await Household.addVisit(orgId);
     return { msg: "Successfully added visit!" };
   }
 
   @Router.delete("/profile/:id")
   async removeHouseholdProfile(session: WebSessionDoc, id: ObjectId) {
-    const ID = new ObjectId(id);
-    const household = await Household.getProfileById(ID);
+    const orgId = new ObjectId(id);
+    const household = await Household.getProfileById(orgId);
     const user = WebSession.getUser(session);
     await Team.isTeamMember(household.organization, user);
     for (const patron of household.members) {
       await Patron.deletePatron(patron);
     }
-    return await Household.delete(ID);
+    return await Household.delete(orgId);
   }
 
   @Router.get("/profile/allocate/:id")
@@ -306,11 +306,6 @@ class Routes {
     const user = WebSession.getUser(session);
     const team = household.organization;
     await Team.isTeamMember(team, user);
-    let cnt = 0;
-    const allHouses = await Household.getProfilesByOwner(team);
-    allHouses.forEach((house) => {
-      cnt += house.members.length;
-    });
     const patrons = household.members.length;
     const inventory = await Stock.getStocksByOwner(team);
     const allocation = new Array<StockDoc>();
@@ -333,7 +328,7 @@ class Routes {
     }
     const maxPer = new Array<number>();
     allocation.forEach((stock) => {
-      maxPer.push(patrons * Math.min(stock.maxPerPerson, stock.maxPerDay));
+      maxPer.push(Math.min(patrons * stock.maxPerPerson, stock.maxPerDay));
     });
     const response = await Responses.stocks(allocation);
     const ret = response.map((stock, i) => ({ ...stock, allocation: maxPer[i] }));
@@ -369,9 +364,7 @@ class Routes {
     const org = new ObjectId(orgId);
     await Team.isTeamMember(org, user);
     const inventory = await Stock.getStocksByOwner(org);
-    inventory.forEach((stock)=>{
-      Stock.setTodaysAllocation(stock._id);
-    });
+    await Promise.all(inventory.map((stock) => Stock.setTodaysAllocation(stock._id)));
   }
 
   // update an inventory item's count or other details (link, image, etc)

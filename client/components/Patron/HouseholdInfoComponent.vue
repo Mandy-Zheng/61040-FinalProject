@@ -1,27 +1,22 @@
 <script setup lang="ts">
 import { formatDate } from "@/utils/formatDate";
 import Multiselect from "@vueform/multiselect";
-import { ref } from "vue";
+import { storeToRefs } from "pinia";
+import { onBeforeMount, ref } from "vue";
+import { useOrganizationStore } from "../../stores/organization";
+import { fetchy } from "../../utils/fetchy";
 const props = defineProps(["household"]);
-const emit = defineEmits(["refreshVisits"]);
+const emit = defineEmits(["refreshVisits", "refreshHouseholds"]);
 const dietaryTags = ["Vegetarian", "Halal", "Gluten-Free", "Nut-Free", "Low-Sodium", "Seafood", "Dairy-Free", "Kosher"];
 const LANGUAGES = ["English", "Spanish", "French", "Portuguese", "Arabic", "Russian", "Japanese", "Bengali", "Dutch", "Urdu", "Polish", "Indonesian", "Korean", "Mandarin", "Cantonese"];
 
+const { selectedOrg } = storeToRefs(useOrganizationStore());
 const language = ref<string>(props.household.preferredLanguage);
 const requests = ref<string>(props.household.specialRequests);
 const dietRestrictions = ref<Array<string>>(props.household.dietaryRestrictions);
-const multiselectDietTags = dietaryTags.map((tag) => {
-  return { label: tag, value: tag };
-});
-
-function resetUpdate() {
-  editMode.value = false;
-}
-function updateOverview() {
-  console.log(language.value, requests.value, dietRestrictions.value);
-  editMode.value = true;
-}
+const allAudios = ref<Array<any>>([]);
 const editMode = ref<boolean>(false);
+const showAudio = ref<boolean>(false);
 const tagColors = new Map([
   ["Vegetarian", "#b9fbc0"],
   ["Halal", "#fde4cf"],
@@ -32,6 +27,48 @@ const tagColors = new Map([
   ["Dairy-Free", "#a3c4f3"],
   ["Kosher", "#cfbaf0"],
 ]);
+const multiselectDietTags = dietaryTags.map((tag) => {
+  return { label: tag, value: tag };
+});
+
+function resetUpdate() {
+  editMode.value = false;
+  language.value = props.household.preferredLanguage;
+  requests.value = props.household.specialRequests;
+  dietRestrictions.value = props.household.dietaryRestrictions;
+}
+async function updateOverview() {
+  try {
+    if (selectedOrg.value) {
+      const body = { id: props.household._id, update: { dietaryRestrictions: dietRestrictions.value, preferredLanguage: language.value, specialRequests: requests.value } };
+      await fetchy(`/api/profile`, "PATCH", { body: body });
+
+      emit("refreshHouseholds");
+      editMode.value = false;
+    }
+  } catch (error) {
+    return;
+  }
+}
+
+async function getAudioForLanguage() {
+  try {
+    if (selectedOrg.value) {
+      const languageAudio = await fetchy(`/api/languageAudio/owner/${selectedOrg.value.id}/${language.value}`, "GET");
+      allAudios.value = languageAudio.audios;
+    }
+  } catch (_) {
+    return;
+  }
+}
+
+onBeforeMount(async () => {
+  try {
+    await getAudioForLanguage();
+  } catch (error) {
+    return;
+  }
+});
 </script>
 
 <template>
@@ -53,7 +90,10 @@ const tagColors = new Map([
           </ul>
         </div>
         <button @click="editMode = true">Edit Overview</button>
-        <div v-if="editMode">Diet <Multiselect class="multiselect" v-model="dietRestrictions" mode="tags" :options="multiselectDietTags" :searchable="true" required /></div>
+        <div v-if="editMode" class="row">
+          <p class="label">Diet:</p>
+          <Multiselect class="multiselect" v-model="dietRestrictions" mode="tags" :options="multiselectDietTags" :searchable="true" required />
+        </div>
         <div class="info" v-else>
           <p class="diet-title">Dietary Restrictions:</p>
           <div class="row">
@@ -63,13 +103,35 @@ const tagColors = new Map([
           </div>
         </div>
 
-        <div class="info">
-          <p v-if="editMode">Language: <input v-model="language" /></p>
-          <p v-else>Language: {{ props.household.preferredLanguage }}</p>
-          <!-- TODO relevant audio -->
+        <div class="row">
+          <div v-if="editMode" class="edit-row">
+            <p class="label">Language:</p>
+            <Multiselect class="multiselect" v-model="language" :createTag="true" :options="LANGUAGES" :searchable="true" />
+          </div>
+          <div v-else>
+            <p>Language: {{ props.household.preferredLanguage }}</p>
+            <div v-if="allAudios.length !== 0">
+              <button v-if="!showAudio" @click="showAudio = true">Show Audio</button>
+              <button v-else @click="showAudio = false">Hide Audio</button>
+              <div v-if="showAudio">
+                <div v-for="audio in allAudios" :key="audio">
+                  <audio controls preload="auto">
+                    <source :src="audio.audio" type="audio/mp3" />
+                    <source :src="audio.audio" type="audio/ogg" />
+                    <source :src="audio.audio" type="audio/wav" />
+                    Your browser does not support the audio tag.
+                  </audio>
+                  <p class="">{{ audio.translation }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="info" v-if="household.specialRequests">
-          <p v-if="editMode">Requests: <input v-model="requests" /></p>
+          <div v-if="editMode" class="row">
+            <p class="label">Requests:</p>
+            <input v-model="requests" />
+          </div>
           <p v-else>Requests: {{ props.household.specialRequests }}</p>
         </div>
         <button class="button-39" v-if="editMode" @click="updateOverview">Update</button>
@@ -84,14 +146,22 @@ const tagColors = new Map([
   display: flex;
   height: fit-content;
 }
+
+.label {
+  margin-right: 1em;
+}
 .item-card {
   display: flex;
   flex-direction: row;
   padding: 0em;
 }
-
+.multiselect {
+  width: 80%;
+  margin: 0;
+}
 .edit-row {
-  border: 1px solid black;
+  display: flex;
+  width: 100%;
 }
 
 .item {

@@ -36,7 +36,7 @@ async function addAudioFile() {
           <div class="item">
             <div class="form-input">
               Language
-              <div><Multiselect v-model="language" class="single" :createTag="true" :options="allLanguages" :searchable="true" /></div>
+              <div><Multiselect v-model="language" :createTag="true" :options="allLanguages" :searchable="true" /></div>
             </div>
             <div class="form-input">Audio Link<input v-model="audioLink" /></div>
             <div class="form-input">Translation: <input v-model="translation" /></div>
