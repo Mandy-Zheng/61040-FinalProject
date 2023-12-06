@@ -61,7 +61,19 @@ export default class StockConcept {
     if (stock.count + change < 0) {
       throw new NotAllowedError("Stock count cannot be negative");
     }
-    await this.stocks.updateOne({ _id }, { count: stock.count + change });
+    await this.stocks.updateOne({ _id }, { count: change });
+    return { msg: "Stock successfully updated!" };
+  }
+
+  async decrementStockQuantity(_id: ObjectId, change: number) {
+    const stock = await this.stocks.readOne({ _id });
+    if (!stock) {
+      throw new NotFoundError("Stock not found");
+    }
+    if (stock.count - change < 0) {
+      throw new NotAllowedError("Stock count cannot be negative");
+    }
+    await this.stocks.updateOne({ _id }, { count: stock.count - change });
     return { msg: "Stock successfully updated!" };
   }
 
@@ -80,7 +92,7 @@ export default class StockConcept {
 
   private sanitizeUpdate(update: Partial<StockDoc>) {
     // update cannot change the stock owner or count
-    const unallowedUpdates = ["owner", "count"];
+    const unallowedUpdates = ["owner"];
     for (const key in update) {
       if (unallowedUpdates.includes(key)) {
         throw new NotAllowedError(`Cannot update '${key}' field!`);

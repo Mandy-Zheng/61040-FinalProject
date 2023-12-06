@@ -299,6 +299,47 @@ class Routes {
     return await Household.delete(ID);
   }
 
+  @Router.get("/profile/allocate/:id")
+  async getHouseholdAllocation(session: WebSessionDoc, id: ObjectId) {
+    const ID = new ObjectId(id);
+    const household = await Household.getProfileById(ID);
+    const user = WebSession.getUser(session);
+    const team = household.organization;
+    await Team.isTeamMember(team, user);
+    let cnt = 0;
+    const allHouses = await Household.getProfilesByOwner(team);
+    allHouses.forEach((house) => {
+      cnt += house.members.length;
+    });
+    const patrons = household.members.length;
+    const inventory = await Stock.getStocksByOwner(team);
+    const allocation = new Array<StockDoc>();
+    const diet = household.dietaryRestrictions;
+    for (const stock of inventory) {
+      let canBeGiven = true;
+      for (const restriction of diet) {
+        let found = false;
+        for (const compare of stock.diet)
+          if (restriction.valueOf() === compare.valueOf()) {
+            found = true;
+            break;
+          }
+        if (!found) {
+          canBeGiven = false;
+          break;
+        }
+      }
+      if (canBeGiven) allocation.push(stock);
+    }
+    const maxPer = new Array<number>();
+    allocation.forEach((stock) => {
+      maxPer.push(patrons * Math.min(stock.maxPerPerson, Stock.getTodaysAllocation(stock.count) / (cnt / 7)));
+    });
+    const response = await Responses.stocks(allocation);
+    const ret = response.map((stock, i) => ({ ...stock, allocation: maxPer[i] }));
+    return ret;
+  }
+
   @Router.get("/inventory/stocks/:stockId")
   async getItem(session: WebSessionDoc, stockId: string) {
     WebSession.getUser(session);
@@ -319,7 +360,8 @@ class Routes {
       inventory = await Stock.getStocksByOwner(org);
       const maxPDs = inventory.map((stock) => Stock.getTodaysAllocation(stock.count));
       const response = await Responses.stocks(inventory);
-      return response.map((stock, i) => ({ ...stock, maxPerDay: maxPDs[i] }));
+      const ret = response.map((stock, i) => ({ ...stock, maxPerDay: maxPDs[i] }));
+      return ret;
     }
   }
 
@@ -330,12 +372,22 @@ class Routes {
     const ID = new ObjectId(id);
     const stock = await Stock.getStockById(ID);
     await Team.isTeamMember(stock.owner, user);
-    if (update.count) {
-      await Stock.updateStockQuantity(ID, update.count);
-    }
     // eslint-disable-next-line
     const { count, ...rest } = update; // remove count
-    await Stock.updateStockDetails(ID, rest);
+    await Stock.updateStockDetails(ID, update);
+    return { msg: "Stock successfully updated!" };
+  }
+
+  // update an inventory item's count or other details (link, image, etc)
+  @Router.patch("/inventory/allocate/:id")
+  async decrementInventoryItem(session: WebSessionDoc, id: ObjectId, update: Partial<StockDoc>) {
+    const user = WebSession.getUser(session);
+    const ID = new ObjectId(id);
+    const stock = await Stock.getStockById(ID);
+    await Team.isTeamMember(stock.owner, user);
+    if (update.count) {
+      await Stock.decrementStockQuantity(ID, update.count);
+    }
     return { msg: "Stock successfully updated!" };
   }
 
