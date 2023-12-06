@@ -69,8 +69,18 @@ onBeforeMount(async () => {});
 
 <template>
   <div v-if="props.show">
+    <div class="top">
+      <h2>Create New Household</h2>
+      <div class="footer">
+        <div>
+          <button class="button-39" @click="emit('close')">Cancel</button>
+        </div>
+        <div>
+          <button class="button-39" @click="addHousehold">Submit</button>
+        </div>
+      </div>
+    </div>
     <div class="container">
-      <h1>Create New Household</h1>
       <div class="form">
         <div class="overview">
           <h3>Overview</h3>
@@ -80,13 +90,19 @@ onBeforeMount(async () => {});
               <option v-for="lang in LANGUAGES" :key="lang" :selected="language === lang" :value="lang">{{ lang }}</option>
             </select>
           </div>
-          <div class="form-input">Dietary Restrictions <Multiselect class="multiselect" v-model="diet" mode="tags" :options="multiselectDietTags" :searchable="true" required /></div>
+          <div class="form-input">Diet <Multiselect class="multiselect" v-model="diet" mode="tags" :options="multiselectDietTags" :searchable="true" required /></div>
           <div class="special-request">Special Requests<textarea v-model="specialRequests"></textarea></div>
         </div>
         <div class="member-add">
           <div class="member-title">
             <h3>Members</h3>
-            <button class="button-39" @click="addPatron">Add</button>
+            <div>
+              <button class="icon" @click="addPatron">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
+                  <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z" />
+                </svg>
+              </button>
+            </div>
           </div>
           <div class="member" v-for="(item, idx) in members" :key="idx">
             <CreatePatronComponent
@@ -102,11 +118,6 @@ onBeforeMount(async () => {});
             />
           </div>
         </div>
-      </div>
-
-      <div class="footer">
-        <button class="button-39" @click="emit('close')">Cancel</button>
-        <button class="button-39" @click="addHousehold">Submit</button>
       </div>
     </div>
   </div>
@@ -132,32 +143,24 @@ select {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
 }
 
 .special-request {
   display: flex;
   flex-direction: column;
+  margin-top: 5px;
+  gap: 5px;
 }
 
 .multiselect {
   margin-left: 1em;
   width: 16em;
-  --ms-radius: 32px;
   --ms-ring-color: #eb721630;
   padding-left: 8px;
   --ms-py: 0;
   --ms-tag-bg: var(--primary);
-}
-
-.multiselect.is-open {
-  --ms-radius: 16px;
-}
-
-input {
-  padding-left: 0.5em;
-  padding-left: 0.5em;
-  margin-left: 1em;
-  border-radius: 64px;
+  border-color: rgb(188, 188, 188);
 }
 
 img {
@@ -168,18 +171,45 @@ img {
 .form-input {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 0.5em;
+  margin-bottom: 1.5em;
+  gap: 1em;
+  align-items: center;
 }
-
 .form {
   width: 50%;
   height: 50%;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
+  gap: 3em;
 }
 
 span {
   color: black;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+textarea {
+  border-color: rgb(188, 188, 188);
+  border-radius: 5px;
+  height: 8.6em;
+}
+
+.top {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  margin-top: 3em;
+}
+
+.footer {
+  gap: 1em;
+  display: flex;
 }
 </style>

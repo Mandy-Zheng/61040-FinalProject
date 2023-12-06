@@ -80,7 +80,7 @@ export default class StockConcept {
 
   private sanitizeUpdate(update: Partial<StockDoc>) {
     // update cannot change the stock owner or count
-    const unallowedUpdates = ["owner", "count"];
+    const unallowedUpdates = ["owner"];
     for (const key in update) {
       if (unallowedUpdates.includes(key)) {
         throw new NotAllowedError(`Cannot update '${key}' field!`);

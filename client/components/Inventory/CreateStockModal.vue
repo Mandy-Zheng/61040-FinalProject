@@ -68,12 +68,12 @@ onBeforeMount(async () => {});
 }
 
 .multiselect {
-  width: 20em;
   --ms-radius: 32px;
   --ms-ring-color: #eb721630;
   padding-left: 8px;
   --ms-py: 0;
   --ms-tag-bg: var(--primary);
+  width: 20.75em;
 }
 
 .multiselect.is-open {
@@ -94,6 +94,8 @@ input {
   border-color: rgb(216, 216, 216);
   border-width: 1px;
   height: 25px;
+  color: black;
+  width: 20em;
 }
 
 .number-input {
