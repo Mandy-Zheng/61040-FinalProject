@@ -306,11 +306,6 @@ class Routes {
     const user = WebSession.getUser(session);
     const team = household.organization;
     await Team.isTeamMember(team, user);
-    let cnt = 0;
-    const allHouses = await Household.getProfilesByOwner(team);
-    allHouses.forEach((house) => {
-      cnt += house.members.length;
-    });
     const patrons = household.members.length;
     const inventory = await Stock.getStocksByOwner(team);
     const allocation = new Array<StockDoc>();
