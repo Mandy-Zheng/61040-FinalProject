@@ -58,6 +58,7 @@
     "purecss": "^3.0.0",
     "reflect-metadata": "^0.1.13",
     "vue": "^3.3.4",
+    "vue-cal": "^4.8.1",
     "vue-router": "^4.2.4",
     "vue-scrollto": "^2.20.0",
     "vue-simple-search-dropdown": "^1.0.1",
