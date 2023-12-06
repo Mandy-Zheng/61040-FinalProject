@@ -1,8 +1,5 @@
 <script setup lang="ts">
-import { fetchy } from "@/utils/fetchy";
-import { storeToRefs } from "pinia";
-import { ref } from "vue";
-const props = defineProps(["household","stock"]);
+const props = defineProps(["household", "stock"]);
 const emit = defineEmits([""]);
 const tagColors = new Map([
   ["Vegetarian", "#b9fbc0"],
@@ -21,25 +18,31 @@ const tagColors = new Map([
     <img v-if="props.stock.image.length" :src="props.stock.image" />
     <img v-else src="../../assets/images/image.svg" />
     <div class="item">
-      <div>
-        <div class="row" style="align-items: center; gap: 20em">
-          <h2>{{ props.stock.item }}</h2>
-          <h3 v-if="props.stock.count <= 5" style="color: rgb(203, 1, 1)">Low in stock!</h3>
-        </div>
-        <div class="subtext">
-          Units: <input class="number-input" type="number" v-model="props.stock.allocation" min="0" />
-          <p class="maxp">Max for household: {{ props.stock.maxPerPerson*household.members.length }}</p>
-        </div>
-        <div class="diet">
-          <p class="diet-title">Dietary Restrictions:</p>
-          <div class="row">
-            <div v-for="tag in props.stock.diet" :key="tag">
-              <p class="tag" v-bind:style="{ backgroundColor: tagColors.get(tag) }">{{ tag }}</p>
+      <div class="row" style="align-items: center; gap: 5em">
+        <div>
+          <div class="row" style="align-items: center; gap: 20em">
+            <h2>{{ props.stock.item }}</h2>
+            <h3 v-if="props.stock.count <= 5" style="color: rgb(203, 1, 1)">Low in stock!</h3>
+          </div>
+          <div class="subtext">
+            <p class="maxp">Max for household: {{ props.stock.maxPerPerson * household.members.length }}</p>
+          </div>
+          <div class="diet">
+            <p class="diet-title">Dietary Restrictions:</p>
+            <div class="row">
+              <div v-for="tag in props.stock.diet" :key="tag">
+                <p class="tag" v-bind:style="{ backgroundColor: tagColors.get(tag) }">{{ tag }}</p>
+              </div>
             </div>
           </div>
         </div>
+        <div>
+          <h4>Units:</h4>
+          <input class="number-input" type="number" v-model="props.stock.allocation" min="0" :max="props.stock.maxPerPerson * household.members.length" />
+        </div>
       </div>
     </div>
+    <div></div>
     <div class="row" style="gap: 1em">
       <div class="link">
         <a :href="props.stock.supplyLink" v-if="props.stock.supplyLink"
@@ -97,6 +100,8 @@ input {
 .number-input {
   border-radius: 4px;
   width: 4em;
+  font-size: larger;
+  text-align: center;
 }
 
 .tag {
@@ -132,7 +137,7 @@ h2 {
 }
 .maxp {
   margin: 0;
-  margin-left: 1em;
+  margin-left: 0em;
 }
 
 img {

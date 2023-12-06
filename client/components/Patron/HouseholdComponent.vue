@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { fetchy } from "../../utils/fetchy";
-import DeleteHouseholdModal from "./DeleteHouseholdModal.vue";
 import AllocateItemsModal from "./AllocateItemsModal.vue";
+import DeleteHouseholdModal from "./DeleteHouseholdModal.vue";
 import HouseholdInfoComponent from "./HouseholdInfoComponent.vue";
 import PatronCardComponent from "./PatronCardComponent.vue";
 const showDeleteModal = ref<boolean>(false);
@@ -22,17 +22,16 @@ const deleteHousehold = async () => {
 
 const addVisit = async () => {
   await getAllocation();
-  showAllocateModal.value=true;
+  showAllocateModal.value = true;
 };
 
-const getAllocation = async() => {
+const getAllocation = async () => {
   try {
-    allocation.value=await fetchy(`/api/profile/allocate/${props.household._id}`,'GET');
+    allocation.value = await fetchy(`/api/profile/allocate/${props.household._id}`, "GET");
   } catch {
     return;
   }
-}
-
+};
 </script>
 
 <template>

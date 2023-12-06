@@ -376,7 +376,7 @@ class Routes {
     await Stock.updateStockDetails(ID, update);
     return { msg: "Stock successfully updated!" };
   }
-  
+
   // update an inventory item's count or other details (link, image, etc)
   @Router.patch("/inventory/allocate/:id")
   async decrementInventoryItem(session: WebSessionDoc, id: ObjectId, update: Partial<StockDoc>) {

@@ -25,21 +25,13 @@ const tagColors = new Map([
           <p>
             Past visits: {{ props.household.pastVisits.length }}
             <button class="icon" @click="emit('refreshVisits')" title="Add visit">
-              <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" preserveAspectRatio="xMidYMid meet">
-                <g transform="translate(0.000000,25) scale(0.100000,-0.100000)" fill="#000000" stroke="none">
-                  <path
-                    d="M71 206 c-87 -48 -50 -186 49 -186 51 0 100 49 100 99 0 75 -83 124
--149 87z m59 -61 c0 -8 7 -15 15 -15 8 0 15 -4 15 -10 0 -5 -7 -10 -15 -10 -8
-0 -15 -7 -15 -15 0 -8 -4 -15 -10 -15 -5 0 -10 7 -10 15 0 8 -7 15 -15 15 -8
-0 -15 5 -15 10 0 6 7 10 15 10 8 0 15 7 15 15 0 8 5 15 10 15 6 0 10 -7 10
--15z"
-                  />
-                </g>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
+                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z" />
               </svg>
             </button>
           </p>
           <ul v-if="props.household.pastVisits.length > 0">
-            <div v-for="visit in props.household.pastVisits" :key="visit">{{ formatDate(visit) }}</div>
+            <div v-for="visit in props.household.pastVisits" :key="visit" class="date">{{ formatDate(visit) }}</div>
           </ul>
         </div>
         <div class="info">
@@ -114,5 +106,12 @@ h2 {
 
 p {
   margin: 0px;
+  display: flex;
+  align-content: center;
+  gap: 1em;
+}
+
+.date {
+  font-weight: 400;
 }
 </style>
