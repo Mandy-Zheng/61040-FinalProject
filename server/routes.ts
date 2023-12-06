@@ -333,7 +333,7 @@ class Routes {
     }
     const maxPer = new Array<number>();
     allocation.forEach((stock) => {
-      maxPer.push(patrons * Math.min(stock.maxPerPerson, stock.maxPerDay));
+      maxPer.push(Math.min(patrons*stock.maxPerPerson, stock.maxPerDay));
     });
     const response = await Responses.stocks(allocation);
     const ret = response.map((stock, i) => ({ ...stock, allocation: maxPer[i] }));
