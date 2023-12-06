@@ -1,12 +1,9 @@
 <script setup lang="ts">
-import { useOrganizationStore } from "@/stores/organization";
 import { fetchy } from "@/utils/fetchy";
-import { storeToRefs } from "pinia";
 import AdjustableStockComponent from "./AdjustableStockComponent.vue";
 
 const props = defineProps(["show", "household", "allocation"]);
 const emit = defineEmits(["close", "refreshHouseholds"]);
-const { selectedOrg } = storeToRefs(useOrganizationStore());
 
 async function allocateItems() {
   try {
@@ -26,7 +23,7 @@ async function allocateItems() {
       <div class="modal-container">
         <div class="modal-header">Allocate the following items</div>
         This action will automatically update the inventory. Are you sure?
-        <article v-for="stock in props.allocation">
+        <article v-for="stock in props.allocation" :key="stock">
           <AdjustableStockComponent :household="household" :stock="stock" />
         </article>
         <div class="modal-footer">

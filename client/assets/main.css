@@ -145,10 +145,22 @@ a.button {
   background-color: rgba(136, 236, 191, 0.25);
 }
 
-.vuecal__event.claimedShift {
+.vuecal__event.claimedShift, .vuecal__event.currentOrg {
   background-color: var(--primary);
   border: 1px solid var(--primary);
   color: #fff;
+}
+
+.vuecal__event.unclaimedShift {
+  background-color: var(--secondary);
+  border: 1px solid var(--secondary);
+  color: #fff;
+}
+
+.vuecal__event.otherOrg {
+  background-color: var(--base-bg);
+  border: 1px solid var(--secondary);
+  color: black;
 }
 
 .vuecal__event.unclaimedShift {

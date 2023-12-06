@@ -59,17 +59,26 @@ async function toggleMyShiftsPref() {
 }
 
 function convertDates(shifts: Record<string, string>[]) {
-  return shifts.map((s) => {
-    const start = moment(s.start).format("YYYY-MM-DD, HH:mm");
-    const end = moment(s.end).format("YYYY-MM-DD, HH:mm");
-    return {
-      start: start,
-      end: end,
-      content: s.volunteers, //.includes(currentUsername.value) ? "Claimed!" : "Not claimed",
-      shift: s,
-      class: s.volunteers.includes(currentUsername.value) ? "claimedShift" : "unclaimedShift",
-    };
-  });
+  if (selectedOrg.value) {
+    const org = selectedOrg.value.name;
+    return shifts.map((s) => {
+      const start = moment(s.start).format("YYYY-MM-DD, HH:mm");
+      const end = moment(s.end).format("YYYY-MM-DD, HH:mm");
+      let cls;
+      if (showOnlyMyShifts.value) {
+        cls = s.owner === org ? "currentOrg" : "otherOrg";
+      } else {
+        cls = s.volunteers.includes(currentUsername.value) ? "claimedShift" : "unclaimedShift";
+      }
+      return {
+        start: start,
+        end: end,
+        content: s.volunteers, //.includes(currentUsername.value) ? "Claimed!" : "Not claimed",
+        shift: s,
+        class: cls, //s.volunteers.includes(currentUsername.value) ? "claimedShift" : "unclaimedShift",
+      };
+    });
+  }
 }
 
 onBeforeMount(async () => {
@@ -151,7 +160,7 @@ const triggerClaim = async (event: any) => {
         <input type="checkbox" @click="toggleFuturePref" checked />
         <span class="slider round"></span>
       </label>
-      <div class="toggletext">Show only claimed shifts:</div>
+      <div class="toggletext">Show all my claimed shifts:</div>
       <label class="switch">
         <input type="checkbox" @click="toggleMyShiftsPref" />
         <span class="slider round"></span>
