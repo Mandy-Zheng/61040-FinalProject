@@ -51,7 +51,7 @@ onBeforeMount(async () => {
           </div>
           <div class="modal-footer">
             <button class="button-39" @click="emit('close')">Cancel</button>
-            <button class="button-39" type="submit" @submit="emit('update', name, imgLink, purchaseLink, units, diet, maxPerPerson)">Update</button>
+            <button class="button-39" type="submit" @click="emit('update', name, imgLink, purchaseLink, units, diet, maxPerPerson)">Update</button>
           </div>
         </form>
       </div>

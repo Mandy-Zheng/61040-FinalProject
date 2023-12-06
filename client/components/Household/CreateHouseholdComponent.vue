@@ -75,7 +75,7 @@ onBeforeMount(async () => {});
             <button class="button-39" @click="emit('close')">Cancel</button>
           </div>
           <div>
-            <button class="button-39" type="submit" @submit.prevent="addHousehold">Submit</button>
+            <button class="button-39" type="submit" @click="addHousehold">Submit</button>
           </div>
         </div>
       </div>
