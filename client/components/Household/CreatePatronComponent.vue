@@ -28,9 +28,12 @@ function updateImage(event: any) {
         </svg>
       </button>
     </div>
-    <div class="form-input"><span>Name:</span> <input @input="updateName" :value="props.name" /></div>
+    <div class="form-input">
+      <span>Name:</span>
+      <input @input="updateName" :value="props.name" required />
+    </div>
 
-    <div class="form-input"><span>Birthdate:</span> <input type="date" :max="today" :value="props.birthday" @input="updateBirthday" /></div>
+    <div class="form-input"><span>Birthdate:</span> <input type="date" :max="today" :value="props.birthday" @input="updateBirthday" required /></div>
     <div class="form-input"><span>Photo Link:</span> <input @input="updateImage" :value="props.image" /></div>
   </div>
 </template>

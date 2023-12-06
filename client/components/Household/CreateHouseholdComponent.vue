@@ -67,57 +67,59 @@ onBeforeMount(async () => {});
 
 <template>
   <div v-if="props.show">
-    <div class="top">
-      <h2>Create New Household</h2>
-      <div class="footer">
-        <div>
-          <button class="button-39" @click="emit('close')">Cancel</button>
-        </div>
-        <div>
-          <button class="button-39" @click="addHousehold">Submit</button>
+    <form>
+      <div class="top">
+        <h2>Create New Household</h2>
+        <div class="footer">
+          <div>
+            <button class="button-39" @click="emit('close')">Cancel</button>
+          </div>
+          <div>
+            <button class="button-39" type="submit" @submit.prevent="addHousehold">Submit</button>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="container">
-      <div class="form">
-        <div class="overview">
-          <h3>Overview</h3>
-          <div class="form-input">
-            Language
-            <select v-model="language">
-              <option v-for="lang in LANGUAGES" :key="lang" :selected="language === lang" :value="lang">{{ lang }}</option>
-            </select>
+      <div class="container">
+        <div class="form">
+          <div class="overview">
+            <h3>Overview</h3>
+            <div class="form-input">
+              Language
+              <select v-model="language" required>
+                <option v-for="lang in LANGUAGES" :key="lang" :selected="language === lang" :value="lang">{{ lang }}</option>
+              </select>
+            </div>
+            <div class="form-input">Diet <Multiselect class="multiselect" v-model="diet" mode="tags" :options="multiselectDietTags" :searchable="true" /></div>
+            <div class="special-request">Special Requests<textarea v-model="specialRequests"></textarea></div>
           </div>
-          <div class="form-input">Diet <Multiselect class="multiselect" v-model="diet" mode="tags" :options="multiselectDietTags" :searchable="true" required /></div>
-          <div class="special-request">Special Requests<textarea v-model="specialRequests"></textarea></div>
-        </div>
-        <div class="member-add">
-          <div class="member-title">
-            <h3>Members</h3>
-            <div>
-              <button class="icon" @click="addPatron">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
-                  <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z" />
-                </svg>
-              </button>
+          <div class="member-add">
+            <div class="member-title">
+              <h3>Members</h3>
+              <div>
+                <button class="icon" @click="addPatron">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
+                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div class="member" v-for="(item, idx) in members" :key="idx">
+              <CreatePatronComponent
+                :idx="idx"
+                :submit="isSubmitting"
+                :name="item[memberProfile.Name]"
+                :birthday="item[memberProfile.Birthday]"
+                :image="item[memberProfile.Image]"
+                @delete="deletePatron"
+                @updateName="updatePatronName"
+                @updateBirthday="updatePatronBirthday"
+                @updateImage="updatePatronImage"
+              />
             </div>
           </div>
-          <div class="member" v-for="(item, idx) in members" :key="idx">
-            <CreatePatronComponent
-              :idx="idx"
-              :submit="isSubmitting"
-              :name="item[memberProfile.Name]"
-              :birthday="item[memberProfile.Birthday]"
-              :image="item[memberProfile.Image]"
-              @delete="deletePatron"
-              @updateName="updatePatronName"
-              @updateBirthday="updatePatronBirthday"
-              @updateImage="updatePatronImage"
-            />
-          </div>
         </div>
       </div>
-    </div>
+    </form>
   </div>
 </template>
 
