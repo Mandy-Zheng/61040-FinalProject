@@ -2,9 +2,10 @@ import { ObjectId } from "mongodb";
 
 import { Router, getExpressRouter } from "./framework/router";
 
-import { Household, Membership, Patron, Shift, Stock, Team, User, WebSession } from "./app";
+import { Household, LanguageAudio, Membership, Patron, Shift, Stock, Team, User, WebSession } from "./app";
 import { BadValuesError } from "./concepts/errors";
 import { DietaryRestrictions, HouseholdDoc, Language } from "./concepts/household";
+import { LanguageAudioDoc } from "./concepts/languageaudio";
 import { PatronDoc } from "./concepts/patron";
 import { StockDoc } from "./concepts/stock";
 import { UserDoc } from "./concepts/user";
@@ -203,7 +204,7 @@ class Routes {
   }
 
   // update household members, diet restrictions, language, special requests
-  @Router.patch("/profile/:id")
+  @Router.patch("/profile")
   async updateHouseholdDetails(session: WebSessionDoc, id: ObjectId, update: Partial<HouseholdDoc>) {
     const household = await Household.getProfileById(id);
     const ID = new ObjectId(id);
@@ -278,24 +279,24 @@ class Routes {
 
   @Router.patch("/profile/visit/:id")
   async addVisit(session: WebSessionDoc, id: ObjectId) {
-    const ID = new ObjectId(id);
-    const household = await Household.getProfileById(ID);
+    const orgId = new ObjectId(id);
+    const household = await Household.getProfileById(orgId);
     const user = WebSession.getUser(session);
     await Team.isTeamMember(household.organization, user);
-    await Household.addVisit(ID);
+    await Household.addVisit(orgId);
     return { msg: "Successfully added visit!" };
   }
 
   @Router.delete("/profile/:id")
   async removeHouseholdProfile(session: WebSessionDoc, id: ObjectId) {
-    const ID = new ObjectId(id);
-    const household = await Household.getProfileById(ID);
+    const orgId = new ObjectId(id);
+    const household = await Household.getProfileById(orgId);
     const user = WebSession.getUser(session);
     await Team.isTeamMember(household.organization, user);
     for (const patron of household.members) {
       await Patron.deletePatron(patron);
     }
-    return await Household.delete(ID);
+    return await Household.delete(orgId);
   }
 
   @Router.get("/profile/allocate/:id")
@@ -305,11 +306,6 @@ class Routes {
     const user = WebSession.getUser(session);
     const team = household.organization;
     await Team.isTeamMember(team, user);
-    let cnt = 0;
-    const allHouses = await Household.getProfilesByOwner(team);
-    allHouses.forEach((house) => {
-      cnt += house.members.length;
-    });
     const patrons = household.members.length;
     const inventory = await Stock.getStocksByOwner(team);
     const allocation = new Array<StockDoc>();
@@ -332,7 +328,7 @@ class Routes {
     }
     const maxPer = new Array<number>();
     allocation.forEach((stock) => {
-      maxPer.push(patrons * Math.min(stock.maxPerPerson, Stock.getTodaysAllocation(stock.count) / (cnt / 7)));
+      maxPer.push(Math.min(patrons * stock.maxPerPerson, stock.maxPerDay));
     });
     const response = await Responses.stocks(allocation);
     const ret = response.map((stock, i) => ({ ...stock, allocation: maxPer[i] }));
@@ -354,14 +350,21 @@ class Routes {
     let inventory;
     if (name) {
       inventory = await Stock.getStockByItem(org, name);
-      return { ...(await Responses.stock(inventory)), maxPerDay: Stock.getTodaysAllocation(inventory.count) };
+      return await Responses.stock(inventory);
     } else {
       inventory = await Stock.getStocksByOwner(org);
-      const maxPDs = inventory.map((stock) => Stock.getTodaysAllocation(stock.count));
       const response = await Responses.stocks(inventory);
-      const ret = response.map((stock, i) => ({ ...stock, maxPerDay: maxPDs[i] }));
-      return ret;
+      return response;
     }
+  }
+  // generate max per day allocation
+  @Router.get("/inventory/:orgId")
+  async setInventoryMaxPerDay(session: WebSessionDoc, orgId: ObjectId) {
+    const user = WebSession.getUser(session);
+    const org = new ObjectId(orgId);
+    await Team.isTeamMember(org, user);
+    const inventory = await Stock.getStocksByOwner(org);
+    await Promise.all(inventory.map((stock) => Stock.setTodaysAllocation(stock._id)));
   }
 
   // update an inventory item's count or other details (link, image, etc)
@@ -408,11 +411,12 @@ class Routes {
   }
 
   @Router.get("/shift/org/:orgId/:futureOnly")
-  async getOrganizationShifts(session: WebSessionDoc, orgId: ObjectId, futureOnly: Boolean) {
+  async getOrganizationShifts(session: WebSessionDoc, orgId: ObjectId, futureOnly: string) {
+    const futureOnlyBool = futureOnly === "true";
     const user = WebSession.getUser(session);
     await Team.isTeamMember(orgId, user);
     let shifts;
-    if (futureOnly) {
+    if (futureOnlyBool) {
       shifts = await Shift.getFutureShiftsByOwner(orgId);
     } else {
       shifts = await Shift.getShiftsByOwner(orgId);
@@ -421,10 +425,11 @@ class Routes {
   }
 
   @Router.get("/shift/user/:futureOnly")
-  async getUserShifts(session: WebSessionDoc, futureOnly: Boolean) {
+  async getUserShifts(session: WebSessionDoc, futureOnly: string) {
+    const futureOnlyBool = futureOnly === "true";
     const user = WebSession.getUser(session);
     let shifts;
-    if (futureOnly) {
+    if (futureOnlyBool) {
       shifts = await Shift.getFutureShiftsByUser(user);
     } else {
       shifts = await Shift.getShiftsByUser(user);
@@ -462,6 +467,62 @@ class Routes {
     const shift = await Shift.getShiftById(id);
     await Team.isAdmin(shift.owner, user);
     return await Shift.deleteShift(id);
+  }
+
+  @Router.post("/languageAudio")
+  async createLanguageAudio(session: WebSessionDoc, org: ObjectId, language: string, audio: string, translation: string) {
+    const user = WebSession.getUser(session);
+    const orgId = new ObjectId(org);
+    await Team.isTeamMember(orgId, user);
+    const { msg } = await LanguageAudio.create(orgId, language, audio, translation);
+    return msg;
+  }
+
+  @Router.get("/languageAudio/owner/:org/allLanguages")
+  async getLanguageAudioByOwner(session: WebSessionDoc, org: ObjectId) {
+    const user = WebSession.getUser(session);
+    const orgId = new ObjectId(org);
+    await Team.isTeamMember(orgId, user);
+    const allLanguage = await LanguageAudio.getAllAudioLanguagesByOwner(orgId);
+    const allAudio = await Promise.all(allLanguage.map((language) => LanguageAudio.getAudioLanguagesByOwner(orgId, language)));
+    return allAudio.map((audio, idx) => {
+      return { language: allLanguage[idx], audios: audio };
+    });
+  }
+
+  @Router.get("/languageAudio/owner/:org/:language")
+  async getLanguageAudioByOwnerAndLanguage(session: WebSessionDoc, org: ObjectId, language: string) {
+    const user = WebSession.getUser(session);
+    const orgId = new ObjectId(org);
+    await Team.isTeamMember(orgId, user);
+    return { language: language, audios: await LanguageAudio.getAudioLanguagesByOwner(orgId, language) };
+  }
+
+  @Router.get("/languageAudio/:audio")
+  async getLanguageAudioById(session: WebSessionDoc, audio: ObjectId) {
+    const user = WebSession.getUser(session);
+    const audioId = new ObjectId(audio);
+    const languageAudio = await LanguageAudio.getById(audioId);
+    await Team.isTeamMember(languageAudio.owner, user);
+    return languageAudio;
+  }
+
+  @Router.patch("/languageAudio")
+  async updateLanguageAudio(session: WebSessionDoc, audio: ObjectId, update: Partial<LanguageAudioDoc>) {
+    const user = WebSession.getUser(session);
+    const audioId = new ObjectId(audio);
+    const audioFile = await LanguageAudio.getById(audioId);
+    await Team.isTeamMember(audioFile.owner, user);
+    return await LanguageAudio.updateAudio(audioId, audioFile.owner, update);
+  }
+
+  @Router.delete("/languageAudio/:audio")
+  async deleteLanguageAudio(session: WebSessionDoc, audio: ObjectId) {
+    const user = WebSession.getUser(session);
+    const audioId = new ObjectId(audio);
+    const audioFile = await LanguageAudio.getById(audioId);
+    await Team.isTeamMember(audioFile.owner, user);
+    return await LanguageAudio.deleteAudio(audioId, audioFile.owner);
   }
 }
 

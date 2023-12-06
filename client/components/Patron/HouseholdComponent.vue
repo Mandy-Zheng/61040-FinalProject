@@ -13,7 +13,7 @@ const allocation = ref();
 
 const deleteHousehold = async () => {
   try {
-    await fetchy(`api/profile/${props.household._id}`, "DELETE");
+    await fetchy(`/api/profile/${props.household._id}`, "DELETE");
   } catch {
     return;
   }

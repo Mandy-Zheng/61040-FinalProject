@@ -39,9 +39,7 @@ function deletePatron(idx: number) {
 }
 
 function updatePatronName(idx: number, name: string) {
-  console.log(name);
   members.value[idx][memberProfile.Name] = name;
-  console.log(members);
 }
 
 function updatePatronBirthday(idx: number, birthday: string) {

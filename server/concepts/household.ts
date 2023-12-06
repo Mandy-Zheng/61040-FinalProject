@@ -159,6 +159,7 @@ export default class HouseholdConcept {
 
   async update(_id: ObjectId, update: Partial<HouseholdDoc>) {
     this.sanitizeUpdate(update);
+    console.log(update);
     await this.households.updateOne({ _id }, update);
     return { msg: "Profile successfully updated!" };
   }
