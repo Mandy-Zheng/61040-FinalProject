@@ -2,6 +2,7 @@ import { storeToRefs } from "pinia";
 import { createRouter, createWebHistory } from "vue-router";
 
 import { useUserStore } from "@/stores/user";
+import AudioView from "../views/AudioView.vue";
 import HomeView from "../views/HomeView.vue";
 import InventoryView from "../views/InventoryView.vue";
 import LoginView from "../views/LoginView.vue";
@@ -29,6 +30,12 @@ const router = createRouter({
       path: "/patrons",
       name: "Patrons",
       component: PatronView,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: "/audio",
+      name: "Audio",
+      component: AudioView,
       meta: { requiresAuth: true },
     },
     {

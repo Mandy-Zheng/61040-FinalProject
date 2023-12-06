@@ -9,7 +9,7 @@ import HouseholdComponent from "./HouseholdComponent.vue";
 import ResetVisitsModal from "./ResetVisitsModal.vue";
 import SearchHouseholdsForm from "./SearchHouseholdsForm.vue";
 
-const showCreateModal = ref<boolean>(false);
+const showCreateComponent = ref<boolean>(false);
 const showResetModal = ref<boolean>(false);
 
 const loaded = ref(false);
@@ -43,12 +43,12 @@ onBeforeMount(async () => {
 
 <template>
   <div class="right">
-    <button class="button-39" @click.prevent="showCreateModal = true">Create New Household</button>
+    <button class="button-39" @click.prevent="showCreateComponent = true">Create New Household</button>
     <button class="button-39 reset" @click.prevent="showResetModal = true">Reset All Visits</button>
   </div>
-  <CreateHouseholdComponent :show="showCreateModal" @close="showCreateModal = false" @refreshHouseholds="getHouseholds" />
+  <CreateHouseholdComponent :show="showCreateComponent" @close="showCreateComponent = false" @refreshHouseholds="getHouseholds" />
   <ResetVisitsModal :show="showResetModal" @close="showResetModal = false" @refreshHouseholds="getHouseholds" />
-  <div v-if="!showCreateModal">
+  <div v-if="!showCreateComponent">
     <div class="row">
       <h2 v-if="!searchId">Households:</h2>
       <h2 v-else>{{ searchId }}:</h2>

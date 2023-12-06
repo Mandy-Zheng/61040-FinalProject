@@ -20,7 +20,6 @@ async function getInventory() {
       let name = item.value;
       let query: Record<string, string> = name !== undefined ? { name } : {};
       inventory.value = [await fetchy(`/api/inventory/${selectedOrg.value.id}`, "GET", { query })];
-      console.log(inventory.value);
     }
   } catch (error) {
     return;

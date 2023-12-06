@@ -2,9 +2,10 @@ import { ObjectId } from "mongodb";
 
 import { Router, getExpressRouter } from "./framework/router";
 
-import { Household, Membership, Patron, Shift, Stock, Team, User, WebSession } from "./app";
+import { Household, LanguageAudio, Membership, Patron, Shift, Stock, Team, User, WebSession } from "./app";
 import { BadValuesError } from "./concepts/errors";
 import { DietaryRestrictions, HouseholdDoc, Language } from "./concepts/household";
+import { LanguageAudioDoc } from "./concepts/languageaudio";
 import { PatronDoc } from "./concepts/patron";
 import { StockDoc } from "./concepts/stock";
 import { UserDoc } from "./concepts/user";
@@ -410,6 +411,62 @@ class Routes {
     const shift = await Shift.getShiftById(id);
     await Team.isAdmin(shift.owner, user);
     return await Shift.deleteShift(id);
+  }
+
+  @Router.post("/languageAudio")
+  async createLanguageAudio(session: WebSessionDoc, org: ObjectId, language: string, audio: string, translation: string) {
+    const user = WebSession.getUser(session);
+    const orgId = new ObjectId(org);
+    await Team.isTeamMember(orgId, user);
+    const { msg } = await LanguageAudio.create(orgId, language, audio, translation);
+    return msg;
+  }
+
+  @Router.get("/languageAudio/owner/:org/allLanguages")
+  async getLanguageAudioByOwner(session: WebSessionDoc, org: ObjectId) {
+    const user = WebSession.getUser(session);
+    const orgId = new ObjectId(org);
+    await Team.isTeamMember(orgId, user);
+    const allLanguage = await LanguageAudio.getAllAudioLanguagesByOwner(orgId);
+    const allAudio = await Promise.all(allLanguage.map((language) => LanguageAudio.getAudioLanguagesByOwner(orgId, language)));
+    return allAudio.map((audio, idx) => {
+      return { language: allLanguage[idx], audios: audio };
+    });
+  }
+
+  @Router.get("/languageAudio/owner/:org/:language")
+  async getLanguageAudioByOwnerAndLanguage(session: WebSessionDoc, org: ObjectId, language: string) {
+    const user = WebSession.getUser(session);
+    const orgId = new ObjectId(org);
+    await Team.isTeamMember(orgId, user);
+    return { language: language, audios: await LanguageAudio.getAudioLanguagesByOwner(orgId, language) };
+  }
+
+  @Router.get("/languageAudio/:audio")
+  async getLanguageAudioById(session: WebSessionDoc, audio: ObjectId) {
+    const user = WebSession.getUser(session);
+    const audioId = new ObjectId(audio);
+    const languageAudio = await LanguageAudio.getById(audioId);
+    await Team.isTeamMember(languageAudio.owner, user);
+    return languageAudio;
+  }
+
+  @Router.patch("/languageAudio")
+  async updateLanguageAudio(session: WebSessionDoc, audio: ObjectId, update: Partial<LanguageAudioDoc>) {
+    const user = WebSession.getUser(session);
+    const audioId = new ObjectId(audio);
+    const audioFile = await LanguageAudio.getById(audioId);
+    await Team.isTeamMember(audioFile.owner, user);
+    return await LanguageAudio.updateAudio(audioId, audioFile.owner, update);
+  }
+
+  @Router.delete("/languageAudio/:audio")
+  async deleteLanguageAudio(session: WebSessionDoc, audio: ObjectId) {
+    const user = WebSession.getUser(session);
+    const audioId = new ObjectId(audio);
+    const audioFile = await LanguageAudio.getById(audioId);
+    await Team.isTeamMember(audioFile.owner, user);
+    return await LanguageAudio.deleteAudio(audioId, audioFile.owner);
   }
 }
 

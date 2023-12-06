@@ -1,4 +1,5 @@
 import HouseholdConcept from "./concepts/household";
+import LanguageAudioConcept from "./concepts/languageaudio";
 import MembershipConcept from "./concepts/membership";
 import PatronConcept from "./concepts/patron";
 import ShiftConcept from "./concepts/shift";
@@ -16,3 +17,4 @@ export const Stock = new StockConcept();
 export const Household = new HouseholdConcept();
 export const Patron = new PatronConcept();
 export const Shift = new ShiftConcept();
+export const LanguageAudio = new LanguageAudioConcept();
