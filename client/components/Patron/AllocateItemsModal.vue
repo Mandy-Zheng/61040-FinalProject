@@ -12,6 +12,12 @@ async function allocateItems() {
   props.allocation.forEach(stock => {
     console.log(stock.item);
   });
+  try{
+    await fetchy(`/api/profile/visit/${props.household._id}`,'PATCH');
+  }catch
+  {
+    return;
+  }
   emit("close");
   emit("refreshHouseholds");
 }
