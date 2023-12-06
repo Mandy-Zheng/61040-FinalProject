@@ -59,7 +59,7 @@ async function addItem(name: string, imgLink: string, purchaseLink: string, unit
 async function getMaxAllocation() {
   try {
     if (selectedOrg.value) {
-      await fetchy(`/api/inventory/${selectedOrg.value.id}`, "GET");
+      await fetchy(`/api/inventory/max/${selectedOrg.value.id}`, "GET");
       await getAllInventories();
       await getInventories();
     }

@@ -20,7 +20,7 @@ export default class StockConcept {
 
   async createStock(owner: ObjectId, item: string, count: number, diet: Array<DietaryRestrictions>, link?: string, img?: string, maxPP: number = 3) {
     await this.isItemUnique(owner, item); // can't duplicate item name within same owner
-    const _id = await this.stocks.createOne({ owner, item, count, diet, supplyLink: link, image: img, maxPerPerson: maxPP });
+    const _id = await this.stocks.createOne({ owner, item, count, diet, supplyLink: link, image: img, maxPerPerson: maxPP,maxPerDay:0 });
     if (count < 0) {
       throw new NotAllowedError("Initial stock count cannot be negative");
     }
