@@ -363,7 +363,6 @@ class Routes {
     const user = WebSession.getUser(session);
     const org = new ObjectId(orgId);
     await Team.isTeamMember(org, user);
-    console.log('hi');
     const inventory = await Stock.getStocksByOwner(org);
     await Promise.all(inventory.map((stock) => Stock.setTodaysAllocation(stock._id)));
   }

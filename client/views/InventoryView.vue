@@ -60,12 +60,12 @@ async function getMaxAllocation() {
   try {
     if (selectedOrg.value) {
       await fetchy(`/api/inventory/max/${selectedOrg.value.id}`, "GET");
-      await getAllInventories();
-      await getInventories();
     }
   } catch (_) {
     return;
   }
+  await getAllInventories();
+  await getInventories();
 }
 
 onBeforeMount(async () => {
