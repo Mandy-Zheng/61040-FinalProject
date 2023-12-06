@@ -29,7 +29,7 @@ onBeforeMount(async () => {
   <main>
     <div v-if="loaded && patron">
       <article>
-        <img v-if="!patron.image.length" class="circle" src="../../assets/images/image.svg" width="60" />
+        <img v-if="!patron.image.length" class="circle" src="../../assets/images/image.svg" width="60" height="60" />
         <img v-else :src="patron.image" width="60" height="60" class="circle" />
         <div class="column">
           <h3 class="name">{{ patron.name }}</h3>
@@ -73,7 +73,7 @@ article {
   font-size: small;
   gap: 2.5em;
   width: 20em;
-  overflow: scroll;
+  overflow: auto;
 }
 
 .column {

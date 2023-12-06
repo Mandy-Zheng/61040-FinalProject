@@ -41,7 +41,7 @@ const getAllocation = async () => {
         <HouseholdInfoComponent :household="household" @refreshHouseholds="emit('refreshHouseholds')" @refreshVisits="addVisit" />
       </div>
       <div class="column">
-        <div v-for="patron in household.members" :key="patron">
+        <div v-for="patron in household.members" :key="patron" class="">
           <PatronCardComponent :patronId="patron" />
         </div>
       </div>
