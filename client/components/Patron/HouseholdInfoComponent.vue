@@ -1,9 +1,27 @@
 <script setup lang="ts">
 import { formatDate } from "@/utils/formatDate";
-
+import Multiselect from "@vueform/multiselect";
+import { ref } from "vue";
 const props = defineProps(["household"]);
 const emit = defineEmits(["refreshVisits"]);
+const dietaryTags = ["Vegetarian", "Halal", "Gluten-Free", "Nut-Free", "Low-Sodium", "Seafood", "Dairy-Free", "Kosher"];
+const LANGUAGES = ["English", "Spanish", "French", "Portuguese", "Arabic", "Russian", "Japanese", "Bengali", "Dutch", "Urdu", "Polish", "Indonesian", "Korean", "Mandarin", "Cantonese"];
 
+const language = ref<string>(props.household.preferredLanguage);
+const requests = ref<string>(props.household.specialRequests);
+const dietRestrictions = ref<Array<string>>(props.household.dietaryRestrictions);
+const multiselectDietTags = dietaryTags.map((tag) => {
+  return { label: tag, value: tag };
+});
+
+function resetUpdate() {
+  editMode.value = false;
+}
+function updateOverview() {
+  console.log(language.value, requests.value, dietRestrictions.value);
+  editMode.value = true;
+}
+const editMode = ref<boolean>(false);
 const tagColors = new Map([
   ["Vegetarian", "#b9fbc0"],
   ["Halal", "#fde4cf"],
@@ -34,7 +52,9 @@ const tagColors = new Map([
             <div v-for="visit in props.household.pastVisits" :key="visit" class="date">{{ formatDate(visit) }}</div>
           </ul>
         </div>
-        <div class="info">
+        <button @click="editMode = true">Edit Overview</button>
+        <div v-if="editMode">Diet <Multiselect class="multiselect" v-model="dietRestrictions" mode="tags" :options="multiselectDietTags" :searchable="true" required /></div>
+        <div class="info" v-else>
           <p class="diet-title">Dietary Restrictions:</p>
           <div class="row">
             <div v-for="tag in props.household.dietaryRestrictions" :key="tag">
@@ -42,13 +62,18 @@ const tagColors = new Map([
             </div>
           </div>
         </div>
+
         <div class="info">
-          <p>Language: {{ props.household.preferredLanguage }}</p>
+          <p v-if="editMode">Language: <input v-model="language" /></p>
+          <p v-else>Language: {{ props.household.preferredLanguage }}</p>
           <!-- TODO relevant audio -->
         </div>
         <div class="info" v-if="household.specialRequests">
-          <p>Requests: {{ props.household.specialRequests }}</p>
+          <p v-if="editMode">Requests: <input v-model="requests" /></p>
+          <p v-else>Requests: {{ props.household.specialRequests }}</p>
         </div>
+        <button class="button-39" v-if="editMode" @click="updateOverview">Update</button>
+        <button class="button-39" v-if="editMode" @click="resetUpdate">Cancel</button>
       </div>
     </div>
   </div>
@@ -63,6 +88,10 @@ const tagColors = new Map([
   display: flex;
   flex-direction: row;
   padding: 0em;
+}
+
+.edit-row {
+  border: 1px solid black;
 }
 
 .item {
