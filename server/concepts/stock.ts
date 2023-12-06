@@ -12,6 +12,7 @@ export interface StockDoc extends BaseDoc {
   supplyLink?: string;
   image?: string;
   maxPerPerson: number;
+  maxPerDay: number;
 }
 
 export default class StockConcept {
@@ -73,7 +74,7 @@ export default class StockConcept {
     if (stock.count - change < 0) {
       throw new NotAllowedError("Stock count cannot be negative");
     }
-    await this.stocks.updateOne({ _id }, { count: stock.count - change });
+    await this.stocks.updateOne({ _id }, { count: stock.count - change,maxPerDay:stock.maxPerDay-change});
     return { msg: "Stock successfully updated!" };
   }
 
@@ -81,13 +82,13 @@ export default class StockConcept {
     await this.stocks.deleteOne({ _id });
     return { msg: "Stock successfully deleted!" };
   }
-
-  getTodaysAllocation(count: number) {
-    // return the amount that can be given away today in order to maintain a proportional
-    // inventory for the rest of the week, assuming the week begins on sunday
+  
+  async setTodaysAllocation(_id: ObjectId) {
+    const stock = await this.stocks.readOne({ _id });
+    if(!stock) return;
     const currentDate = new Date();
     const currentDay = currentDate.getDay(); // sunday is 0, monday is 1, etc.
-    return count / (7 - currentDay);
+    await this.stocks.updateOne({ _id },{maxPerDay:stock.count/ (7 - currentDay)});
   }
 
   private sanitizeUpdate(update: Partial<StockDoc>) {

@@ -56,6 +56,16 @@ async function addItem(name: string, imgLink: string, purchaseLink: string, unit
     return;
   }
 }
+async function getMaxAllocation()
+{
+  try {
+    await fetchy(`/api/inventory/${selectedOrg.value.id}`, "GET");
+    await getAllInventories();
+    await getInventories();
+  } catch (_) {
+    return;
+  }
+}
 
 onBeforeMount(async () => {
   await getAllInventories();
@@ -75,8 +85,9 @@ onBeforeMount(async () => {
       @select="getInventory"
       placeholder="Search for an item"
     ></Multiselect>
-    <div style="display: flex; justify-content: flex-end">
+    <div class="right">
       <button class="button-39" @click.prevent="showCreateModal = true">Create New Item</button>
+      <button class="button-39 reset" @click.prevent="getMaxAllocation()">Update Daily Allocation</button>
     </div>
     <teleport to="body">
       <CreateStockModal :show="showCreateModal" @close="showCreateModal = false" @add="addItem" />
@@ -107,5 +118,16 @@ onBeforeMount(async () => {
   margin-right: 5em;
   margin-bottom: 3em;
   color: white;
+}
+.right {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 2em;
+  margin-right: 10em;
+}
+.reset {
+  background-color: var(--secondary);
+  color: black;
+  margin-left:-30px;
 }
 </style>

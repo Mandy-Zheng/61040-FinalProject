@@ -333,7 +333,7 @@ class Routes {
     }
     const maxPer = new Array<number>();
     allocation.forEach((stock) => {
-      maxPer.push(patrons * Math.min(stock.maxPerPerson, Stock.getTodaysAllocation(stock.count) / (cnt / 7)));
+      maxPer.push(patrons * Math.min(stock.maxPerPerson, stock.maxPerDay));
     });
     const response = await Responses.stocks(allocation);
     const ret = response.map((stock, i) => ({ ...stock, allocation: maxPer[i] }));
@@ -355,14 +355,23 @@ class Routes {
     let inventory;
     if (name) {
       inventory = await Stock.getStockByItem(org, name);
-      return { ...(await Responses.stock(inventory)), maxPerDay: Stock.getTodaysAllocation(inventory.count) };
+      return await Responses.stock(inventory);
     } else {
       inventory = await Stock.getStocksByOwner(org);
-      const maxPDs = inventory.map((stock) => Stock.getTodaysAllocation(stock.count));
       const response = await Responses.stocks(inventory);
-      const ret = response.map((stock, i) => ({ ...stock, maxPerDay: maxPDs[i] }));
-      return ret;
+      return response;
     }
+  }
+  // generate max per day allocation
+  @Router.get("/inventory/:orgId")
+  async setInventoryMaxPerDay(session: WebSessionDoc, orgId: ObjectId) {
+    const user = WebSession.getUser(session);
+    const org = new ObjectId(orgId);
+    await Team.isTeamMember(org, user);
+    const inventory = await Stock.getStocksByOwner(org);
+    inventory.forEach((stock)=>{
+      Stock.setTodaysAllocation(stock._id);
+    });
   }
 
   // update an inventory item's count or other details (link, image, etc)
