@@ -65,15 +65,15 @@ export default class StockConcept {
     return { msg: "Stock successfully updated!" };
   }
 
-  async incrementStockQuantity(_id: ObjectId, change: number) {
+  async decrementStockQuantity(_id: ObjectId, change: number) {
     const stock = await this.stocks.readOne({ _id });
     if (!stock) {
       throw new NotFoundError("Stock not found");
     }
-    if (stock.count + change < 0) {
+    if (stock.count - change < 0) {
       throw new NotAllowedError("Stock count cannot be negative");
     }
-    await this.stocks.updateOne({ _id }, { count: stock.count + change });
+    await this.stocks.updateOne({ _id }, { count: stock.count - change });
     return { msg: "Stock successfully updated!" };
   }
 

@@ -10,11 +10,10 @@ const emit = defineEmits(["close", "refreshHouseholds"]);
 const { selectedOrg } = storeToRefs(useOrganizationStore());
 
 async function allocateItems() {
-  props.allocation.forEach(stock => {
-    console.log(stock.allocation);
-  });
   try{
     await fetchy(`/api/profile/visit/${props.household._id}`,'PATCH');
+    for(const stock of props.allocation)
+      await fetchy(`/api/inventory/allocate/${stock._id}`, "PATCH", { body: { update: { count: stock.allocation} } });
   }catch
   {
     return;
