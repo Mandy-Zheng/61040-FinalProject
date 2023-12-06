@@ -411,11 +411,12 @@ class Routes {
   }
 
   @Router.get("/shift/org/:orgId/:futureOnly")
-  async getOrganizationShifts(session: WebSessionDoc, orgId: ObjectId, futureOnly: Boolean) {
+  async getOrganizationShifts(session: WebSessionDoc, orgId: ObjectId, futureOnly: string) {
+    const futureOnlyBool = futureOnly === "true";
     const user = WebSession.getUser(session);
     await Team.isTeamMember(orgId, user);
     let shifts;
-    if (futureOnly) {
+    if (futureOnlyBool) {
       shifts = await Shift.getFutureShiftsByOwner(orgId);
     } else {
       shifts = await Shift.getShiftsByOwner(orgId);
@@ -424,10 +425,11 @@ class Routes {
   }
 
   @Router.get("/shift/user/:futureOnly")
-  async getUserShifts(session: WebSessionDoc, futureOnly: Boolean) {
+  async getUserShifts(session: WebSessionDoc, futureOnly: string) {
+    const futureOnlyBool = futureOnly === "true";
     const user = WebSession.getUser(session);
     let shifts;
-    if (futureOnly) {
+    if (futureOnlyBool) {
       shifts = await Shift.getFutureShiftsByUser(user);
     } else {
       shifts = await Shift.getShiftsByUser(user);
