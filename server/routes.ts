@@ -298,7 +298,7 @@ class Routes {
     return await Household.delete(ID);
   }
 
-  @Router.get("/profile/:id/allocate")
+  @Router.get("/profile/allocate/:id")
   async getHouseholdAllocation(session: WebSessionDoc, id: ObjectId)
   {
     const ID = new ObjectId(id);

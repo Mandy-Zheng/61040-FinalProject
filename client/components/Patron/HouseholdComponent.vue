@@ -18,6 +18,8 @@ const deleteHousehold = async () => {
 };
 
 const addVisit = async () => {
+  const allocation = await fetchy(`/api/profile/allocate/${props.household._id}`,"GET");
+  console.log(allocation);
   try {
     await fetchy(`api/profile/visit/${props.household._id}`, "PATCH");
   } catch {
