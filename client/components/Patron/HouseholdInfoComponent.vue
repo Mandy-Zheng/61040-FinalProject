@@ -24,7 +24,7 @@ const tagColors = new Map([
         <div class="info">
           <p>
             Past visits: {{ props.household.pastVisits.length }}
-            <button class="icon" @click="emit('refreshVisits')" v-b-tooltip.hover title="Add visit">
+            <button class="icon" @click="emit('refreshVisits')" title="Add visit">
               <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" preserveAspectRatio="xMidYMid meet">
                 <g transform="translate(0.000000,25) scale(0.100000,-0.100000)" fill="#000000" stroke="none">
                   <path
