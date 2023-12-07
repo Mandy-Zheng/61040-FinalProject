@@ -57,7 +57,7 @@ onBeforeMount(async () => {
 
 <template>
   <div class="right" v-if="!showCreateComponent">
-    <button class="button-39" @click.prevent="showCreateComponent = true">Create New Household</button>
+    <button class="button-39" style="color: white" @click.prevent="showCreateComponent = true">Create New Household</button>
     <button class="button-39 reset" @click.prevent="showResetModal = true">Reset All Visits</button>
   </div>
   <CreateHouseholdComponent :show="showCreateComponent" :allLanguages="allLanguages" @close="showCreateComponent = false" @refreshHouseholds="getHouseholds" />
