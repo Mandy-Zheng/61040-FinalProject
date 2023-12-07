@@ -136,7 +136,7 @@ onBeforeMount(async () => {
                 <button v-else @click="showAudio = false" class="icon" style="color: var(--primary); text-decoration: underline">Hide Audio</button>
                 <div v-if="showAudio" style="margin-top: 1em; display: flex; gap: 2em; flex-direction: column">
                   <div v-for="audio in allAudios" :key="audio" class="audio">
-                    <p style="margin-left: 1em">
+                    <p style="margin-left: 0.5em; margin-bottom: 0px">
                       <i>"{{ audio.translation }}"</i>
                     </p>
                     <audio controls preload="auto">

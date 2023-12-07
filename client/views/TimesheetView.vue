@@ -149,11 +149,11 @@ const triggerModal = async (event: any) => {
 
 <style scoped>
 .cal {
-  margin: 0 1.5em 3em 1.5em;
+  margin: 0 7em 3em 7em;
 }
 
 .shifts {
-  margin: 1em;
+  margin: 0em;
 }
 .button-39 {
   margin: 1em;
@@ -163,7 +163,7 @@ const triggerModal = async (event: any) => {
   justify-content: center;
   margin: 0 auto;
   max-width: 60em;
-  padding: 1em;
+  padding: 0em;
 }
 
 h1 {

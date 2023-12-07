@@ -61,17 +61,11 @@ const unclaimShift = async () => {
           </div>
           <div v-else><h4>No volunteers yet!</h4></div>
 
-          <div v-if="shift.volunteers.includes(currentUsername)">
+          <div v-if="shift.volunteers.includes(currentUsername)" style="display: flex; margin-top: 1em">
             <div class="modify">
-              <button class="button-39" @click="emit('close')">Close</button>
+              <button class="button-39" @click="emit('close')">Cancel</button>
               <button class="button-39" @click.prevent="showUnclaimModal = true">Unclaim</button>
-              <button v-if="selectedOrg?.isAdmin" class="icon" @click.prevent="showDeleteModal = true" title="Delete shift">
-                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="black" class="bi bi-trash-fill" viewBox="0 0 16 16">
-                  <path
-                    d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0"
-                  />
-                </svg>
-              </button>
+              <button v-if="selectedOrg?.isAdmin" class="button-39 red" @click.prevent="showDeleteModal = true">Delete Shift</button>
             </div>
             <teleport to="body">
               <UnclaimShiftModal :show="showUnclaimModal" :shift="shift" @close="showUnclaimModal = false" @unclaim="unclaimShift(), (showUnclaimModal = false)" />
@@ -80,17 +74,11 @@ const unclaimShift = async () => {
               </div>
             </teleport>
           </div>
-          <div v-else>
+          <div v-else style="display: flex; margin-top: 1em">
             <div class="modify">
-              <button class="button-39" @click="emit('close')">Close</button>
+              <button class="button-39" @click="emit('close')">Cancel</button>
               <button class="button-39" @click.prevent="showClaimModal = true">Claim</button>
-              <button v-if="selectedOrg?.isAdmin" class="icon" @click.prevent="showDeleteModal = true" title="Delete shift">
-                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="black" class="bi bi-trash-fill" viewBox="0 0 16 16">
-                  <path
-                    d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0"
-                  />
-                </svg>
-              </button>
+              <button v-if="selectedOrg?.isAdmin" class="button-39 red" @click.prevent="showDeleteModal = true">Delete Shift</button>
             </div>
             <teleport to="body">
               <ClaimShiftModal :show="showClaimModal" :shift="shift" @close="showClaimModal = false" @claim="claimShift(), (showClaimModal = false)" />
@@ -121,10 +109,10 @@ const unclaimShift = async () => {
 
 .modify {
   display: flex;
-  gap: auto;
+  gap: 3em;
   width: 26em;
   padding-top: 0.5em;
-  justify-content: space-around;
+  justify-content: center;
 }
 
 .row {

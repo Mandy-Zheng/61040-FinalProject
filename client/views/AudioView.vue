@@ -43,8 +43,7 @@ onBeforeMount(async () => {
 
 <template>
   <main>
-    <div style="margin-left: 50px">
-      <h3>Language Audio Files</h3>
+    <div style="margin-left: 170px">
       <div class="right">
         <button class="button-39" @click="showCreateModal = true">Add New Audio Files</button>
         <!-- <button class="button-39 reset" @click.prevent="showResetModal = true">Reset All Visits</button> -->
@@ -52,22 +51,16 @@ onBeforeMount(async () => {
       <teleport to="body">
         <CreateAudioModal @close="showCreateModal = false" :show="showCreateModal" :allLanguages="allLanguages" @add="refresh" />
       </teleport>
-      <AudioComponent
-        v-for="languageAudio in allLanguageAudio"
-        :key="languageAudio"
-        :language="languageAudio.language"
-        :audios="languageAudio.audios"
-        :allLanguages="allLanguages"
-        @refresh="refresh"
-      />
-      <!-- <Multiselect class="multiselect" v-model="selected" :options="allOrgNames" :searchable="true" required /> -->
-      <!-- <select v-if="allOrgs.length !== 0" v-model="curOrg" @change="changeOrganization">
-        <option :value="undefined" :selected="curOrg === undefined" disabled>--Select an Organization--</option>
-        <option v-for="org in orgWithNames" :key="org" :selected="curOrg === org.id" :value="org.id">{{ org.name }}</option>
-      </select>
-      <p v-else>You are currently not a part of organization</p> -->
-      <h3>Manage Your Audio</h3>
-      <div class="grid"></div>
+      <div class="language">
+        <AudioComponent
+          v-for="languageAudio in allLanguageAudio"
+          :key="languageAudio"
+          :language="languageAudio.language"
+          :audios="languageAudio.audios"
+          :allLanguages="allLanguages"
+          @refresh="refresh"
+        />
+      </div>
     </div>
   </main>
 </template>
@@ -94,6 +87,13 @@ select {
   display: flex;
   justify-content: flex-end;
   margin-top: 2em;
-  margin-right: 10em;
+  margin-right: 20em;
+}
+
+.language {
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+  gap: 3em;
 }
 </style>
