@@ -10,7 +10,8 @@ import PatronCardComponent from "./PatronCardComponent.vue";
 const showDeleteModal = ref<boolean>(false);
 const showPatronDeleteModal = ref<boolean>(false);
 const showPatronAddModal = ref<boolean>(false);
-const props = defineProps(["household"]);
+
+const props = defineProps(["household", "allLanguages", "allDiets"]);
 const emit = defineEmits(["refreshHouseholds", "refreshById"]);
 const members = ref<Array<any>>(props.household.members);
 
@@ -56,11 +57,8 @@ async function deletePatrons(patrons: Array<string>) {
 
     await fetchy(`/api/profile/removePatron`, "PATCH", { body: body });
     showPatronDeleteModal.value = false;
-    if (patrons.length === props.household.members.length) {
-      emit("refreshHouseholds");
-    } else {
-      emit("refreshById", props.household._id);
-    }
+
+    emit("refreshById", props.household._id);
   } catch (error) {
     return;
   }
@@ -71,7 +69,7 @@ async function deletePatrons(patrons: Array<string>) {
   <main style="margin: 10px 0px">
     <div class="row">
       <div>
-        <HouseholdInfoComponent :household="household" @refreshHouseholds="emit('refreshHouseholds')" @refreshVisits="addVisit" />
+        <HouseholdInfoComponent :allDiets="allDiets" :allLanguages="allLanguages" :household="household" @refreshHouseholds="emit('refreshHouseholds')" @refreshVisits="addVisit" />
       </div>
       <div class="column">
         <p>Members of Household: <button @click="showPatronAddModal = true">Add Members</button> <button @click="showPatronDeleteModal = true">Delete Members</button></p>

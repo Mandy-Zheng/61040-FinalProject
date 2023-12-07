@@ -1,25 +1,17 @@
 <script setup lang="ts">
 import { BodyT, fetchy } from "@/utils/fetchy";
-import { onBeforeMount, ref } from "vue";
+import { computed, onBeforeMount, ref } from "vue";
+import { TAG_COLORS } from "../../../server/framework/utils";
 import DeleteStockModal from "./DeleteStockModal.vue";
 import EditStockModal from "./EditStockModal.vue";
 
-const props = defineProps(["stockId"]);
-const item = ref();
+const props = defineProps(["stockId", "allDiets"]);
+
 const emit = defineEmits(["refreshStocks"]);
+const item = ref<any>();
+const diet = computed(() => item.value.diet);
 const showDeleteModal = ref<boolean>(false);
 const showEditModal = ref<boolean>(false);
-
-const tagColors = new Map([
-  ["Vegetarian", "#b9fbc0"],
-  ["Halal", "#fde4cf"],
-  ["Gluten-Free", "#fbf8cc"],
-  ["Nut-Free", "#ffcfd2"],
-  ["Low-Sodium", "#8eecf5"],
-  ["Seafood", "#90dbf4"],
-  ["Dairy-Free", "#a3c4f3"],
-  ["Kosher", "#cfbaf0"],
-]);
 
 async function getItem() {
   try {
@@ -72,15 +64,15 @@ onBeforeMount(async () => {
         <div class="diet">
           <p class="diet-title">Dietary Restrictions:</p>
           <div class="row">
-            <div v-for="tag in item.diet" :key="tag">
-              <p class="tag" v-bind:style="{ backgroundColor: tagColors.get(tag) }">{{ tag }}</p>
+            <div v-for="(tag, idx) in diet" :key="tag">
+              <p class="tag" v-bind:style="{ backgroundColor: TAG_COLORS[idx % TAG_COLORS.length] }">{{ tag }}</p>
             </div>
           </div>
         </div>
       </div>
       <teleport to="body">
         <DeleteStockModal :show="showDeleteModal" :stock="item" @close="showDeleteModal = false" @delete="deleteStock(), (showDeleteModal = false)" />
-        <EditStockModal :show="showEditModal" :stock="item" @close="showEditModal = false" @update="editStock" />
+        <EditStockModal :allDiets="allDiets" :show="showEditModal" :stock="item" @close="showEditModal = false" @update="editStock" />
       </teleport>
     </div>
     <div class="row" style="gap: 1em">

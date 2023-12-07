@@ -1,4 +1,7 @@
 export const LANGUAGES = ["English", "Spanish", "French", "Portuguese", "Arabic", "Russian", "Japanese", "Bengali", "Dutch", "Urdu", "Polish", "Indonesian", "Korean", "Mandarin", "Cantonese"];
+export const DIETARY_RESTRICTIONS = ["Vegetarian", "Halal", "Gluten-Free", "Nut-Free", "Low-Sodium", "Seafood-Free", "Dairy-Free", "Kosher"];
+
+export const TAG_COLORS = ["#b9fbc0", "#fde4cf", "#fbf8cc", "#ffcfd2", "#8eecf5", "#90dbf4", "#a3c4f3", "#cfbaf0"];
 
 export function getParamNames(f: Function) {
   return f
@@ -17,9 +20,20 @@ export function filterOutEmpty(list: Array<string>) {
 }
 
 export function capitalizePhrase(phrase: string) {
-  console.log(phrase);
   return phrase
     .split(" ")
     .map((str) => capitalize(str))
     .join(" ");
+}
+
+export function onCreate(option: { value: string; label: string } | string) {
+  if (typeof option === "string") {
+    // Handle the case when the option is just a string
+    return capitalizePhrase(option);
+  } else {
+    // Handle the case when the option has value and label properties
+    option.label = capitalizePhrase(option.label);
+    option.value = option.label;
+  }
+  return option;
 }

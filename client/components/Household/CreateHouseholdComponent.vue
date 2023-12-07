@@ -2,24 +2,21 @@
 import Multiselect from "@vueform/multiselect";
 import { storeToRefs } from "pinia";
 import { computed, ref } from "vue";
-import { LANGUAGES, capitalizePhrase } from "../../../server/framework/utils";
+import { DIETARY_RESTRICTIONS, LANGUAGES, onCreate } from "../../../server/framework/utils";
 import { useOrganizationStore } from "../../stores/organization";
 import { fetchy } from "../../utils/fetchy";
 import CreatePatronComponent from "./CreatePatronComponent.vue";
 
-const props = defineProps(["show", "allLanguages"]);
+const props = defineProps(["show", "allLanguages", "allDiets"]);
 const emit = defineEmits(["close", "refreshHouseholds"]);
 
 const { selectedOrg } = storeToRefs(useOrganizationStore());
-
-const dietaryTags = ["Vegetarian", "Halal", "Gluten-Free", "Nut-Free", "Low-Sodium", "Seafood", "Dairy-Free", "Kosher"];
-
-const multiselectDietTags = dietaryTags.map((tag) => {
+const dietOptions = computed(() => [...new Set([...props.allDiets, ...DIETARY_RESTRICTIONS])]);
+const multiselectDietTags = dietOptions.value.map((tag) => {
   return { label: tag, value: tag };
 });
 
 const languageOptions = computed(() => [...new Set([...props.allLanguages, ...LANGUAGES])]);
-console.log(languageOptions);
 const members = ref<Array<[string, string, string]>>([["", "", ""]]);
 const enum memberProfile {
   Name = 0,
@@ -69,17 +66,6 @@ async function addHousehold() {
     return;
   }
 }
-function onCreate(option: { value: string; label: string } | string, select$: any) {
-  if (typeof option === "string") {
-    // Handle the case when the option is just a string
-    return capitalizePhrase(option);
-  } else {
-    // Handle the case when the option has value and label properties
-    option.label = capitalizePhrase(option.label);
-    option.value = option.label;
-  }
-  return option;
-}
 </script>
 
 <template>
@@ -96,7 +82,7 @@ function onCreate(option: { value: string; label: string } | string, select$: an
               Language
               <Multiselect v-model="language" :createTag="true" :options="languageOptions" :searchable="true" @create="onCreate" />
             </div>
-            <div class="form-input">Diet <Multiselect class="multiselect" v-model="diet" mode="tags" :options="multiselectDietTags" :searchable="true" /></div>
+            <div class="form-input">Diet <Multiselect class="multiselect" v-model="diet" mode="tags" :options="multiselectDietTags" :createTag="true" @create="onCreate" :searchable="true" /></div>
             <div class="special-request">Special Requests<textarea v-model="specialRequests"></textarea></div>
           </div>
           <div class="member-add">

@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import Multiselect from "@vueform/multiselect";
-import { onBeforeMount, ref } from "vue";
+import { computed, onBeforeMount, ref } from "vue";
+import { DIETARY_RESTRICTIONS, onCreate } from "../../../server/framework/utils";
 
-const props = defineProps(["show"]);
+const props = defineProps(["show", "allDiets"]);
 const emit = defineEmits(["close", "add"]);
-const dietaryTags = ["Vegetarian", "Halal", "Gluten-Free", "Nut-Free", "Low-Sodium", "Seafood", "Dairy-Free", "Kosher"];
-const multiselectDietTags = dietaryTags.map((tag) => {
+
+const dietOptions = computed(() => [...new Set([...props.allDiets, ...DIETARY_RESTRICTIONS])]);
+const multiselectDietTags = dietOptions.value.map((tag) => {
   return { label: tag, value: tag };
 });
+
 const name = ref<string>("");
 const imgLink = ref<string>("");
 const units = ref<number>(0);
@@ -41,7 +44,7 @@ onBeforeMount(async () => {});
               <div class="form-input">Name<input v-model="name" required /></div>
               <div class="form-input">
                 Diet
-                <div><Multiselect class="multiselect" v-model="diet" mode="tags" :options="multiselectDietTags" :searchable="true" /></div>
+                <div><Multiselect class="multiselect" v-model="diet" mode="tags" @create="onCreate" :createTag="true" :options="multiselectDietTags" :searchable="true" /></div>
               </div>
               <div class="form-input">Image Link<input v-model="imgLink" /></div>
               <div class="form-input">Purchase Link<input v-model="purchaseLink" /></div>

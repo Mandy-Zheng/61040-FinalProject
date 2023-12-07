@@ -6,7 +6,7 @@ export const useOrganizationStore = defineStore(
   () => {
     const selectedOrg = ref<{ id: string; name: string; isAdmin: boolean } | undefined>(undefined);
 
-    const setOrganization = async (org: { id: string; name: string; isAdmin: boolean } | undefined) => {
+    const setOrganization = (org: { id: string; name: string; isAdmin: boolean } | undefined) => {
       selectedOrg.value = org;
     };
 

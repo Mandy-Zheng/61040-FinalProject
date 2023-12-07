@@ -1,16 +1,9 @@
 <script setup lang="ts">
+import { computed } from "vue";
+import { TAG_COLORS } from "../../../server/framework/utils";
 const props = defineProps(["household", "stock"]);
 const emit = defineEmits([""]);
-const tagColors = new Map([
-  ["Vegetarian", "#b9fbc0"],
-  ["Halal", "#fde4cf"],
-  ["Gluten-Free", "#fbf8cc"],
-  ["Nut-Free", "#ffcfd2"],
-  ["Low-Sodium", "#8eecf5"],
-  ["Seafood", "#90dbf4"],
-  ["Dairy-Free", "#a3c4f3"],
-  ["Kosher", "#cfbaf0"],
-]);
+const diet = computed(() => props.stock.diet);
 </script>
 
 <template>
@@ -26,13 +19,13 @@ const tagColors = new Map([
           </div>
           <div class="subtext">
             <p class="maxp">Max for household: {{ props.stock.maxPerPerson * household.members.length }}</p>
-            <p class="maxp"> Max per Day: {{ props.stock.maxPerDay }}</p>
+            <p class="maxp">Max per Day: {{ props.stock.maxPerDay }}</p>
           </div>
           <div class="diet">
             <p class="diet-title">Dietary Restrictions:</p>
             <div class="row">
-              <div v-for="tag in props.stock.diet" :key="tag">
-                <p class="tag" v-bind:style="{ backgroundColor: tagColors.get(tag) }">{{ tag }}</p>
+              <div v-for="(tag, idx) in diet" :key="tag">
+                <p class="tag" v-bind:style="{ backgroundColor: TAG_COLORS[idx % TAG_COLORS.length] }">{{ tag }}</p>
               </div>
             </div>
           </div>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { LANGUAGES, capitalizePhrase } from "@/../server/framework/utils";
+import { LANGUAGES, onCreate } from "@/../server/framework/utils";
 import { fetchy } from "@/utils/fetchy";
 import Multiselect from "@vueform/multiselect";
 import { storeToRefs } from "pinia";
@@ -35,17 +35,6 @@ function resetForm() {
   audioLink.value = "";
   translation.value = "";
   emit("close");
-}
-function onCreate(option: { value: string; label: string } | string, select$: any) {
-  if (typeof option === "string") {
-    // Handle the case when the option is just a string
-    return capitalizePhrase(option);
-  } else {
-    // Handle the case when the option has value and label properties
-    option.label = capitalizePhrase(option.label);
-    option.value = option.label;
-  }
-  return option;
 }
 </script>
 

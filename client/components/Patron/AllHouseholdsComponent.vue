@@ -15,6 +15,8 @@ const showResetModal = ref<boolean>(false);
 const loaded = ref(false);
 const households = ref<Array<any>>([]);
 const allLanguages = computed(() => [...new Set(households.value.map((household) => household.preferredLanguage).filter((lang) => lang.length !== 0))]);
+const allDiets = computed(() => [...new Set(households.value.flatMap((household) => household.dietaryRestrictions))]);
+
 let searchId = ref("");
 const { selectedOrg } = storeToRefs(useOrganizationStore());
 
@@ -60,7 +62,7 @@ onBeforeMount(async () => {
     <button class="button-39" @click.prevent="showCreateComponent = true">Create New Household</button>
     <button class="button-39 reset" @click.prevent="showResetModal = true">Reset All Visits</button>
   </div>
-  <CreateHouseholdComponent :show="showCreateComponent" :allLanguages="allLanguages" @close="showCreateComponent = false" @refreshHouseholds="getHouseholds" />
+  <CreateHouseholdComponent :show="showCreateComponent" :allLanguages="allLanguages" :allDiets="allDiets" @close="showCreateComponent = false" @refreshHouseholds="getHouseholds" />
   <ResetVisitsModal :show="showResetModal" @close="showResetModal = false" @refreshHouseholds="getHouseholds" />
   <div v-if="!showCreateComponent">
     <div class="row">
@@ -70,7 +72,7 @@ onBeforeMount(async () => {
     </div>
     <section class="posts" v-if="loaded && households.length !== 0">
       <article v-for="household in households" :key="household">
-        <HouseholdComponent :household="household" @refreshHouseholds="getHouseholds" @refreshById="refreshHouseholdById" />
+        <HouseholdComponent :household="household" :allDiets="allDiets" :allLanguages="allLanguages" @refreshHouseholds="getHouseholds" @refreshById="refreshHouseholdById" />
       </article>
     </section>
     <p v-else-if="loaded">No households yet!</p>

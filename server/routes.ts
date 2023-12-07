@@ -4,7 +4,7 @@ import { Router, getExpressRouter } from "./framework/router";
 
 import { Household, LanguageAudio, Membership, Patron, Shift, Stock, Team, User, WebSession } from "./app";
 import { BadValuesError } from "./concepts/errors";
-import { DietaryRestrictions, HouseholdDoc, Language } from "./concepts/household";
+import { HouseholdDoc } from "./concepts/household";
 import { LanguageAudioDoc } from "./concepts/languageaudio";
 import { PatronDoc } from "./concepts/patron";
 import { StockDoc } from "./concepts/stock";
@@ -189,7 +189,7 @@ class Routes {
   }
 
   @Router.post("/profile")
-  async createHouseholdProfile(session: WebSessionDoc, orgId: ObjectId, patrons: Array<[string, string, string]>, diet: Array<DietaryRestrictions>, lang: Language, req: string) {
+  async createHouseholdProfile(session: WebSessionDoc, orgId: ObjectId, patrons: Array<[string, string, string]>, diet: Array<string>, lang: string, req: string) {
     const user = WebSession.getUser(session);
     const org = new ObjectId(orgId);
     await Team.isTeamMember(org, user);
@@ -230,15 +230,11 @@ class Routes {
     const householdInfo = await Household.getProfileById(householdId);
     const patronId = patrons.map((patron) => new ObjectId(patron));
     await Team.isTeamMember(householdInfo.organization, user);
-    await Promise.all(patronId.map((patron) => Patron.deletePatron(patron)));
     const removePatrons = new Set(patrons);
     const updatedMembers = householdInfo.members.filter((member) => !removePatrons.has(member.toString()));
-    if (updatedMembers.length) {
-      return await Household.updateMembers(householdId, updatedMembers);
-    } else {
-      await Household.delete(householdId);
-      return { msg: "Successfully updated Household" };
-    }
+    await Household.updateMembers(householdId, updatedMembers);
+    await Promise.all(patronId.map((patron) => Patron.deletePatron(patron)));
+    return { msg: "Successfully updated Household" };
   }
 
   @Router.patch("/profile/updatePatron")
@@ -407,7 +403,7 @@ class Routes {
   }
 
   @Router.post("/inventory")
-  async addNewInventoryItem(session: WebSessionDoc, owner: ObjectId, item: string, count: number, diet: Array<DietaryRestrictions>, link?: string, img?: string, maxp?: number) {
+  async addNewInventoryItem(session: WebSessionDoc, owner: ObjectId, item: string, count: number, diet: Array<string>, link?: string, img?: string, maxp?: number) {
     const user = WebSession.getUser(session);
     const Owner = new ObjectId(owner);
     await Team.isTeamMember(Owner, user);

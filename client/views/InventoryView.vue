@@ -5,7 +5,7 @@ import { useOrganizationStore } from "@/stores/organization";
 import { fetchy } from "@/utils/fetchy";
 import Multiselect from "@vueform/multiselect";
 import { storeToRefs } from "pinia";
-import { onBeforeMount, ref } from "vue";
+import { computed, onBeforeMount, ref } from "vue";
 
 const { selectedOrg } = storeToRefs(useOrganizationStore());
 
@@ -13,6 +13,7 @@ const inventories = ref<Array<any>>([]);
 const inventory = ref<Array<any>>([]);
 const showCreateModal = ref<boolean>(false);
 const item = ref("");
+const allDiets = computed(() => [...new Set(inventories.value.flatMap((inventory) => inventory.diet))]);
 
 async function getInventory() {
   try {
@@ -91,9 +92,9 @@ onBeforeMount(async () => {
       <button class="button-39 reset" @click.prevent="getMaxAllocation()">Update Daily Allocation</button>
     </div>
     <teleport to="body">
-      <CreateStockModal :show="showCreateModal" @close="showCreateModal = false" @add="addItem" />
+      <CreateStockModal :allDiets="allDiets" :show="showCreateModal" @close="showCreateModal = false" @add="addItem" />
     </teleport>
-    <div v-for="stock in inventory" :key="stock" class="stocks"><StockComponent @refreshStocks="getAllInventories(), getInventories()" :stockId="stock._id" /></div>
+    <div v-for="stock in inventory" :key="stock" class="stocks"><StockComponent :allDiets="allDiets" @refreshStocks="getAllInventories(), getInventories()" :stockId="stock._id" /></div>
   </main>
 </template>
 
