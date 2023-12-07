@@ -25,13 +25,13 @@ const addVisit = async () => {
   showAllocateModal.value = true;
 };
 
-const getAllocation = async () => {
+async function getAllocation() {
   try {
     allocation.value = await fetchy(`/api/profile/allocate/${props.household._id}`, "GET");
   } catch {
     return;
   }
-};
+}
 </script>
 
 <template>
