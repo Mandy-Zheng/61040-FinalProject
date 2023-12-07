@@ -8,10 +8,7 @@ const emit = defineEmits(["close", "refreshHouseholds"]);
 async function allocateItems() {
   try {
     await fetchy(`/api/profile/visit/${props.household._id}`, "PATCH");
-    await Promise.all(
-      props.allocation.value.map(async (stock: Record<string, any>) => await fetchy(`/api/inventory/allocate/${stock._id}`, "PATCH", { body: { update: { count: stock.allocation } } })),
-    );
-    console.log(props.allocation.value);
+    await Promise.all(props.allocation.map(async (stock: Record<string, any>) => await fetchy(`/api/inventories/allocate/${stock._id}`, "PATCH", { body: { update: { count: stock.allocation } } })));
   } catch {
     return;
   }
@@ -31,7 +28,7 @@ async function allocateItems() {
         </article>
         <div class="modal-footer">
           <button class="button-39" @click="emit('close')">Close</button>
-          <button class="button-39" style="background-color: var(--primary); border: none; color: white" @click="allocateItems, emit('refreshHouseholds')">Allocate</button>
+          <button class="button-39" style="background-color: var(--primary); border: none; color: white" @click="allocateItems(), emit('refreshHouseholds')">Allocate</button>
         </div>
       </div>
     </div>
