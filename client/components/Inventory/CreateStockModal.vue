@@ -32,7 +32,7 @@ onBeforeMount(async () => {});
   <transition name="modal">
     <div v-if="props.show" class="modal-mask">
       <div class="modal-container">
-        <form>
+        <form @submit.prevent="emit('add', name, imgLink, purchaseLink, units, diet, maxPerPerson), emptyForm()">
           <h1>Create New Inventory</h1>
           <div class="form">
             <img v-if="!imgLink.length" src="../../assets/images/image.svg" />
@@ -52,7 +52,7 @@ onBeforeMount(async () => {});
           </div>
           <div class="modal-footer">
             <button class="button-39" @click="emit('close'), emptyForm()">Cancel</button>
-            <button class="button-39" type="submit" @click="emit('add', name, imgLink, purchaseLink, units, diet, maxPerPerson), emptyForm()">Add</button>
+            <button class="button-39" type="submit">Add</button>
           </div>
         </form>
       </div>
