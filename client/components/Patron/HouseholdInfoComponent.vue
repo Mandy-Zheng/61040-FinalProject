@@ -7,7 +7,7 @@ import { useOrganizationStore } from "../../stores/organization";
 import { fetchy } from "../../utils/fetchy";
 const props = defineProps(["household"]);
 const emit = defineEmits(["refreshVisits", "refreshHouseholds"]);
-const dietaryTags = ["Vegetarian", "Halal", "Gluten-Free", "Nut-Free", "Low-Sodium", "Seafood", "Dairy-Free", "Kosher"];
+const dietaryTags = ["Vegetarian", "Halal", "Gluten-Free", "Nut-Free", "Low-Sodium", "Seafood-Free", "Dairy-Free", "Kosher"];
 const LANGUAGES = ["English", "Spanish", "French", "Portuguese", "Arabic", "Russian", "Japanese", "Bengali", "Dutch", "Urdu", "Polish", "Indonesian", "Korean", "Mandarin", "Cantonese"];
 
 const { selectedOrg } = storeToRefs(useOrganizationStore());
@@ -23,7 +23,7 @@ const tagColors = new Map([
   ["Gluten-Free", "#fbf8cc"],
   ["Nut-Free", "#ffcfd2"],
   ["Low-Sodium", "#8eecf5"],
-  ["Seafood", "#90dbf4"],
+  ["Seafood-Free", "#90dbf4"],
   ["Dairy-Free", "#a3c4f3"],
   ["Kosher", "#cfbaf0"],
 ]);

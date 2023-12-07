@@ -37,7 +37,7 @@ function resetForm() {
           <div class="form-input"><span>Name:</span> <input v-model="name" /></div>
 
           <div class="form-input"><span>Birthdate:</span> <input type="date" :max="today" v-model="birthday" /></div>
-          <div class="form-input"><span>Photo Link:</span> <input :v-model="image" /></div>
+          <div class="form-input"><span>Photo Link:</span> <input v-model="image" /></div>
           <div class="row">
             <button class="button-39" @click="resetForm">Cancel</button>
             <button class="button-39" @click="addMember">Add</button>

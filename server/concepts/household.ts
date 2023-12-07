@@ -8,7 +8,7 @@ export enum DietaryRestrictions {
   GlutenFree = "Gluten-Free",
   NutFree = "Nut-Free",
   LowSodium = "Low-Sodium",
-  Seafood = "Seafood",
+  SeafoodFree = "Seafood-Free",
   DairyFree = "Dairy-Free",
   Kosher = "Kosher",
 }
@@ -28,7 +28,6 @@ export enum Language {
   Korean = "Korean",
   Mandarin = "Mandarin",
   Cantonese = "Cantonese",
-  //TODO: Add more languages
 }
 export interface HouseholdDoc extends BaseDoc {
   organization: ObjectId;
