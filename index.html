@@ -8,6 +8,7 @@
     <script src="https://unpkg.com/vue"></script>
     <script src="https://unpkg.com/vue-cal"></script>
     <link href="https://unpkg.com/vue-cal/dist/vuecal.css" rel="stylesheet">
+    
   </head>
   <body style="margin:0 auto">
     <div id="app" style="font-family: 'Inter', sans-serif; font-weight: 600"></div>
@@ -19,3 +20,12 @@
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap');
 </style>
 <style src="@vueform/multiselect/themes/default.css"></style>
+
+<script>
+import VueCal from 'vue-cal'
+import 'vue-cal/dist/vuecal.css'
+
+export default {
+  components: { VueCal },
+}
+</script>
