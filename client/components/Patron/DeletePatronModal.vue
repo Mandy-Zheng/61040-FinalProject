@@ -17,9 +17,12 @@ const patronsToRemove = ref<Array<string>>([]);
       <div class="modal-container">
         <h3>Removing Patrons from household {{ householdId }}</h3>
         <br />
-        <Multiselect v-model="patronsToRemove" mode="tags" :options="patronNames" :searchable="true" />
-        <button @click="emit('close')">Cancel</button>
-        <button @click="emit('delete', patronsToRemove)">Delete</button>
+        <div v-if="patronNames.length > 1">
+          <Multiselect v-model="patronsToRemove" mode="tags" :options="patronNames" :searchable="true" />
+          <button @click="emit('close')">Cancel</button>
+          <button @click="emit('delete', patronsToRemove)">Delete</button>
+        </div>
+        <div v-else>Cannot remove only patron in the household <button @click="emit('close')">Cancel</button></div>
       </div>
     </div>
   </transition>
