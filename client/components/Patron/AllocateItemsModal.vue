@@ -9,7 +9,7 @@ async function allocateItems() {
   try {
     await fetchy(`/api/profile/visit/${props.household._id}`, "PATCH");
     await Promise.all(
-      props.allocation.value.map(async (stock: Record<string, string>) => await fetchy(`/api/inventory/allocate/${stock._id}`, "PATCH", { body: { update: { count: stock.allocation } } })),
+      props.allocation.value.map(async (stock: Record<string, any>) => await fetchy(`/api/inventory/allocate/${stock._id}`, "PATCH", { body: { update: { count: stock.allocation } } })),
     );
   } catch {
     return;
