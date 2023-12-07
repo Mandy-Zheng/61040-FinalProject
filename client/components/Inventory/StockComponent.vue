@@ -16,7 +16,7 @@ const tagColors = new Map([
   ["Gluten-Free", "#fbf8cc"],
   ["Nut-Free", "#ffcfd2"],
   ["Low-Sodium", "#8eecf5"],
-  ["Seafood", "#90dbf4"],
+  ["Seafood-Free", "#90dbf4"],
   ["Dairy-Free", "#a3c4f3"],
   ["Kosher", "#cfbaf0"],
 ]);

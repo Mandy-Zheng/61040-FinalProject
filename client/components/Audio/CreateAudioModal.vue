@@ -28,6 +28,7 @@ async function addAudioFile() {
   } catch (_) {
     return;
   }
+  resetForm();
 }
 
 function resetForm() {

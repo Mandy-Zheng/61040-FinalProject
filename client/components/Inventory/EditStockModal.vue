@@ -4,7 +4,7 @@ import { onBeforeMount, ref } from "vue";
 
 const props = defineProps(["show", "stock"]);
 const emit = defineEmits(["close", "update"]);
-const dietaryTags = ["Vegetarian", "Halal", "Gluten-Free", "Nut-Free", "Low-Sodium", "Seafood", "Dairy-Free", "Kosher"];
+const dietaryTags = ["Vegetarian", "Halal", "Gluten-Free", "Nut-Free", "Low-Sodium", "Seafood-Free", "Dairy-Free", "Kosher"];
 const multiselectDietTags = dietaryTags.map((tag) => {
   return { label: tag, value: tag };
 });
