@@ -14,7 +14,7 @@ const showResetModal = ref<boolean>(false);
 
 const loaded = ref(false);
 const households = ref<Array<any>>([]);
-const allLanguages = computed(() => [...new Set(households.value.map((household) => household.preferredLanguage).filter((lang) => lang.length !== 0))]);
+const allLanguages = computed(() => [...new Set(households.value.map((household) => household.preferredLanguage).filter((lang) => lang && lang.length !== 0))]);
 let searchId = ref("");
 const { selectedOrg } = storeToRefs(useOrganizationStore());
 
@@ -93,7 +93,7 @@ p,
 }
 
 article {
-  background-color: var(--base-bg);
+  background-color: #cfeaeda0;
   border-radius: 1em;
   display: flex;
   flex-direction: column;

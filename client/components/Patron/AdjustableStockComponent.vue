@@ -26,7 +26,9 @@ const tagColors = new Map([
           </div>
           <div class="subtext">
             <p class="maxp">Max for household: {{ props.stock.maxPerPerson * household.members.length }}</p>
-            <p class="maxp"> Max per Day: {{ props.stock.maxPerDay }}</p>
+          </div>
+          <div>
+            <p class="maxp">Max per Day: {{ props.stock.maxPerDay }}</p>
           </div>
           <div class="diet">
             <p class="diet-title">Dietary Restrictions:</p>
@@ -71,6 +73,7 @@ const tagColors = new Map([
 .subtext {
   display: flex;
   flex-direction: row;
+  margin-bottom: 1em;
 }
 .item {
   display: flex;
@@ -126,6 +129,7 @@ input {
 h2 {
   margin-bottom: 1;
   font-weight: lighter;
+  margin-top: 6px;
 }
 
 .count {
