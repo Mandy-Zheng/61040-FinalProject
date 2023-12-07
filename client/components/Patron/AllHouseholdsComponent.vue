@@ -2,7 +2,7 @@
 import { useOrganizationStore } from "@/stores/organization";
 import { fetchy } from "@/utils/fetchy";
 import { storeToRefs } from "pinia";
-import { onBeforeMount, ref } from "vue";
+import { computed, onBeforeMount, ref } from "vue";
 import CreateHouseholdComponent from "../Household/CreateHouseholdComponent.vue";
 // import AddVisitComponent from "./AddVisitComponent.vue";
 import HouseholdComponent from "./HouseholdComponent.vue";
@@ -13,7 +13,8 @@ const showCreateComponent = ref<boolean>(false);
 const showResetModal = ref<boolean>(false);
 
 const loaded = ref(false);
-let households = ref<Array<any>>([]);
+const households = ref<Array<any>>([]);
+const allLanguages = computed(() => [...new Set(households.value.map((household) => household.preferredLanguage).filter((lang) => lang.length !== 0))]);
 let searchId = ref("");
 const { selectedOrg } = storeToRefs(useOrganizationStore());
 
@@ -55,11 +56,11 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <div class="right">
+  <div class="right" v-if="!showCreateComponent">
     <button class="button-39" @click.prevent="showCreateComponent = true">Create New Household</button>
     <button class="button-39 reset" @click.prevent="showResetModal = true">Reset All Visits</button>
   </div>
-  <CreateHouseholdComponent :show="showCreateComponent" @close="showCreateComponent = false" @refreshHouseholds="getHouseholds" />
+  <CreateHouseholdComponent :show="showCreateComponent" :allLanguages="allLanguages" @close="showCreateComponent = false" @refreshHouseholds="getHouseholds" />
   <ResetVisitsModal :show="showResetModal" @close="showResetModal = false" @refreshHouseholds="getHouseholds" />
   <div v-if="!showCreateComponent">
     <div class="row">

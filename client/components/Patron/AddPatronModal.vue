@@ -19,6 +19,13 @@ async function addMember() {
     return;
   }
 }
+
+function resetForm() {
+  name.value = "";
+  image.value = "";
+  birthday.value = today;
+  emit("close");
+}
 </script>
 
 <template>
@@ -32,7 +39,7 @@ async function addMember() {
           <div class="form-input"><span>Birthdate:</span> <input type="date" :max="today" v-model="birthday" /></div>
           <div class="form-input"><span>Photo Link:</span> <input :v-model="image" /></div>
           <div class="row">
-            <button @click="emit('close')">Cancel</button>
+            <button @click="resetForm">Cancel</button>
             <button @click="addMember">Add</button>
           </div>
         </div>

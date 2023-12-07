@@ -53,7 +53,8 @@ async function updateOverview() {
 
 async function getAudioForLanguage() {
   try {
-    if (selectedOrg.value) {
+    if (selectedOrg.value && language.value.length) {
+      console.log("here", selectedOrg.value.id, language.value);
       const languageAudio = await fetchy(`/api/languageAudio/owner/${selectedOrg.value.id}/${language.value}`, "GET");
       allAudios.value = languageAudio.audios;
     }

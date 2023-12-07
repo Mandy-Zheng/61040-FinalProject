@@ -11,8 +11,9 @@ const showDeleteModal = ref<boolean>(false);
 const showPatronDeleteModal = ref<boolean>(false);
 const showPatronAddModal = ref<boolean>(false);
 const props = defineProps(["household"]);
-const members = ref<Array<any>>(props.household.members);
 const emit = defineEmits(["refreshHouseholds", "refreshById"]);
+const members = ref<Array<any>>(props.household.members);
+
 const showAllocateModal = ref<boolean>(false);
 const allocation = ref();
 

@@ -1,23 +1,25 @@
 <script setup lang="ts">
 import Multiselect from "@vueform/multiselect";
 import { storeToRefs } from "pinia";
-import { onBeforeMount, ref } from "vue";
+import { computed, ref } from "vue";
+import { LANGUAGES, capitalizePhrase } from "../../../server/framework/utils";
 import { useOrganizationStore } from "../../stores/organization";
 import { fetchy } from "../../utils/fetchy";
 import CreatePatronComponent from "./CreatePatronComponent.vue";
 
-const props = defineProps(["show"]);
+const props = defineProps(["show", "allLanguages"]);
 const emit = defineEmits(["close", "refreshHouseholds"]);
 
 const { selectedOrg } = storeToRefs(useOrganizationStore());
 
 const dietaryTags = ["Vegetarian", "Halal", "Gluten-Free", "Nut-Free", "Low-Sodium", "Seafood", "Dairy-Free", "Kosher"];
-const LANGUAGES = ["English", "Spanish", "French", "Portuguese", "Arabic", "Russian", "Japanese", "Bengali", "Dutch", "Urdu", "Polish", "Indonesian", "Korean", "Mandarin", "Cantonese"];
 
 const multiselectDietTags = dietaryTags.map((tag) => {
   return { label: tag, value: tag };
 });
 
+const languageOptions = computed(() => [...new Set([...props.allLanguages, ...LANGUAGES])]);
+console.log(languageOptions);
 const members = ref<Array<[string, string, string]>>([["", "", ""]]);
 const enum memberProfile {
   Name = 0,
@@ -57,16 +59,27 @@ function resetForm() {
 async function addHousehold() {
   try {
     if (selectedOrg.value) {
-      const body = { orgId: selectedOrg.value.id, patrons: members.value, diet: diet.value, lang: language.value, req: specialRequests.value };
+      const body = { orgId: selectedOrg.value.id, patrons: members.value, diet: diet.value, lang: language.value ?? "", req: specialRequests.value };
       await fetchy(`/api/profile`, "POST", { body: body });
+
       emit("refreshHouseholds");
-      emit("close");
+      resetForm();
     }
   } catch (error) {
     return;
   }
 }
-onBeforeMount(async () => {});
+function onCreate(option: { value: string; label: string } | string, select$: any) {
+  if (typeof option === "string") {
+    // Handle the case when the option is just a string
+    return capitalizePhrase(option);
+  } else {
+    // Handle the case when the option has value and label properties
+    option.label = capitalizePhrase(option.label);
+    option.value = option.label;
+  }
+  return option;
+}
 </script>
 
 <template>
@@ -74,14 +87,6 @@ onBeforeMount(async () => {});
     <form>
       <div class="top">
         <h2>Create New Household</h2>
-        <div class="footer">
-          <div>
-            <button class="button-39" @click="resetForm">Cancel</button>
-          </div>
-          <div>
-            <button class="button-39" type="submit" @click="addHousehold">Submit</button>
-          </div>
-        </div>
       </div>
       <div class="container">
         <div class="form">
@@ -89,9 +94,7 @@ onBeforeMount(async () => {});
             <h3>Overview</h3>
             <div class="form-input">
               Language
-              <select v-model="language" required>
-                <option v-for="lang in LANGUAGES" :key="lang" :selected="language === lang" :value="lang">{{ lang }}</option>
-              </select>
+              <Multiselect v-model="language" :createTag="true" :options="languageOptions" :searchable="true" @create="onCreate" />
             </div>
             <div class="form-input">Diet <Multiselect class="multiselect" v-model="diet" mode="tags" :options="multiselectDietTags" :searchable="true" /></div>
             <div class="special-request">Special Requests<textarea v-model="specialRequests"></textarea></div>
@@ -120,6 +123,14 @@ onBeforeMount(async () => {});
                 @updateImage="updatePatronImage"
               />
             </div>
+          </div>
+        </div>
+        <div class="footer">
+          <div>
+            <button class="button-39" @click="resetForm">Cancel</button>
+          </div>
+          <div>
+            <button class="button-39" type="submit" @click="addHousehold">Submit</button>
           </div>
         </div>
       </div>
@@ -213,7 +224,9 @@ textarea {
 }
 
 .footer {
+  width: 100%;
   gap: 1em;
   display: flex;
+  justify-content: space-around;
 }
 </style>

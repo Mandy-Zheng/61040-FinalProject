@@ -1,8 +1,9 @@
 <script setup lang="ts">
+import { LANGUAGES, capitalizePhrase } from "@/../server/framework/utils";
 import { fetchy } from "@/utils/fetchy";
 import Multiselect from "@vueform/multiselect";
 import { storeToRefs } from "pinia";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { useOrganizationStore } from "../../stores/organization";
 
 const { selectedOrg } = storeToRefs(useOrganizationStore());
@@ -13,6 +14,8 @@ const emit = defineEmits(["close", "add"]);
 const language = ref<string>("");
 const audioLink = ref<string>("");
 const translation = ref<string>("");
+
+const languageOptions = computed(() => [...new Set([...props.allLanguages, ...LANGUAGES])]);
 
 async function addAudioFile() {
   try {
@@ -26,6 +29,24 @@ async function addAudioFile() {
     return;
   }
 }
+
+function resetForm() {
+  language.value = "";
+  audioLink.value = "";
+  translation.value = "";
+  emit("close");
+}
+function onCreate(option: { value: string; label: string } | string, select$: any) {
+  if (typeof option === "string") {
+    // Handle the case when the option is just a string
+    return capitalizePhrase(option);
+  } else {
+    // Handle the case when the option has value and label properties
+    option.label = capitalizePhrase(option.label);
+    option.value = option.label;
+  }
+  return option;
+}
 </script>
 
 <template>
@@ -37,14 +58,14 @@ async function addAudioFile() {
           <div class="item">
             <div class="form-input">
               Language
-              <div><Multiselect v-model="language" :createTag="true" :options="allLanguages" :searchable="true" /></div>
+              <div><Multiselect v-model="language" :createTag="true" :options="languageOptions" :searchable="true" @create="onCreate" required /></div>
             </div>
             <div class="form-input">Audio Link<input v-model="audioLink" /></div>
             <div class="form-input">Translation: <input v-model="translation" /></div>
           </div>
         </div>
         <div class="modal-footer">
-          <button class="button-39" @click="emit('close')">Cancel</button>
+          <button class="button-39" @click="resetForm">Cancel</button>
           <button class="button-39" @click="addAudioFile">Add</button>
         </div>
       </div>
