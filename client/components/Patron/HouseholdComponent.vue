@@ -30,13 +30,13 @@ const addVisit = async () => {
   showAllocateModal.value = true;
 };
 
-const getAllocation = async () => {
+async function getAllocation() {
   try {
     allocation.value = await fetchy(`/api/profile/allocate/${props.household._id}`, "GET");
   } catch {
     return;
   }
-};
+}
 
 async function refreshPatron(patronId: string) {
   const idx = members.value.findIndex((patron) => patron._id === patronId);
@@ -94,7 +94,13 @@ async function deletePatrons(patrons: Array<string>) {
         <AddPatronModal :show="showPatronAddModal" :householdId="household._id" @close="showPatronAddModal = false" @add="emit('refreshById', props.household._id)" />
       </teleport>
     </div>
-    <AllocateItemsModal :show="showAllocateModal" :household="household" :allocation="allocation" @close="showAllocateModal = false" @refreshHouseholds="emit('refreshHouseholds')" />
+    <AllocateItemsModal
+      :show="showAllocateModal"
+      :household="household"
+      :allocation="allocation"
+      @close="showAllocateModal = false"
+      @refreshHouseholds="emit('refreshHouseholds'), (showAllocateModal = false)"
+    />
   </main>
 </template>
 

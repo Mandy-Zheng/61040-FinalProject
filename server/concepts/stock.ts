@@ -20,7 +20,7 @@ export default class StockConcept {
 
   async createStock(owner: ObjectId, item: string, count: number, diet: Array<DietaryRestrictions>, link?: string, img?: string, maxPP: number = 3) {
     await this.isItemUnique(owner, item); // can't duplicate item name within same owner
-    const _id = await this.stocks.createOne({ owner, item, count, diet, supplyLink: link, image: img, maxPerPerson: maxPP });
+    const _id = await this.stocks.createOne({ owner, item, count, diet, supplyLink: link, image: img, maxPerPerson: maxPP, maxPerDay: 0 });
     if (count < 0) {
       throw new NotAllowedError("Initial stock count cannot be negative");
     }
@@ -74,7 +74,7 @@ export default class StockConcept {
     if (stock.count - change < 0) {
       throw new NotAllowedError("Stock count cannot be negative");
     }
-    await this.stocks.updateOne({ _id }, { count: stock.count - change,maxPerDay:stock.maxPerDay-change});
+    await this.stocks.updateOne({ _id }, { count: stock.count - change, maxPerDay: stock.maxPerDay - change });
     return { msg: "Stock successfully updated!" };
   }
 
@@ -82,13 +82,13 @@ export default class StockConcept {
     await this.stocks.deleteOne({ _id });
     return { msg: "Stock successfully deleted!" };
   }
-  
+
   async setTodaysAllocation(_id: ObjectId) {
     const stock = await this.stocks.readOne({ _id });
-    if(!stock) return;
+    if (!stock) return;
     const currentDate = new Date();
     const currentDay = currentDate.getDay(); // sunday is 0, monday is 1, etc.
-    await this.stocks.updateOne({ _id },{maxPerDay:stock.count/ (7 - currentDay)});
+    await this.stocks.updateOne({ _id }, { maxPerDay: stock.count / (7 - currentDay) });
   }
 
   private sanitizeUpdate(update: Partial<StockDoc>) {

@@ -1,17 +1,14 @@
 <script setup lang="ts">
-import { useOrganizationStore } from "@/stores/organization";
 import { fetchy } from "@/utils/fetchy";
-import { storeToRefs } from "pinia";
 import AdjustableStockComponent from "./AdjustableStockComponent.vue";
 
 const props = defineProps(["show", "household", "allocation"]);
 const emit = defineEmits(["close", "refreshHouseholds"]);
-const { selectedOrg } = storeToRefs(useOrganizationStore());
 
 async function allocateItems() {
   try {
     await fetchy(`/api/profile/visit/${props.household._id}`, "PATCH");
-    for (const stock of props.allocation) await fetchy(`/api/inventory/allocate/${stock._id}`, "PATCH", { body: { update: { count: stock.allocation } } });
+    await Promise.all(props.allocation.map(async (stock: any) => await fetchy(`/api/inventories/allocate/${stock._id}`, "PATCH", { body: { update: { count: stock.allocation } } })));
   } catch {
     return;
   }
@@ -26,12 +23,12 @@ async function allocateItems() {
       <div class="modal-container">
         <div class="modal-header">Allocate the following items</div>
         This action will automatically update the inventory. Are you sure?
-        <article v-for="stock in props.allocation">
+        <article v-for="stock in props.allocation" :key="stock">
           <AdjustableStockComponent :household="household" :stock="stock" />
         </article>
         <div class="modal-footer">
           <button class="button-39" @click="emit('close')">Close</button>
-          <button class="button-39" style="background-color: var(--primary); border: none; color: white" @click="allocateItems">Allocate</button>
+          <button class="button-39" style="background-color: var(--primary); border: none; color: white" @click="allocateItems(), emit('refreshHouseholds')">Allocate</button>
         </div>
       </div>
     </div>

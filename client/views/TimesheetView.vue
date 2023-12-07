@@ -1,16 +1,25 @@
 <script setup lang="ts">
-import CreateShiftForm from "@/components/Shift/CreateShiftForm.vue";
-import ShiftComponent from "@/components/Shift/ShiftComponent.vue";
 import { useOrganizationStore } from "@/stores/organization";
+import { useUserStore } from "@/stores/user";
 import { fetchy } from "@/utils/fetchy";
+import moment from "moment";
 import { storeToRefs } from "pinia";
 import { onBeforeMount, ref } from "vue";
-
+import VueCal from "vue-cal";
+import ClaimShiftModal from "../components/Shift/ClaimShiftModal.vue";
+import DeleteShiftModal from "../components/Shift/DeleteShiftModal.vue";
+import UnclaimShiftModal from "../components/Shift/UnclaimShiftModal.vue";
 let hidePastShifts = ref(true);
 let showOnlyMyShifts = ref(false);
 let shifts = ref<Array<Record<string, string>>>([]);
 let myShifts = ref<Array<Record<string, string>>>([]);
 const { selectedOrg } = storeToRefs(useOrganizationStore());
+const { currentUsername } = storeToRefs(useUserStore());
+const showClaimModal = ref<boolean>(false);
+const showUnclaimModal = ref<boolean>(false);
+const showDeleteModal = ref<boolean>(false);
+const shift = ref(undefined);
+const today = new Date();
 
 async function getOrgShifts() {
   let results;
@@ -49,6 +58,29 @@ async function toggleMyShiftsPref() {
   await getAllShifts();
 }
 
+function convertDates(shifts: Record<string, string>[]) {
+  if (selectedOrg.value) {
+    const org = selectedOrg.value.name;
+    return shifts.map((s) => {
+      const start = moment(s.start).format("YYYY-MM-DD, HH:mm");
+      const end = moment(s.end).format("YYYY-MM-DD, HH:mm");
+      let cls;
+      if (showOnlyMyShifts.value) {
+        cls = s.owner === org ? "currentOrg" : "otherOrg";
+      } else {
+        cls = s.volunteers.includes(currentUsername.value) ? "claimedShift" : "unclaimedShift";
+      }
+      return {
+        start: start,
+        end: end,
+        content: s.volunteers, //.includes(currentUsername.value) ? "Claimed!" : "Not claimed",
+        shift: s,
+        class: cls, //s.volunteers.includes(currentUsername.value) ? "claimedShift" : "unclaimedShift",
+      };
+    });
+  }
+}
+
 onBeforeMount(async () => {
   try {
     await getAllShifts();
@@ -56,46 +88,119 @@ onBeforeMount(async () => {
     return;
   }
 });
+
+async function createShift(event: any) {
+  try {
+    if (selectedOrg.value) {
+      const body = { orgId: selectedOrg.value.id, start: event.start, end: event.end };
+      await fetchy("api/shift", "POST", {
+        body: body,
+      });
+    }
+  } catch (_) {
+    return;
+  }
+  await getAllShifts();
+  return event;
+}
+
+const triggerDelete = async (event: any) => {
+  shift.value = event.shift;
+  showDeleteModal.value = true;
+};
+
+const deleteShift = async (shift: any) => {
+  try {
+    await fetchy(`api/shift/${shift._id}`, "DELETE");
+  } catch {
+    return;
+  }
+  shift.value = undefined;
+  await getAllShifts();
+};
+
+const claimShift = async (shift: any) => {
+  try {
+    await fetchy(`api/shift/claim/${shift._id}`, "PATCH");
+  } catch {
+    return;
+  }
+  shift.value = undefined;
+  await getAllShifts();
+};
+
+const unclaimShift = async (shift: any) => {
+  try {
+    await fetchy(`api/shift/unclaim/${shift._id}`, "PATCH");
+  } catch {
+    return;
+  }
+  shift.value = undefined;
+  await getAllShifts();
+};
+
+const triggerClaim = async (event: any) => {
+  if (event.end < today) {
+    return;
+  }
+  shift.value = event.shift;
+  if (event.shift.volunteers.includes(currentUsername.value)) {
+    showUnclaimModal.value = true;
+  } else {
+    showClaimModal.value = true;
+  }
+};
 </script>
 
 <template>
   <div class="shifts">
-    <div v-if="selectedOrg?.isAdmin">
-      <CreateShiftForm @refreshShifts="getAllShifts" />
-    </div>
     <div class="row">
       <div class="toggletext">Show only future shifts:</div>
       <label class="switch" style="margin-right: 3em">
         <input type="checkbox" @click="toggleFuturePref" checked />
         <span class="slider round"></span>
       </label>
-      <div class="toggletext">Show only claimed shifts:</div>
+      <div class="toggletext">Show all my claimed shifts:</div>
       <label class="switch">
         <input type="checkbox" @click="toggleMyShiftsPref" />
         <span class="slider round"></span>
       </label>
-      <!-- <button v-if="hidePastShifts" class="button-39" @click="toggleFuturePref">show past and future shifts</button>
-      <button v-else class="button-39" @click="toggleFuturePref">show only future shifts</button> -->
-      <!-- <button v-if="showOnlyMyShifts" class="button-39" @click="toggleMyShiftsPref">show claimed and unclaimed shifts</button>
-      <button v-else class="button-39" @click="toggleMyShiftsPref">show only claimed shifts</button> -->
     </div>
-    <div class="grid" v-if="showOnlyMyShifts && myShifts.length !== 0">
-      <article v-for="shift in myShifts" :key="shift._id">
-        <ShiftComponent :shift="shift" @refreshShifts="getAllShifts" />
-      </article>
-    </div>
-    <div class="grid" v-else-if="!showOnlyMyShifts && shifts.length !== 0">
-      <article v-for="shift in shifts" :key="shift._id">
-        <ShiftComponent :shift="shift" @refreshShifts="getAllShifts" />
-      </article>
-    </div>
-    <p v-else>No shifts yet! Only admins can create shifts.</p>
+    <teleport to="body">
+      <ClaimShiftModal :show="showClaimModal" :shift="shift" @close="showClaimModal = false" @claim="claimShift(shift), (showClaimModal = false)" />
+      <UnclaimShiftModal :show="showUnclaimModal" :shift="shift" @close="showUnclaimModal = false" @unclaim="unclaimShift(shift), (showUnclaimModal = false)" />
+      <div v-if="selectedOrg?.isAdmin">
+        <DeleteShiftModal :show="showDeleteModal" :shift="shift" @close="showDeleteModal = false" @delete="deleteShift(shift), (showDeleteModal = false)" />
+      </div>
+    </teleport>
+  </div>
+  <div class="cal">
+    <vue-cal
+      :time-from="7 * 60"
+      :time-to="22 * 60"
+      :snap-to-time="15"
+      :disable-views="['years', 'year']"
+      :editable-events="{ title: false, drag: false, resize: false, delete: selectedOrg?.isAdmin, create: selectedOrg?.isAdmin }"
+      :drag-to-create-threshold="15"
+      style="height: 100%"
+      :events="convertDates(showOnlyMyShifts ? myShifts : shifts)"
+      today-button
+      :on-event-click="triggerClaim"
+      @event-drag-create="createShift"
+      @event-delete="triggerDelete"
+      :min-date="today"
+    >
+    </vue-cal>
   </div>
 </template>
 
 <style scoped>
+.cal {
+  margin: 0 1.5em 3em 1.5em;
+}
+
 .shifts {
-  margin: 50px;
+  margin: 1em;
 }
 .button-39 {
   margin: 1em;

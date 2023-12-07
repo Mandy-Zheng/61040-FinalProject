@@ -370,13 +370,14 @@ class Routes {
     }
   }
   // generate max per day allocation
-  @Router.get("/inventory/:orgId")
+  @Router.get("/inventories/:orgId")
   async setInventoryMaxPerDay(session: WebSessionDoc, orgId: ObjectId) {
     const user = WebSession.getUser(session);
     const org = new ObjectId(orgId);
     await Team.isTeamMember(org, user);
     const inventory = await Stock.getStocksByOwner(org);
     await Promise.all(inventory.map((stock) => Stock.setTodaysAllocation(stock._id)));
+    return { msg: "Inventory max per day successfully set!" };
   }
 
   // update an inventory item's count or other details (link, image, etc)
@@ -393,7 +394,7 @@ class Routes {
   }
 
   // update an inventory item's count or other details (link, image, etc)
-  @Router.patch("/inventory/allocate/:id")
+  @Router.patch("/inventories/allocate/:id")
   async decrementInventoryItem(session: WebSessionDoc, id: ObjectId, update: Partial<StockDoc>) {
     const user = WebSession.getUser(session);
     const ID = new ObjectId(id);

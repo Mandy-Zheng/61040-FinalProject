@@ -32,7 +32,7 @@ async function addAudioFile() {
   <transition name="modal">
     <div v-if="props.show" class="modal-mask">
       <div class="modal-container">
-        <h1>Add New Language Audio File</h1>
+        <h3>Add New Language Audio File</h3>
         <div class="form">
           <div class="item">
             <div class="form-input">
@@ -60,6 +60,9 @@ async function addAudioFile() {
   text-align: center;
   padding-bottom: 2.2em;
   border: none;
+}
+
+.form {
 }
 
 .modal-footer {

@@ -31,27 +31,29 @@ onBeforeMount(async () => {
   <transition name="modal">
     <div v-if="props.show" class="modal-mask">
       <div class="modal-container">
-        <h1>Update Inventory</h1>
-        <div class="form">
-          <img v-if="!imgLink.length" src="../../assets/images/image.svg" />
-          <img v-else :src="imgLink" alt="Having Trouble uploading item picture" />
-          <div class="item">
-            <div class="form-input">Name<input style="color: black" v-model="name" required /></div>
-            <div class="form-input">
-              Diet
-              <div><Multiselect class="multiselect" v-model="diet" mode="tags" :options="multiselectDietTags" :searchable="true" /></div>
-            </div>
-            <div class="form-input">Image Link<input v-model="imgLink" /></div>
-            <div class="form-input">Purchase Link<input v-model="purchaseLink" /></div>
-            <div class="form-input">
-              Units <input class="number-input" type="number" v-model="units" min="0" /> Max Per Person <input class="number-input" type="number" v-model="maxPerPerson" min="0" />
+        <form>
+          <h1>Update Inventory</h1>
+          <div class="form">
+            <img v-if="!imgLink.length" src="../../assets/images/image.svg" />
+            <img v-else :src="imgLink" alt="Having Trouble uploading item picture" />
+            <div class="item">
+              <div class="form-input">Name<input style="color: black" v-model="name" required /></div>
+              <div class="form-input">
+                Diet
+                <div><Multiselect class="multiselect" v-model="diet" mode="tags" :options="multiselectDietTags" :searchable="true" /></div>
+              </div>
+              <div class="form-input">Image Link<input v-model="imgLink" /></div>
+              <div class="form-input">Purchase Link<input v-model="purchaseLink" /></div>
+              <div class="form-input">
+                Units <input class="number-input" type="number" v-model="units" min="0" /> Max Per Person <input class="number-input" type="number" v-model="maxPerPerson" min="0" />
+              </div>
             </div>
           </div>
-        </div>
-        <div class="modal-footer">
-          <button class="button-39" @click="emit('close')">Cancel</button>
-          <button class="button-39" @click="emit('update', name, imgLink, purchaseLink, units, diet, maxPerPerson)">Update</button>
-        </div>
+          <div class="modal-footer">
+            <button class="button-39" @click="emit('close')">Cancel</button>
+            <button class="button-39" type="submit" @click="emit('update', name, imgLink, purchaseLink, units, diet, maxPerPerson)">Update</button>
+          </div>
+        </form>
       </div>
     </div>
   </transition>
