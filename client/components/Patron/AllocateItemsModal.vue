@@ -23,11 +23,13 @@ async function allocateItems() {
       <div class="modal-container">
         <div class="modal-header">Allocate the following items</div>
         This action will automatically update the inventory. Are you sure?
-        <article v-for="stock in props.allocation" :key="stock">
-          <AdjustableStockComponent :household="household" :stock="stock" />
-        </article>
+        <div class="row">
+          <article v-for="stock in props.allocation" :key="stock">
+            <AdjustableStockComponent :household="household" :stock="stock" />
+          </article>
+        </div>
         <div class="modal-footer">
-          <button class="button-39" @click="emit('close')">Close</button>
+          <button class="button-39" @click="emit('close')">Cancel</button>
           <button class="button-39" style="background-color: var(--primary); border: none; color: white" @click="allocateItems(), emit('refreshHouseholds')">Allocate</button>
         </div>
       </div>
@@ -46,6 +48,7 @@ img {
 .modal-footer {
   display: flex;
   justify-content: space-between;
+  margin-top: 1em;
 }
 
 .edit-btn {
@@ -96,5 +99,11 @@ img {
 
 span {
   color: black;
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5em;
 }
 </style>
