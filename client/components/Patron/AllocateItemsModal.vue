@@ -73,6 +73,7 @@ img {
 }
 
 .modal-container {
+  max-height: 90%;
   width: 50%;
   margin: auto;
   padding: 20px 30px;
@@ -81,7 +82,7 @@ img {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
   transition: all 0.3s ease;
   height: 40em;
-  overflow: scroll;
+  overflow-y: scroll;
 }
 
 .modal-header {
