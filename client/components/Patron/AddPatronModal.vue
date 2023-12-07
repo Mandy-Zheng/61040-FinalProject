@@ -33,14 +33,14 @@ function resetForm() {
     <div v-if="show" class="modal-mask">
       <div class="modal-container">
         <div class="patron-card">
-          <div class="title">Add Member To Household with id: {{ props.householdId }}</div>
+          <h4>Add Member To Household with ID: {{ props.householdId }}</h4>
           <div class="form-input"><span>Name:</span> <input v-model="name" /></div>
 
           <div class="form-input"><span>Birthdate:</span> <input type="date" :max="today" v-model="birthday" /></div>
           <div class="form-input"><span>Photo Link:</span> <input :v-model="image" /></div>
           <div class="row">
-            <button @click="resetForm">Cancel</button>
-            <button @click="addMember">Add</button>
+            <button class="button-39" @click="resetForm">Cancel</button>
+            <button class="button-39" @click="addMember">Add</button>
           </div>
         </div>
       </div>
@@ -49,8 +49,15 @@ function resetForm() {
 </template>
 
 <style scoped>
+.button-39 {
+  height: 3em;
+  align-content: center;
+  text-align: center;
+  margin-right: 1em;
+}
 .row {
   display: flex;
+  gap: 1em;
 }
 .modal-container {
   margin: auto;
