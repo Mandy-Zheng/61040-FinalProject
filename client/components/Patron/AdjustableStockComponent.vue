@@ -10,21 +10,21 @@ const diet = computed(() => props.stock.diet);
     <img v-if="props.stock.image.length" :src="props.stock.image" />
     <img v-else src="../../assets/images/image.svg" />
     <div class="item">
-      <div class="row" style="align-items: center; gap: 2px">
-        <div style="display: flex; flex-direction: row; gap: 4em; align-items: center; align-content: center">
+      <div class="row" style="align-items: center; gap: 2px; width: 25em">
+        <div style="display: flex; flex-direction: row; justify-content: space-between">
           <div>
             <div class="row" style="align-items: center; gap: 20em">
               <h2>{{ props.stock.item }}</h2>
               <h3 v-if="props.stock.count <= 5" style="color: rgb(203, 1, 1)">Low in stock!</h3>
             </div>
-            <div class="subtext">
+            <div class="subtext" style="margin-right: 3em">
               <p class="maxp">Max for household: {{ props.stock.maxPerPerson * household.members.length }}</p>
             </div>
             <div>
               <p class="maxp">Max per Day: {{ props.stock.maxPerDay }}</p>
             </div>
           </div>
-          <div>
+          <div style="display: flex; flex-direction: column; align-content: flex-end; margin-top: 1.5em">
             <h4>Units:</h4>
             <input class="number-input" type="number" v-model="props.stock.allocation" min="0" :max="props.stock.maxPerPerson * household.members.length" />
           </div>
@@ -39,7 +39,6 @@ const diet = computed(() => props.stock.diet);
         </div>
       </div>
     </div>
-    <div></div>
     <div class="row" style="gap: 1em">
       <div class="link">
         <a :href="props.stock.supplyLink" v-if="props.stock.supplyLink"
@@ -63,7 +62,6 @@ const diet = computed(() => props.stock.diet);
   display: flex;
   flex-direction: row;
   padding: 1em;
-  align-items: center;
 }
 .subtext {
   display: flex;
@@ -124,7 +122,7 @@ input {
 h2 {
   margin-bottom: 1;
   font-weight: lighter;
-  margin-top: 6px;
+  margin-top: 0px;
 }
 
 .count {
@@ -155,8 +153,6 @@ img {
   gap: 0.5em;
   flex-wrap: wrap;
   row-gap: 0.5em;
-  align-items: flex-start;
-  align-content: flex-start;
 }
 
 p {
