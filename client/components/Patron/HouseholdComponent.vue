@@ -58,7 +58,13 @@ const getAllocation = async () => {
         <DeleteHouseholdModal :show="showDeleteModal" :household="household" @close="showDeleteModal = false" @delete="deleteHousehold(), (showDeleteModal = false)" />
       </teleport>
     </div>
-    <AllocateItemsModal :show="showAllocateModal" :household="household" :allocation="allocation" @close="showAllocateModal = false" @refreshHouseholds="emit('refreshHouseholds')" />
+    <AllocateItemsModal
+      :show="showAllocateModal"
+      :household="household"
+      :allocation="allocation"
+      @close="showAllocateModal = false"
+      @refreshHouseholds="emit('refreshHouseholds'), (showAllocateModal = false)"
+    />
   </main>
 </template>
 

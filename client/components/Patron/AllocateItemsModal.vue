@@ -11,6 +11,7 @@ async function allocateItems() {
     await Promise.all(
       props.allocation.value.map(async (stock: Record<string, any>) => await fetchy(`/api/inventory/allocate/${stock._id}`, "PATCH", { body: { update: { count: stock.allocation } } })),
     );
+    console.log(props.allocation.value);
   } catch {
     return;
   }
@@ -30,7 +31,7 @@ async function allocateItems() {
         </article>
         <div class="modal-footer">
           <button class="button-39" @click="emit('close')">Close</button>
-          <button class="button-39" style="background-color: var(--primary); border: none; color: white" @click="allocateItems">Allocate</button>
+          <button class="button-39" style="background-color: var(--primary); border: none; color: white" @click="allocateItems, emit('refreshHouseholds')">Allocate</button>
         </div>
       </div>
     </div>
