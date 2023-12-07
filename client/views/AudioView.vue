@@ -95,7 +95,6 @@ select {
   justify-content: flex-start;
   flex-direction: column;
   gap: 4em;
-  margin-top: 75px;
   margin-bottom: 75px;
 }
 </style>
