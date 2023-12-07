@@ -50,6 +50,10 @@ function updatePatronImage(idx: number, image: string) {
   members.value[idx][memberProfile.Image] = image;
 }
 
+function resetForm() {
+  members.value = [["", "", ""]];
+  emit("close");
+}
 async function addHousehold() {
   try {
     if (selectedOrg.value) {
@@ -72,7 +76,7 @@ onBeforeMount(async () => {});
         <h2>Create New Household</h2>
         <div class="footer">
           <div>
-            <button class="button-39" @click="emit('close')">Cancel</button>
+            <button class="button-39" @click="resetForm">Cancel</button>
           </div>
           <div>
             <button class="button-39" type="submit" @click="addHousehold">Submit</button>
