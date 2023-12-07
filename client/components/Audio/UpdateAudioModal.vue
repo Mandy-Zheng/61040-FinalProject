@@ -25,19 +25,19 @@ async function updateAudioFile() {
   <transition name="modal">
     <div v-if="props.show" class="modal-mask">
       <div class="modal-container">
-        <h1>Add New Language Audio File</h1>
+        <h3>Update Language Audio File</h3>
         <div class="form">
           <div class="item">
             <div class="form-input">
               Language
-              <div><Multiselect v-model="language" class="single" :createTag="true" :options="allLanguages" :searchable="true" /></div>
+              <div><Multiselect class="multiselect" v-model="language" :createTag="true" :options="allLanguages" :searchable="true" required /></div>
             </div>
-            <div class="form-input">Audio Link<input v-model="audioLink" /></div>
+            <div class="form-input">Audio Link:<input v-model="audioLink" /></div>
             <div class="form-input">Translation: <input v-model="translation" /></div>
           </div>
         </div>
         <div class="modal-footer">
-          <button class="button-39" @click="emit('close')">Cancel</button>
+          <button class="button-39" style="color: black; background-color: white; border: solid; border-width: 1px; border-color: grey" @click="emit('close')">Cancel</button>
           <button class="button-39" @click="updateAudioFile">Update</button>
         </div>
       </div>
@@ -85,5 +85,77 @@ async function updateAudioFile() {
 .modal-header {
   margin-top: 0;
   color: var(--primary);
+}
+
+.button-39 {
+  background-color: var(--primary);
+  color: white;
+  height: 2.5em;
+  align-content: center;
+  text-align: center;
+  padding-bottom: 2.2em;
+  border: none;
+  margin-top: 1em;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: space-between;
+}
+
+.modal-mask {
+  position: fixed;
+  z-index: 9998;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  transition: opacity 0.3s ease;
+}
+
+.modal-container {
+  width: 500px;
+  margin: auto;
+  padding: 20px 30px;
+  background-color: #fff;
+  border-radius: 2px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
+  transition: all 0.3s ease;
+}
+
+.modal-header {
+  margin-top: 0;
+  color: var(--primary);
+}
+
+.form-input {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.multiselect {
+  width: 11em;
+  height: fit-content;
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
+input {
+  height: 2.2em;
+  width: 22em;
+
+  border: solid;
+  border-width: 1px;
+  border-color: rgb(188, 188, 188);
+  border-radius: 3px;
+  margin-bottom: 0px;
+  padding: 5px;
 }
 </style>

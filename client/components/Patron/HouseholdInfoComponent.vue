@@ -68,13 +68,27 @@ onBeforeMount(async () => {
   <div v-if="props.household" class="item-card">
     <div class="item">
       <div>
-        <h3>{{ props.household._id }}</h3>
+        <h3>ID: {{ props.household._id }}</h3>
         <div class="info">
+          <div style="display: flex; justify-content: center">
+            <button @click="editMode = true" title="Edit Overview" class="icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                <path
+                  d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"
+                />
+                <path
+                  fill-rule="evenodd"
+                  d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"
+                />
+              </svg>
+            </button>
+          </div>
           <p>
             Past visits: {{ props.household.pastVisits.length }}
             <button class="icon" @click="emit('refreshVisits')" title="Add visit">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
-                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z" />
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
+                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
               </svg>
             </button>
           </p>
@@ -82,53 +96,53 @@ onBeforeMount(async () => {
             <div v-for="visit in props.household.pastVisits" :key="visit" class="date">{{ formatDate(visit) }}</div>
           </ul>
         </div>
-        <button @click="editMode = true">Edit Overview</button>
-        <div v-if="editMode" class="row">
-          <p class="label">Diet:</p>
-          <Multiselect class="multiselect" v-model="dietRestrictions" mode="tags" :options="multiselectDietTags" :searchable="true" @create="onCreate" :createTag="true" required />
-        </div>
-        <div class="info" v-else>
-          <p class="diet-title">Dietary Restrictions:</p>
-          <div class="row">
-            <div v-for="(tag, idx) in props.household.dietaryRestrictions" :key="tag">
-              <p class="tag" v-bind:style="{ backgroundColor: TAG_COLORS[idx % TAG_COLORS.length] }">{{ tag }}</p>
+        <div class="box">
+          <div v-if="editMode" class="row">
+            <p class="label">Diet:</p>
+            <Multiselect class="multiselect" v-model="dietRestrictions" mode="tags" :options="multiselectDietTags" :searchable="true" @create="onCreate" :createTag="true" required />
+          </div>
+          <div class="info" v-else>
+            <p class="diet-title">Dietary Restrictions:</p>
+            <div style="display: flex; gap: 0.5em">
+              <div v-for="(tag, idx) in props.household.dietaryRestrictions" :key="tag">
+                <p class="tag" v-bind:style="{ backgroundColor: TAG_COLORS[idx % TAG_COLORS.length] }">{{ tag }}</p>
+              </div>
             </div>
           </div>
-        </div>
-
-        <div class="row">
-          <div v-if="editMode" class="edit-row">
-            <p class="label">Language:</p>
-            <Multiselect class="multiselect" v-model="language" :createTag="true" :options="languageOptions" @create="onCreate" :searchable="true" />
+          <div>
+            <div v-if="editMode" class="row">
+              <p class="label">Requests:</p>
+              <input v-model="requests" />
+            </div>
+            <p v-else-if="household.specialRequests">Requests: {{ props.household.specialRequests }}</p>
           </div>
-          <div v-else>
-            <p>Language: {{ props.household.preferredLanguage }}</p>
-            <div v-if="allAudios.length !== 0">
-              <button v-if="!showAudio" @click="showAudio = true">Show Audio</button>
-              <button v-else @click="showAudio = false">Hide Audio</button>
-              <div v-if="showAudio">
-                <div v-for="audio in allAudios" :key="audio">
-                  <audio controls preload="auto">
-                    <source :src="audio.audio" type="audio/mp3" />
-                    <source :src="audio.audio" type="audio/ogg" />
-                    <source :src="audio.audio" type="audio/wav" />
-                    Your browser does not support the audio tag.
-                  </audio>
-                  <p class="">{{ audio.translation }}</p>
+          <div class="row">
+            <div v-if="editMode" class="row">
+              <p class="label">Language:</p>
+              <Multiselect class="multiselect" style="height: 2em" v-model="language" @create="onCreate" :createTag="true" :options="languageOptions" :searchable="true" />
+            </div>
+            <div v-else class="language">
+              <p>Language: {{ props.household.preferredLanguage }}</p>
+              <div v-if="allAudios.length !== 0" style="">
+                <button v-if="!showAudio" @click="showAudio = true" class="icon" style="color: var(--primary); text-decoration: underline">Show Audio</button>
+                <button v-else @click="showAudio = false" class="icon" style="color: var(--primary); text-decoration: underline">Hide Audio</button>
+                <div v-if="showAudio" style="margin-top: 1em; display: flex; gap: 2em; flex-direction: column">
+                  <div v-for="audio in allAudios" :key="audio" class="audio">
+                    <p style="margin-left: 0.5em; margin-bottom: 0px">{{ audio.translation }}</p>
+                    <audio controls preload="auto">
+                      <source :src="audio.audio" type="audio/mp3" />
+                      <source :src="audio.audio" type="audio/ogg" />
+                      <source :src="audio.audio" type="audio/wav" />
+                      Your browser does not support the audio tag.
+                    </audio>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div class="info" v-if="household.specialRequests">
-          <div v-if="editMode" class="row">
-            <p class="label">Requests:</p>
-            <input v-model="requests" />
-          </div>
-          <p v-else>Requests: {{ props.household.specialRequests }}</p>
-        </div>
-        <button class="button-39" v-if="editMode" @click="updateOverview">Update</button>
         <button class="button-39" v-if="editMode" @click="resetUpdate">Cancel</button>
+        <button class="button-39" v-if="editMode" @click="updateOverview">Update</button>
       </div>
     </div>
   </div>
@@ -149,8 +163,15 @@ onBeforeMount(async () => {
   padding: 0em;
 }
 .multiselect {
-  width: 80%;
   margin: 0;
+  margin-left: 1em;
+  width: 16em;
+  --ms-ring-color: #eb721630;
+  padding-left: 8px;
+  --ms-py: 0;
+  --ms-tag-bg: var(--primary);
+  border-color: rgb(188, 188, 188);
+  height: fit-content;
 }
 .edit-row {
   display: flex;
@@ -194,6 +215,7 @@ h2 {
   gap: 0.5em;
   flex-wrap: wrap;
   row-gap: 0.5em;
+  justify-content: space-between;
 }
 
 p {
@@ -205,5 +227,51 @@ p {
 
 .date {
   font-weight: 400;
+}
+
+.language {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 0.5em;
+}
+
+button {
+  margin: 0px;
+  padding: 0px;
+}
+
+.audio {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 0.5em;
+}
+
+audio {
+  height: 2em;
+}
+
+input {
+  height: 1.6em;
+  width: 15.65em;
+
+  border: solid;
+  border-width: 1px;
+  border-color: rgb(188, 188, 188);
+  border-radius: 3px;
+  margin-bottom: 0px;
+}
+.box {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  margin-bottom: 2em;
+}
+
+.button-39 {
+  margin-right: 2em;
+  padding: 0.5em;
 }
 </style>

@@ -2,7 +2,6 @@ import { ObjectId } from "mongodb";
 
 import DocCollection, { BaseDoc } from "../framework/doc";
 import { BadValuesError, NotAllowedError, NotFoundError } from "./errors";
-
 export interface HouseholdDoc extends BaseDoc {
   organization: ObjectId;
   members: Array<ObjectId>;

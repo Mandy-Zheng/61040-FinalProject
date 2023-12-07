@@ -94,7 +94,9 @@ onBeforeMount(async () => {
     <teleport to="body">
       <CreateStockModal :allDiets="allDiets" :show="showCreateModal" @close="showCreateModal = false" @add="addItem" />
     </teleport>
-    <div v-for="stock in inventory" :key="stock" class="stocks"><StockComponent :allDiets="allDiets" @refreshStocks="getAllInventories(), getInventories()" :stockId="stock._id" /></div>
+    <div v-for="stock in inventory" :key="stock" class="stocks">
+      <StockComponent :allDiets="allDiets" @refreshStocks="getAllInventories(), getInventories(), console.log('hi')" :stockId="stock._id" />
+    </div>
   </main>
 </template>
 

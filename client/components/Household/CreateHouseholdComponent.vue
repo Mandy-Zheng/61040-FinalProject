@@ -79,10 +79,17 @@ async function addHousehold() {
           <div class="overview">
             <h3>Overview</h3>
             <div class="form-input">
-              Language
-              <Multiselect v-model="language" :createTag="true" :options="languageOptions" :searchable="true" @create="onCreate" />
+              <div>Language</div>
+              <div>
+                <Multiselect class="multiselect" v-model="language" :createTag="true" :options="languageOptions" :searchable="true" @create="onCreate" />
+              </div>
             </div>
-            <div class="form-input">Diet <Multiselect class="multiselect" v-model="diet" mode="tags" :options="multiselectDietTags" :createTag="true" @create="onCreate" :searchable="true" /></div>
+            <div class="form-input">
+              <div>Diet</div>
+              <div>
+                <Multiselect class="multiselect" v-model="diet" mode="tags" :options="multiselectDietTags" :createTag="true" @create="onCreate" :searchable="true" />
+              </div>
+            </div>
             <div class="special-request">Special Requests<textarea v-model="specialRequests"></textarea></div>
           </div>
           <div class="member-add">
@@ -214,5 +221,9 @@ textarea {
   gap: 1em;
   display: flex;
   justify-content: space-around;
+}
+
+.multiselect {
+  height: 2em;
 }
 </style>

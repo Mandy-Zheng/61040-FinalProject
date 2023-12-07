@@ -1,14 +1,13 @@
 import { ObjectId } from "mongodb";
 
 import DocCollection, { BaseDoc } from "../framework/doc";
-import { NotAllowedError, NotFoundError } from "./errors";
-import { DietaryRestrictions } from "./household";
+import { BadValuesError, NotAllowedError, NotFoundError } from "./errors";
 
 export interface StockDoc extends BaseDoc {
   owner: ObjectId;
   item: string;
   count: number;
-  diet: Array<DietaryRestrictions>;
+  diet: Array<string>;
   supplyLink?: string;
   image?: string;
   maxPerPerson: number;
@@ -18,11 +17,14 @@ export interface StockDoc extends BaseDoc {
 export default class StockConcept {
   public readonly stocks = new DocCollection<StockDoc>("stocks");
 
-  async createStock(owner: ObjectId, item: string, count: number, diet: Array<DietaryRestrictions>, link?: string, img?: string, maxPP: number = 3) {
+  async createStock(owner: ObjectId, item: string, count: number, diet: Array<string>, link?: string, img?: string, maxPP: number = 3) {
     await this.isItemUnique(owner, item); // can't duplicate item name within same owner
     const _id = await this.stocks.createOne({ owner, item, count, diet, supplyLink: link, image: img, maxPerPerson: maxPP, maxPerDay: 0 });
     if (count < 0) {
       throw new NotAllowedError("Initial stock count cannot be negative");
+    }
+    if (item.length === 0) {
+      throw new BadValuesError("Item must have a name!");
     }
     return { msg: "Stock successfully created!", stock: await this.stocks.readOne({ _id }) };
   }
@@ -50,6 +52,9 @@ export default class StockConcept {
 
   async updateStockDetails(_id: ObjectId, update: Partial<StockDoc>) {
     this.sanitizeUpdate(update);
+    if (update.item !== undefined && !update.item) {
+      throw new BadValuesError("Item must have a name!");
+    }
     await this.stocks.updateOne({ _id }, update);
     return { msg: "Stock successfully updated!" };
   }
@@ -88,7 +93,7 @@ export default class StockConcept {
     if (!stock) return;
     const currentDate = new Date();
     const currentDay = currentDate.getDay(); // sunday is 0, monday is 1, etc.
-    await this.stocks.updateOne({ _id }, { maxPerDay: stock.count / (7 - currentDay) });
+    await this.stocks.updateOne({ _id }, { maxPerDay: Math.floor(stock.count / (7 - currentDay)) });
   }
 
   private sanitizeUpdate(update: Partial<StockDoc>) {

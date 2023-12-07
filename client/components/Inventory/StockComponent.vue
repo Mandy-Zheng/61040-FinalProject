@@ -72,7 +72,7 @@ onBeforeMount(async () => {
       </div>
       <teleport to="body">
         <DeleteStockModal :show="showDeleteModal" :stock="item" @close="showDeleteModal = false" @delete="deleteStock(), (showDeleteModal = false)" />
-        <EditStockModal :allDiets="allDiets" :show="showEditModal" :stock="item" @close="showEditModal = false" @update="editStock" />
+        <EditStockModal :allDiets="allDiets" :show="showEditModal" :stock="item" @close="(showEditModal = false), console.log(showEditModal)" @update="editStock" />
       </teleport>
     </div>
     <div class="row" style="gap: 1em">

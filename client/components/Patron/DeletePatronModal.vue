@@ -15,11 +15,14 @@ const patronsToRemove = ref<Array<string>>([]);
   <transition name="modal">
     <div v-if="props.show" class="modal-mask">
       <div class="modal-container">
-        <h3>Removing Patrons from household {{ householdId }}</h3>
+        <h4>Removing Patrons from household {{ householdId }}</h4>
         <br />
-        <Multiselect v-model="patronsToRemove" mode="tags" :options="patronNames" :searchable="true" />
-        <button @click="emit('close')">Cancel</button>
-        <button @click="emit('delete', patronsToRemove)">Delete</button>
+        <div v-if="patronNames.length > 1">
+          <Multiselect v-model="patronsToRemove" mode="tags" :options="patronNames" :searchable="true" />
+          <button class="button-39" @click="emit('close')">Cancel</button>
+          <button class="button-39" @click="emit('delete', patronsToRemove)">Delete</button>
+        </div>
+        <div v-else>Cannot remove only patron in the household <button @click="emit('close')">Cancel</button></div>
       </div>
     </div>
   </transition>
@@ -27,13 +30,10 @@ const patronsToRemove = ref<Array<string>>([]);
 
 <style scoped>
 .button-39 {
-  background-color: var(--primary);
-  color: white;
-  height: 2.5em;
+  height: 3em;
   align-content: center;
   text-align: center;
-  padding-bottom: 2.2em;
-  border: none;
+  margin-right: 1em;
 }
 
 .modal-footer {

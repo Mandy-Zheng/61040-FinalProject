@@ -68,18 +68,31 @@ function closeUpdateModal() {
 <template>
   <main>
     <div v-if="loaded && allAudios">
-      <h3>{{ props.language }}</h3>
       <div class="column">
+        <h2>{{ props.language }}</h2>
         <div v-for="(audio, idx) in allAudios" :key="audio">
-          <audio controls preload="auto">
-            <source :src="audio.audio" type="audio/mp3" />
-            <source :src="audio.audio" type="audio/ogg" />
-            <source :src="audio.audio" type="audio/wav" />
-            Your browser does not support the audio tag.
-          </audio>
-          <p class="">{{ audio.translation }}</p>
-          <button class="button-39" @click="(showUpdateModal = true), (selectedToUpdate = idx)">Update</button>
-          <button class="button-39" @click="(showDeleteModal = true), (selectedToDelete = idx)">Delete</button>
+          <p style="margin-left: 0.5em; margin-bottom: 10px; width: 50em; line-height: 1.25em">{{ audio.translation }}</p>
+          <div class="row">
+            <audio controls preload="auto">
+              <source :src="audio.audio" type="audio/mp3" />
+              <source :src="audio.audio" type="audio/ogg" />
+              <source :src="audio.audio" type="audio/wav" />
+              Your browser does not support the audio tag.
+            </audio>
+
+            <button class="icon" title="Upload Audio" @click="(showUpdateModal = true), (selectedToUpdate = idx)">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-up-circle-fill" viewBox="0 0 16 16">
+                <path d="M16 8A8 8 0 1 0 0 8a8 8 0 0 0 16 0m-7.5 3.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707z" />
+              </svg>
+            </button>
+            <button class="icon" title="Delete Audio" @click="(showDeleteModal = true), (selectedToDelete = idx)">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
+                <path
+                  d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0"
+                />
+              </svg>
+            </button>
+          </div>
         </div>
         <teleport to="body">
           <DeleteAudioModal
@@ -120,15 +133,33 @@ function closeUpdateModal() {
   font-weight: 300;
 }
 
-h3 {
+h2 {
   margin: 0;
 }
 
 .column {
   align-items: flex-start;
+  display: flex;
+  gap: 1.25em;
 }
 
 .circle {
   border-radius: 10em;
+}
+
+.audio {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 0.5em;
+}
+
+audio {
+  height: 2em;
+}
+
+.row {
+  display: flex;
+  align-content: center;
 }
 </style>

@@ -6,18 +6,15 @@ import moment from "moment";
 import { storeToRefs } from "pinia";
 import { onBeforeMount, ref } from "vue";
 import VueCal from "vue-cal";
-import ClaimShiftModal from "../components/Shift/ClaimShiftModal.vue";
-import DeleteShiftModal from "../components/Shift/DeleteShiftModal.vue";
-import UnclaimShiftModal from "../components/Shift/UnclaimShiftModal.vue";
+import ShiftModal from "../components/Shift/ShiftModal.vue";
 let hidePastShifts = ref(true);
 let showOnlyMyShifts = ref(false);
 let shifts = ref<Array<Record<string, string>>>([]);
 let myShifts = ref<Array<Record<string, string>>>([]);
 const { selectedOrg } = storeToRefs(useOrganizationStore());
 const { currentUsername } = storeToRefs(useUserStore());
-const showClaimModal = ref<boolean>(false);
-const showUnclaimModal = ref<boolean>(false);
-const showDeleteModal = ref<boolean>(false);
+const showShiftModal = ref<boolean>(false);
+
 const shift = ref(undefined);
 const today = new Date();
 
@@ -65,17 +62,20 @@ function convertDates(shifts: Record<string, string>[]) {
       const start = moment(s.start).format("YYYY-MM-DD, HH:mm");
       const end = moment(s.end).format("YYYY-MM-DD, HH:mm");
       let cls;
+      let content;
       if (showOnlyMyShifts.value) {
         cls = s.owner === org ? "currentOrg" : "otherOrg";
+        content = s.owner;
       } else {
         cls = s.volunteers.includes(currentUsername.value) ? "claimedShift" : "unclaimedShift";
+        content = "Volunteers: " + s.volunteers.length;
       }
       return {
         start: start,
         end: end,
-        content: s.volunteers, //.includes(currentUsername.value) ? "Claimed!" : "Not claimed",
+        content: content,
         shift: s,
-        class: cls, //s.volunteers.includes(currentUsername.value) ? "claimedShift" : "unclaimedShift",
+        class: cls,
       };
     });
   }
@@ -104,51 +104,9 @@ async function createShift(event: any) {
   return event;
 }
 
-const triggerDelete = async (event: any) => {
+const triggerModal = async (event: any) => {
   shift.value = event.shift;
-  showDeleteModal.value = true;
-};
-
-const deleteShift = async (shift: any) => {
-  try {
-    await fetchy(`api/shift/${shift._id}`, "DELETE");
-  } catch {
-    return;
-  }
-  shift.value = undefined;
-  await getAllShifts();
-};
-
-const claimShift = async (shift: any) => {
-  try {
-    await fetchy(`api/shift/claim/${shift._id}`, "PATCH");
-  } catch {
-    return;
-  }
-  shift.value = undefined;
-  await getAllShifts();
-};
-
-const unclaimShift = async (shift: any) => {
-  try {
-    await fetchy(`api/shift/unclaim/${shift._id}`, "PATCH");
-  } catch {
-    return;
-  }
-  shift.value = undefined;
-  await getAllShifts();
-};
-
-const triggerClaim = async (event: any) => {
-  if (event.end < today) {
-    return;
-  }
-  shift.value = event.shift;
-  if (event.shift.volunteers.includes(currentUsername.value)) {
-    showUnclaimModal.value = true;
-  } else {
-    showClaimModal.value = true;
-  }
+  showShiftModal.value = true;
 };
 </script>
 
@@ -167,11 +125,7 @@ const triggerClaim = async (event: any) => {
       </label>
     </div>
     <teleport to="body">
-      <ClaimShiftModal :show="showClaimModal" :shift="shift" @close="showClaimModal = false" @claim="claimShift(shift), (showClaimModal = false)" />
-      <UnclaimShiftModal :show="showUnclaimModal" :shift="shift" @close="showUnclaimModal = false" @unclaim="unclaimShift(shift), (showUnclaimModal = false)" />
-      <div v-if="selectedOrg?.isAdmin">
-        <DeleteShiftModal :show="showDeleteModal" :shift="shift" @close="showDeleteModal = false" @delete="deleteShift(shift), (showDeleteModal = false)" />
-      </div>
+      <ShiftModal :show="showShiftModal" :shift="shift" @close="showShiftModal = false" @refreshShifts="getAllShifts(), (showShiftModal = false)" />
     </teleport>
   </div>
   <div class="cal">
@@ -180,14 +134,13 @@ const triggerClaim = async (event: any) => {
       :time-to="22 * 60"
       :snap-to-time="15"
       :disable-views="['years', 'year']"
-      :editable-events="{ title: false, drag: false, resize: false, delete: selectedOrg?.isAdmin, create: selectedOrg?.isAdmin }"
+      :editable-events="{ title: false, drag: false, resize: false, delete: false, create: selectedOrg?.isAdmin }"
       :drag-to-create-threshold="15"
       style="height: 100%"
       :events="convertDates(showOnlyMyShifts ? myShifts : shifts)"
       today-button
-      :on-event-click="triggerClaim"
+      :on-event-click="triggerModal"
       @event-drag-create="createShift"
-      @event-delete="triggerDelete"
       :min-date="today"
     >
     </vue-cal>
@@ -196,11 +149,11 @@ const triggerClaim = async (event: any) => {
 
 <style scoped>
 .cal {
-  margin: 0 1.5em 3em 1.5em;
+  margin: 0 7em 3em 7em;
 }
 
 .shifts {
-  margin: 1em;
+  margin: 0em;
 }
 .button-39 {
   margin: 1em;
@@ -210,7 +163,7 @@ const triggerClaim = async (event: any) => {
   justify-content: center;
   margin: 0 auto;
   max-width: 60em;
-  padding: 1em;
+  padding: 0em;
 }
 
 h1 {

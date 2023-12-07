@@ -12,7 +12,7 @@ const emit = defineEmits(["close", "delete"]);
         <div class="modal-header">Delete shift from {{ formatDate(props.shift.start) }} to {{ formatDate(props.shift.end) }}</div>
         This action will delete the shift permanently. Are you sure?
         <div class="modal-footer">
-          <button class="button-39" @click="emit('close')">Close</button>
+          <button class="button-39" @click="emit('close')">Cancel</button>
           <button class="button-39 red" @click="emit('delete')">Delete shift</button>
         </div>
       </div>

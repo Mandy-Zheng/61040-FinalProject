@@ -28,6 +28,7 @@ async function addAudioFile() {
   } catch (_) {
     return;
   }
+  resetForm();
 }
 
 function resetForm() {
@@ -47,14 +48,14 @@ function resetForm() {
           <div class="item">
             <div class="form-input">
               Language
-              <div><Multiselect v-model="language" :createTag="true" :options="languageOptions" :searchable="true" @create="onCreate" required /></div>
+              <div><Multiselect class="multiselect" v-model="language" :createTag="true" :options="languageOptions" :searchable="true" @create="onCreate" required /></div>
             </div>
-            <div class="form-input">Audio Link<input v-model="audioLink" /></div>
+            <div class="form-input">Audio Link:<input v-model="audioLink" /></div>
             <div class="form-input">Translation: <input v-model="translation" /></div>
           </div>
         </div>
         <div class="modal-footer">
-          <button class="button-39" @click="resetForm">Cancel</button>
+          <button class="button-39" style="color: black; background-color: white; border: solid; border-width: 1px; border-color: grey" @click="resetForm">Cancel</button>
           <button class="button-39" @click="addAudioFile">Add</button>
         </div>
       </div>
@@ -70,9 +71,7 @@ function resetForm() {
   text-align: center;
   padding-bottom: 2.2em;
   border: none;
-}
-
-.form {
+  margin-top: 1em;
 }
 
 .modal-footer {
@@ -93,7 +92,7 @@ function resetForm() {
 }
 
 .modal-container {
-  width: 300px;
+  width: 500px;
   margin: auto;
   padding: 20px 30px;
   background-color: #fff;
@@ -105,5 +104,34 @@ function resetForm() {
 .modal-header {
   margin-top: 0;
   color: var(--primary);
+}
+
+.form-input {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.multiselect {
+  width: 11em;
+  height: fit-content;
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
+input {
+  height: 2.2em;
+  width: 22em;
+
+  border: solid;
+  border-width: 1px;
+  border-color: rgb(188, 188, 188);
+  border-radius: 3px;
+  margin-bottom: 0px;
+  padding: 5px;
 }
 </style>
