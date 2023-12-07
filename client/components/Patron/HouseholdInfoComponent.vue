@@ -111,7 +111,7 @@ onBeforeMount(async () => {
           </div>
           <div class="info" v-else>
             <p class="diet-title">Dietary Restrictions:</p>
-            <div class="row">
+            <div style="display: flex; gap: 0.5em">
               <div v-for="tag in props.household.dietaryRestrictions" :key="tag">
                 <p class="tag" v-bind:style="{ backgroundColor: tagColors.get(tag) }">{{ tag }}</p>
               </div>
