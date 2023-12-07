@@ -43,7 +43,7 @@ onBeforeMount(async () => {
 
 <template>
   <main>
-    <div style="margin-left: 170px">
+    <div style="margin-left: 170px; margin-right: 200px">
       <div class="right">
         <button class="button-39" @click="showCreateModal = true">Add New Audio Files</button>
         <!-- <button class="button-39 reset" @click.prevent="showResetModal = true">Reset All Visits</button> -->
@@ -87,13 +87,13 @@ select {
   display: flex;
   justify-content: flex-end;
   margin-top: 2em;
-  margin-right: 20em;
+  margin-right: 0em;
 }
 
 .language {
   display: flex;
   justify-content: flex-start;
   flex-direction: column;
-  gap: 3em;
+  gap: 4em;
 }
 </style>

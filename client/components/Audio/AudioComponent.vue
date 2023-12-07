@@ -69,11 +69,9 @@ function closeUpdateModal() {
   <main>
     <div v-if="loaded && allAudios">
       <div class="column">
-        <h3>{{ props.language }}</h3>
+        <h2>{{ props.language }}</h2>
         <div v-for="(audio, idx) in allAudios" :key="audio">
-          <p style="margin-left: 0.5em; margin-bottom: 5px">
-            <i>{{ audio.translation }}</i>
-          </p>
+          <p style="margin-left: 0.5em; margin-bottom: 10px; width: 50em; line-height: 1.25em">{{ audio.translation }}</p>
           <div class="row">
             <audio controls preload="auto">
               <source :src="audio.audio" type="audio/mp3" />
@@ -135,14 +133,14 @@ function closeUpdateModal() {
   font-weight: 300;
 }
 
-h3 {
+h2 {
   margin: 0;
 }
 
 .column {
   align-items: flex-start;
   display: flex;
-  gap: 0;
+  gap: 1.25em;
 }
 
 .circle {
