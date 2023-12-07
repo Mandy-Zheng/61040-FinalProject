@@ -1,7 +1,7 @@
 import { ObjectId } from "mongodb";
 
 import DocCollection, { BaseDoc } from "../framework/doc";
-import { NotAllowedError, NotFoundError } from "./errors";
+import { BadValuesError, NotAllowedError, NotFoundError } from "./errors";
 import { DietaryRestrictions } from "./household";
 
 export interface StockDoc extends BaseDoc {
@@ -23,6 +23,9 @@ export default class StockConcept {
     const _id = await this.stocks.createOne({ owner, item, count, diet, supplyLink: link, image: img, maxPerPerson: maxPP, maxPerDay: 0 });
     if (count < 0) {
       throw new NotAllowedError("Initial stock count cannot be negative");
+    }
+    if (item.length === 0) {
+      throw new BadValuesError("Item must have a name!");
     }
     return { msg: "Stock successfully created!", stock: await this.stocks.readOne({ _id }) };
   }
@@ -50,6 +53,9 @@ export default class StockConcept {
 
   async updateStockDetails(_id: ObjectId, update: Partial<StockDoc>) {
     this.sanitizeUpdate(update);
+    if (update.item !== undefined && !update.item) {
+      throw new BadValuesError("Item must have a name!");
+    }
     await this.stocks.updateOne({ _id }, update);
     return { msg: "Stock successfully updated!" };
   }
