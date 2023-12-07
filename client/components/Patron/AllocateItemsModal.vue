@@ -8,7 +8,7 @@ const emit = defineEmits(["close", "refreshHouseholds"]);
 async function allocateItems() {
   try {
     await fetchy(`/api/profile/visit/${props.household._id}`, "PATCH");
-    for (const stock of props.allocation) await fetchy(`/api/inventory/allocate/${stock._id}`, "PATCH", { body: { update: { count: stock.allocation } } });
+    props.allocation.map(async (stock: Record<string, string>) => await fetchy(`/api/inventory/allocate/${stock._id}`, "PATCH", { body: { update: { count: stock.allocation } } }));
   } catch {
     return;
   }
