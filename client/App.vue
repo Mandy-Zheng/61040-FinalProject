@@ -93,7 +93,7 @@ onBeforeMount(async () => {
       </ul>
     </nav>
     <article v-if="toast !== null" class="toast" :class="toast.style">
-      <p>{{ toast.message }}</p>
+      <p class="msg">{{ toast.message }}</p>
     </article>
   </header>
   <RouterView />
@@ -102,6 +102,10 @@ onBeforeMount(async () => {
 <style scoped>
 @import "./assets/toast.css";
 @import url("https://fonts.googleapis.com/css2?family=Exo+2&display=swap");
+
+.msg {
+  z-index: 9999;
+}
 
 nav {
   padding: 0.5em 2em;

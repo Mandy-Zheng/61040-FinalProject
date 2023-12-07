@@ -13,18 +13,19 @@ const showCreateComponent = ref<boolean>(false);
 const showResetModal = ref<boolean>(false);
 
 const loaded = ref(false);
-let households = ref<Array<Record<string, string>>>([]);
+let households = ref<Array<any>>([]);
 let searchId = ref("");
 const { selectedOrg } = storeToRefs(useOrganizationStore());
 
 async function getHouseholds(_id?: string) {
   let results;
+  loaded.value = false;
   try {
     if (_id) {
-      results = await fetchy(`/api/profile/one/${_id}`, "GET");
+      results = [await fetchy(`/api/profile/one/${_id}`, "GET")];
       searchId.value = _id;
     } else if (_id === undefined && searchId.value) {
-      results = await fetchy(`/api/profile/one/${searchId.value}`, "GET");
+      results = [await fetchy(`/api/profile/one/${searchId.value}`, "GET")];
     } else if (selectedOrg.value) {
       results = await fetchy(`/api/profile/org/${selectedOrg.value.id}`, "GET");
       searchId.value = "";
@@ -32,7 +33,19 @@ async function getHouseholds(_id?: string) {
   } catch (_) {
     return;
   }
+  loaded.value = true;
   households.value = results;
+}
+
+async function refreshHouseholdById(id: string) {
+  try {
+    const idx = households.value.findIndex((household) => household._id === id);
+    if (idx !== -1) {
+      households.value[idx] = await fetchy(`/api/profile/one/${id}`, "GET");
+    }
+  } catch (error) {
+    return;
+  }
 }
 
 onBeforeMount(async () => {
@@ -55,8 +68,8 @@ onBeforeMount(async () => {
       <SearchHouseholdsForm @search="getHouseholds" />
     </div>
     <section class="posts" v-if="loaded && households.length !== 0">
-      <article v-for="household in households" :key="household._id">
-        <HouseholdComponent :household="household" @refreshHouseholds="getHouseholds" />
+      <article v-for="household in households" :key="household">
+        <HouseholdComponent :household="household" @refreshHouseholds="getHouseholds" @refreshById="refreshHouseholdById" />
       </article>
     </section>
     <p v-else-if="loaded">No households yet!</p>

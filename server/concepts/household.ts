@@ -66,6 +66,7 @@ export default class HouseholdConcept {
   async updateMembers(_id: ObjectId, members: Array<ObjectId>) {
     await this.getProfileById(_id);
     await this.households.updateOne({ _id }, { members: members });
+    return { msg: "Successfully updated Members of Household" };
   }
 
   async addMember(_id: ObjectId, member: ObjectId) {
@@ -79,6 +80,7 @@ export default class HouseholdConcept {
     });
     newMembers.push(member);
     await this.households.updateOne({ _id }, { members: newMembers });
+    return { msg: "Successfully Added New Member to Household" };
   }
 
   async removeMember(_id: ObjectId, member: ObjectId) {
@@ -159,7 +161,6 @@ export default class HouseholdConcept {
 
   async update(_id: ObjectId, update: Partial<HouseholdDoc>) {
     this.sanitizeUpdate(update);
-    console.log(update);
     await this.households.updateOne({ _id }, update);
     return { msg: "Profile successfully updated!" };
   }

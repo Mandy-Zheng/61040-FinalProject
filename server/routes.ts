@@ -213,7 +213,7 @@ class Routes {
     return await Household.update(ID, update);
   }
 
-  @Router.patch("/profile/addPatron/:id")
+  @Router.patch("/profile/addPatron")
   async addPatronToHousehold(session: WebSessionDoc, id: ObjectId, name: string, birthday: string, img: string) {
     const user = WebSession.getUser(session);
     const ID = new ObjectId(id);
@@ -223,24 +223,32 @@ class Routes {
     return await Household.addMember(ID, patron._id);
   }
 
-  @Router.patch("/profile/removePatron/:id")
-  async removePatronFromHousehold(session: WebSessionDoc, id: ObjectId, patronId: ObjectId) {
-    const household = await Household.getProfileById(id);
-    const ID = new ObjectId(id);
-    const patron = new ObjectId(patronId);
+  @Router.patch("/profile/removePatron")
+  async removePatronFromHousehold(session: WebSessionDoc, patrons: Array<string>, household: ObjectId) {
     const user = WebSession.getUser(session);
-    await Team.isTeamMember(household.organization, user);
-    return await Household.removeMember(ID, patron);
+    const householdId = new ObjectId(household);
+    const householdInfo = await Household.getProfileById(householdId);
+    const patronId = patrons.map((patron) => new ObjectId(patron));
+    await Team.isTeamMember(householdInfo.organization, user);
+    await Promise.all(patronId.map((patron) => Patron.deletePatron(patron)));
+    const removePatrons = new Set(patrons);
+    const updatedMembers = householdInfo.members.filter((member) => !removePatrons.has(member.toString()));
+    if (updatedMembers.length) {
+      return await Household.updateMembers(householdId, updatedMembers);
+    } else {
+      await Household.delete(householdId);
+      return { msg: "Successfully updated Household" };
+    }
   }
 
-  @Router.patch("/profile/updatePatron/:id")
-  async updatePatron(session: WebSessionDoc, id: ObjectId, patronId: ObjectId, update: Partial<PatronDoc>) {
-    const ID = new ObjectId(id);
-    const patron = new ObjectId(patronId);
-    const household = await Household.getProfileById(ID);
+  @Router.patch("/profile/updatePatron")
+  async updatePatron(session: WebSessionDoc, household: ObjectId, patron: ObjectId, update: Partial<PatronDoc>) {
+    const householdId = new ObjectId(household);
+    const patronId = new ObjectId(patron);
+    const householdInfo = await Household.getProfileById(householdId);
     const user = WebSession.getUser(session);
-    await Team.isTeamMember(household.organization, user);
-    return await Patron.updatePatron(patron, update);
+    await Team.isTeamMember(householdInfo.organization, user);
+    return await Patron.updatePatron(patronId, update);
   }
 
   @Router.get("/patron/:id")
@@ -261,12 +269,12 @@ class Routes {
 
   // return household
   @Router.get("/profile/one/:id")
-  async singleHousehold(session: WebSessionDoc, id: ObjectId) {
-    const ID = new ObjectId(id);
-    const household = await Household.getProfileById(ID);
+  async getSingleHousehold(session: WebSessionDoc, id: ObjectId) {
+    const householdId = new ObjectId(id);
+    const household = await Household.getProfileById(householdId);
     const user = WebSession.getUser(session);
     await Team.isTeamMember(household.organization, user);
-    return [household];
+    return { ...household, members: await Patron.getPatrons(household.members) };
   }
 
   @Router.get("/profile/org/:orgId")
@@ -274,7 +282,11 @@ class Routes {
     const id = new ObjectId(orgId);
     const user = WebSession.getUser(session);
     await Team.isTeamMember(id, user);
-    return await Household.getProfilesByOwner(id);
+    const allHouseholds = await Household.getProfilesByOwner(id);
+    const patrons = await Promise.all(allHouseholds.map((household) => Patron.getPatrons(household.members)));
+    return allHouseholds.map((household, idx) => {
+      return { ...household, members: patrons[idx] };
+    });
   }
 
   @Router.patch("/profile/visit/:id")
@@ -474,8 +486,7 @@ class Routes {
     const user = WebSession.getUser(session);
     const orgId = new ObjectId(org);
     await Team.isTeamMember(orgId, user);
-    const { msg } = await LanguageAudio.create(orgId, language, audio, translation);
-    return msg;
+    return await LanguageAudio.create(orgId, language, audio, translation);
   }
 
   @Router.get("/languageAudio/owner/:org/allLanguages")

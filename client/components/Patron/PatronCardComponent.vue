@@ -1,48 +1,52 @@
 <script setup lang="ts">
-import { onBeforeMount, ref } from "vue";
+import { ref } from "vue";
 import { fetchy } from "../../utils/fetchy";
 
-const props = defineProps(["patronId"]);
-const patron = ref();
-const loaded = ref(false);
+const props = defineProps(["patron", "householdId"]);
+const emit = defineEmits(["update", "delete"]);
+const today = new Date().toISOString().split("T")[0];
 
-async function getPatron() {
-  let patronResult;
-  try {
-    patronResult = await fetchy(`/api/patron/${props.patronId}`, "GET");
-  } catch (_) {
-    return;
-  }
-  patron.value = patronResult;
+const isEditing = ref<boolean>(false);
+const name = ref<string>(props.patron.name);
+const img = ref<string>(props.patron.image);
+const birthday = ref<any>(props.patron.birthday);
+
+async function updatePatrons() {
+  const body = { household: props.householdId, patron: props.patron._id, update: { name: name.value, birthday: birthday.value, image: img.value } };
+  await fetchy(`/api/profile/updatePatron`, "PATCH", { body: body });
+  isEditing.value = false;
+  emit("update", props.patron._id);
 }
-onBeforeMount(async () => {
-  try {
-    await getPatron();
-  } catch (e) {
-    return;
-  }
-  loaded.value = true;
-});
 </script>
 
 <template>
   <main>
-    <div v-if="loaded && patron">
-      <article>
-        <img v-if="!patron.image.length" class="circle" src="../../assets/images/image.svg" width="60" />
-        <img v-else :src="patron.image" width="60" height="60" class="circle" />
-        <div class="column">
-          <h3 class="name">{{ patron.name }}</h3>
-          <div class="content">Date of Birth: {{ patron.birthday }}</div>
-        </div>
-      </article>
+    <div v-if="patron">
+      <div class="column" v-if="isEditing">
+        <h3 class="name">Name: <input v-model="name" /></h3>
+        <h3 class="name">Image Link: <input v-model="img" /></h3>
+        <div class="content">Date of Birth: <input type="date" :max="today" v-model="birthday" /></div>
+        <button class="button-39" @click.prevent="updatePatrons">Save Changes</button>
+      </div>
+      <div class="row" v-else>
+        <article>
+          <img v-if="!patron.image.length" class="circle" src="../../assets/images/image.svg" width="60" />
+          <img v-else :src="patron.image" width="60" height="60" class="circle" />
+          <div class="column">
+            <h3 class="name">{{ patron.name }}</h3>
+            <div class="content">Date of Birth: {{ patron.birthday }}</div>
+          </div>
+        </article>
+        <button class="button-39" @click.prevent="isEditing = true">Update Members</button>
+      </div>
     </div>
-    <p v-else-if="loaded">No profile found</p>
-    <p v-else>Loading...</p>
   </main>
 </template>
 
 <style scoped>
+.row {
+  display: flex;
+}
 .button-39 {
   margin: 10px;
   padding: 10px;

@@ -37,7 +37,7 @@ async function updateAudioFile() {
           </div>
         </div>
         <div class="modal-footer">
-          <button class="button-39" @click="console.log('click'), emit('close')">Cancel</button>
+          <button class="button-39" @click="emit('close')">Cancel</button>
           <button class="button-39" @click="updateAudioFile">Update</button>
         </div>
       </div>

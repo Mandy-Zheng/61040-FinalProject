@@ -24,14 +24,12 @@ export default class ShiftConcept {
 
   async getShiftsByOwner(owner: ObjectId) {
     const shifts = await this.shifts.readMany({ owner: owner }, { sort: { start: 1 } });
-    console.log("not future", shifts);
     return shifts;
   }
 
   async getFutureShiftsByOwner(owner: ObjectId) {
     const today = new Date();
     const shifts = await this.shifts.readMany({ owner: owner, end: { $gt: today } }, { sort: { start: 1 } });
-    console.log("future", shifts);
     return shifts;
   }
 

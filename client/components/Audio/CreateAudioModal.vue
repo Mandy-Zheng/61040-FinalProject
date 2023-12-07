@@ -19,6 +19,7 @@ async function addAudioFile() {
     if (selectedOrg.value) {
       const body = { org: selectedOrg.value.id, language: language.value, audio: audioLink.value, translation: translation.value };
       await fetchy("/api/languageAudio", "POST", { body: body });
+      emit("close");
       emit("add", language.value);
     }
   } catch (_) {
@@ -43,7 +44,7 @@ async function addAudioFile() {
           </div>
         </div>
         <div class="modal-footer">
-          <button class="button-39" @click="console.log('click'), emit('close')">Cancel</button>
+          <button class="button-39" @click="emit('close')">Cancel</button>
           <button class="button-39" @click="addAudioFile">Add</button>
         </div>
       </div>

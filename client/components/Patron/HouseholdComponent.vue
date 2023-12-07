@@ -1,13 +1,18 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { fetchy } from "../../utils/fetchy";
+import AddPatronModal from "./AddPatronModal.vue";
 import AllocateItemsModal from "./AllocateItemsModal.vue";
 import DeleteHouseholdModal from "./DeleteHouseholdModal.vue";
+import DeletePatronModal from "./DeletePatronModal.vue";
 import HouseholdInfoComponent from "./HouseholdInfoComponent.vue";
 import PatronCardComponent from "./PatronCardComponent.vue";
 const showDeleteModal = ref<boolean>(false);
+const showPatronDeleteModal = ref<boolean>(false);
+const showPatronAddModal = ref<boolean>(false);
 const props = defineProps(["household"]);
-const emit = defineEmits(["refreshHouseholds"]);
+const members = ref<Array<any>>(props.household.members);
+const emit = defineEmits(["refreshHouseholds", "refreshById"]);
 const showAllocateModal = ref<boolean>(false);
 const allocation = ref();
 
@@ -32,6 +37,33 @@ const getAllocation = async () => {
     return;
   }
 };
+
+async function refreshPatron(patronId: string) {
+  const idx = members.value.findIndex((patron) => patron._id === patronId);
+  if (idx !== -1) {
+    try {
+      members.value[idx] = await fetchy(`/api/patron/${patronId}`, "GET");
+    } catch (error) {
+      return;
+    }
+  }
+}
+
+async function deletePatrons(patrons: Array<string>) {
+  try {
+    const body = { patrons: patrons, household: props.household._id };
+
+    await fetchy(`/api/profile/removePatron`, "PATCH", { body: body });
+    showPatronDeleteModal.value = false;
+    if (patrons.length === props.household.members.length) {
+      emit("refreshHouseholds");
+    } else {
+      emit("refreshById", props.household._id);
+    }
+  } catch (error) {
+    return;
+  }
+}
 </script>
 
 <template>
@@ -41,8 +73,10 @@ const getAllocation = async () => {
         <HouseholdInfoComponent :household="household" @refreshHouseholds="emit('refreshHouseholds')" @refreshVisits="addVisit" />
       </div>
       <div class="column">
-        <div v-for="patron in household.members" :key="patron">
-          <PatronCardComponent :patronId="patron" />
+        <p>Members of Household: <button @click="showPatronAddModal = true">Add Members</button> <button @click="showPatronDeleteModal = true">Delete Members</button></p>
+
+        <div class="row" v-for="patron in members" :key="patron">
+          <PatronCardComponent :patron="patron" :householdId="household._id" @update="refreshPatron" />
         </div>
       </div>
       <div class="modify">
@@ -56,6 +90,8 @@ const getAllocation = async () => {
       </div>
       <teleport to="body">
         <DeleteHouseholdModal :show="showDeleteModal" :household="household" @close="showDeleteModal = false" @delete="deleteHousehold(), (showDeleteModal = false)" />
+        <DeletePatronModal :show="showPatronDeleteModal" :members="members" :householdId="household._id" @close="showPatronDeleteModal = false" @delete="deletePatrons" />
+        <AddPatronModal :show="showPatronAddModal" :householdId="household._id" @close="showPatronAddModal = false" @add="emit('refreshById', props.household._id)" />
       </teleport>
     </div>
     <AllocateItemsModal :show="showAllocateModal" :household="household" :allocation="allocation" @close="showAllocateModal = false" @refreshHouseholds="emit('refreshHouseholds')" />

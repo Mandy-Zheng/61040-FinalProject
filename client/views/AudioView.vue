@@ -12,7 +12,6 @@ const allLanguageAudio = ref<Array<any>>([]);
 const allLanguages = computed(() => allLanguageAudio.value.map((languageAudio) => languageAudio.language));
 
 async function refresh(language: string) {
-  showCreateModal.value = false;
   const idx = allLanguageAudio.value.findIndex((languageAudio) => languageAudio.language === language);
   if (selectedOrg.value) {
     if (idx !== -1) {
