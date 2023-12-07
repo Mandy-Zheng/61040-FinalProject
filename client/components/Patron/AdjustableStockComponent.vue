@@ -11,10 +11,21 @@ const diet = computed(() => props.stock.diet);
     <img v-else src="../../assets/images/image.svg" />
     <div class="item">
       <div class="row" style="align-items: center; gap: 2px; width: 25em">
-        <div style="display: flex; flex-direction: row; justify-content: space-between">
+        <h2 class="title">
+          {{ props.stock.item }}
+          <div class="link">
+            <a :href="props.stock.supplyLink" v-if="props.stock.supplyLink"
+              ><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="black" class="bi bi-cart-fill" viewBox="0 0 16 16">
+                <path
+                  d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5M5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4m7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4m-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2m7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2"
+                />
+              </svg>
+            </a>
+          </div>
+        </h2>
+        <div class="distribution-overview">
           <div>
             <div class="row" style="align-items: center; gap: 20em">
-              <h2>{{ props.stock.item }}</h2>
               <h3 v-if="props.stock.count <= 5" style="color: rgb(203, 1, 1)">Low in stock!</h3>
             </div>
             <div class="subtext" style="margin-right: 3em">
@@ -24,8 +35,8 @@ const diet = computed(() => props.stock.diet);
               <p class="maxp">Max per Day: {{ props.stock.maxPerDay }}</p>
             </div>
           </div>
-          <div style="display: flex; flex-direction: column; align-content: flex-end; margin-top: 1.5em">
-            <h4>Units:</h4>
+          <div style="display: flex; flex-direction: column; align-content: flex-end">
+            <h4 class="units">Units:</h4>
             <input class="number-input" type="number" v-model="props.stock.allocation" min="0" :max="props.stock.maxPerPerson * household.members.length" />
           </div>
         </div>
@@ -39,21 +50,26 @@ const diet = computed(() => props.stock.diet);
         </div>
       </div>
     </div>
-    <div class="row" style="gap: 1em">
-      <div class="link">
-        <a :href="props.stock.supplyLink" v-if="props.stock.supplyLink"
-          ><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="black" class="bi bi-cart-fill" viewBox="0 0 16 16">
-            <path
-              d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5M5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4m7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4m-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2m7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2"
-            />
-          </svg>
-        </a>
-      </div>
-    </div>
   </div>
 </template>
 
 <style scoped>
+.units {
+  margin-top: 0;
+  margin-bottom: 1em;
+}
+.title {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+}
+.distribution-overview {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+}
 .modify {
   display: flex;
   height: fit-content;
@@ -62,6 +78,7 @@ const diet = computed(() => props.stock.diet);
   display: flex;
   flex-direction: row;
   padding: 1em;
+  align-items: center;
 }
 .subtext {
   display: flex;
@@ -74,6 +91,7 @@ const diet = computed(() => props.stock.diet);
   height: max-content;
   width: 35em;
   justify-content: space-between;
+  align-items: center;
 }
 
 .form {
@@ -99,6 +117,7 @@ input {
   width: 4em;
   font-size: larger;
   text-align: center;
+  margin: 0;
 }
 
 .tag {
