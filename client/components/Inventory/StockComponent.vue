@@ -52,9 +52,9 @@ onBeforeMount(async () => {
     <img v-else src="../../assets/images/image.svg" />
     <div class="item">
       <div>
-        <div class="row" style="align-items: center; gap: 20em">
+        <div class="header">
           <h2>{{ item.item }}</h2>
-          <h3 v-if="item.count <= 5" style="color: rgb(203, 1, 1)">Low in stock!</h3>
+          <h3 v-if="item.count <= 5" class="low-label">Low in stock!</h3>
         </div>
         <div class="subtext">
           <p class="count">{{ item.count }} Units</p>
@@ -112,6 +112,15 @@ onBeforeMount(async () => {
 </template>
 
 <style scoped>
+.low-label {
+  color: rgb(203, 1, 1);
+  font-weight: bold;
+}
+.header {
+  display: flex;
+
+  justify-content: space-between;
+}
 .modify {
   display: flex;
   height: fit-content;
