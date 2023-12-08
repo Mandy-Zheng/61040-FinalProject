@@ -13,7 +13,7 @@ const diet = computed(() => props.stock.diet);
       <div class="row" style="align-items: center; gap: 2px; width: 25em">
         <h2 class="title">
           {{ props.stock.item }}
-          <div class="link">
+          <!-- <div class="link">
             <a :href="props.stock.supplyLink" v-if="props.stock.supplyLink"
               ><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="black" class="bi bi-cart-fill" viewBox="0 0 16 16">
                 <path
@@ -21,13 +21,10 @@ const diet = computed(() => props.stock.diet);
                 />
               </svg>
             </a>
-          </div>
+          </div> -->
         </h2>
         <div class="distribution-overview">
           <div>
-            <div class="row" style="align-items: center; gap: 20em">
-              <h3 v-if="props.stock.count <= 5" style="color: rgb(203, 1, 1)">Low in stock!</h3>
-            </div>
             <div class="subtext" style="margin-right: 3em">
               <p class="maxp">Max for household: {{ props.stock.maxPerPerson * household.members.length }}</p>
             </div>
