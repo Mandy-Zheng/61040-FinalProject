@@ -78,18 +78,20 @@ onBeforeMount(async () => {
 <template>
   <main v-if="selectedOrg" style="margin-left: 80px">
     <!-- <form class="pure-form pure-form-aligned" @submit.prevent="search"> -->
-    <Multiselect
-      v-model="item"
-      class="search"
-      :searchable="true"
-      :options="inventories.map((item) => item.item)"
-      @clear="getAllInventories"
-      @select="getInventory"
-      placeholder="Search for an item"
-    ></Multiselect>
     <div class="right">
       <button class="button-39" @click.prevent="showCreateModal = true">Create New Item</button>
       <button class="button-39 reset" @click.prevent="getMaxAllocation()">Update Daily Allocation</button>
+    </div>
+    <div class="search">
+      <Multiselect
+        v-model="item"
+        class="search"
+        :searchable="true"
+        :options="inventories.map((item) => item.item)"
+        @clear="getAllInventories"
+        @select="getInventory"
+        placeholder="Search for an item"
+      ></Multiselect>
     </div>
     <teleport to="body">
       <CreateStockModal :allDiets="allDiets" :show="showCreateModal" @close="showCreateModal = false" @add="addItem" />
@@ -120,18 +122,24 @@ onBeforeMount(async () => {
   border: none;
   margin: 1em;
   margin-right: 5em;
-  margin-bottom: 3em;
+  margin-bottom: 2em;
   color: white;
 }
 .right {
   display: flex;
   justify-content: flex-end;
   margin-top: 2em;
-  margin-right: 10em;
+  margin-right: 3em;
 }
 .reset {
   background-color: var(--secondary);
   color: black;
   margin-left: -30px;
+}
+
+.search {
+  display: flex;
+  margin-left: 4.5em;
+  margin-bottom: 1.5em;
 }
 </style>

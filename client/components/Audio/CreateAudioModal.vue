@@ -43,7 +43,7 @@ function resetForm() {
   <transition name="modal">
     <div v-if="props.show" class="modal-mask">
       <div class="modal-container">
-        <h3>Add New Language Audio File</h3>
+        <h3>Upload New Language Audio File</h3>
         <div class="form">
           <div class="item">
             <div class="form-input">
