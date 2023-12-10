@@ -390,14 +390,16 @@ class Routes {
   }
 
   // update an inventory item's count or other details (link, image, etc)
-  @Router.patch("/inventories/allocate/:id")
+  @Router.patch("/inventories/allocate")
   async decrementInventoryItem(session: WebSessionDoc, id: ObjectId, update: Partial<StockDoc>) {
     const user = WebSession.getUser(session);
     const ID = new ObjectId(id);
+    console.log(update);
     const stock = await Stock.getStockById(ID);
     await Team.isTeamMember(stock.owner, user);
     if (update.count) {
-      await Stock.decrementStockQuantity(ID, update.count);
+      await Stock.updateStockQuantity(ID, update.count);
+      console.log(update.count);
     }
     return { msg: "Stock successfully updated!" };
   }

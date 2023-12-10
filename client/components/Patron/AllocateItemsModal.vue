@@ -1,19 +1,41 @@
 <script setup lang="ts">
 import { fetchy } from "@/utils/fetchy";
+import { ref } from "vue";
 import AdjustableStockComponent from "./AdjustableStockComponent.vue";
 
 const props = defineProps(["show", "household", "allocation"]);
 const emit = defineEmits(["close", "refreshHouseholds"]);
 
+const newAllocations = ref<Array<number>>(
+  props.allocation.map((stock) => {
+    console.log("booo", stock.allocation);
+    return stock.allocation;
+  }),
+);
+console.log("start", props.allocation);
 async function allocateItems() {
   try {
+    console.log(newAllocations.value);
     await fetchy(`/api/profile/visit/${props.household._id}`, "PATCH");
-    await Promise.all(props.allocation.map(async (stock: any) => await fetchy(`/api/inventories/allocate/${stock._id}`, "PATCH", { body: { update: { count: stock.allocation } } })));
+    await Promise.all(
+      props.allocation.map(async (stock: any, idx) => {
+        console.log(stock.count, newAllocations.value[idx]);
+        const body = { id: stock._id, update: { count: stock.count - newAllocations.value[idx] } };
+        return fetchy(`/api/inventories/allocate`, "PATCH", { body: body });
+      }),
+    );
   } catch {
     return;
   }
   emit("close");
   emit("refreshHouseholds");
+}
+
+console.log(props.household, props.allocation, newAllocations.value);
+function update(idx: number, amount: number) {
+  console.log(idx, Number(amount));
+  console.log(newAllocations.value);
+  newAllocations.value[idx] = Number(amount);
 }
 </script>
 
@@ -21,16 +43,17 @@ async function allocateItems() {
   <transition name="modal">
     <div v-if="props.show" class="modal-mask">
       <div class="modal-container">
-        <div class="modal-header">Allocate the following items</div>
+        <div class="modal-header"><h2>Allocate the following items</h2></div>
         This action will automatically update the inventory. Are you sure?
-        <div class="row">
-          <article v-for="stock in props.allocation" :key="stock">
-            <AdjustableStockComponent :household="household" :stock="stock" />
+        <div class="row stocks">
+          <article v-for="(stock, idx) in props.allocation" :key="stock">
+            <AdjustableStockComponent :household="household" :stock="stock" :idx="idx" @updateAllocation="update" />
           </article>
         </div>
+
         <div class="modal-footer">
           <button class="button-39" @click="emit('close')">Cancel</button>
-          <button class="button-39" style="background-color: var(--primary); border: none; color: white" @click="allocateItems(), emit('refreshHouseholds')">Allocate</button>
+          <button class="button-39" style="background-color: var(--primary); border: none; color: white" @click="allocateItems">Allocate</button>
         </div>
       </div>
     </div>
@@ -74,7 +97,7 @@ img {
 
 .modal-container {
   max-height: 90%;
-  width: 50%;
+  width: 80%;
   margin: auto;
   padding: 20px 30px;
   background-color: #fff;
@@ -82,7 +105,6 @@ img {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
   transition: all 0.3s ease;
   height: 40em;
-  overflow-y: scroll;
 }
 
 .modal-header {
@@ -104,7 +126,12 @@ span {
 
 .row {
   display: flex;
+
   flex-direction: column;
   gap: 1.5em;
+}
+.stocks {
+  overflow-y: scroll;
+  max-height: 75%;
 }
 </style>

@@ -194,6 +194,7 @@ select {
   width: 60px;
   height: 34px;
   margin: 10px;
+  z-index: 50;
 }
 
 /* Hide default HTML checkbox */

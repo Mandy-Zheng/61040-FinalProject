@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import AllocateItemsModal from "@/components/Patron/AllocateItemsModal.vue";
 import { formatDate } from "@/utils/formatDate";
 import Multiselect from "@vueform/multiselect";
 import { storeToRefs } from "pinia";
@@ -17,6 +18,8 @@ const dietRestrictions = ref<Array<string>>(props.household.dietaryRestrictions)
 const allAudios = ref<Array<any>>([]);
 const editMode = ref<boolean>(false);
 const showAudio = ref<boolean>(false);
+const showAllocateModal = ref<boolean>(false);
+const allocation = ref<Array<any>>([]);
 
 const languageOptions = computed(() => [...new Set([...props.allLanguages, ...LANGUAGES])]);
 const dietOptions = computed(() => [...new Set([...props.allDiets, ...DIETARY_RESTRICTIONS])]);
@@ -30,6 +33,7 @@ function resetUpdate() {
   requests.value = props.household.specialRequests;
   dietRestrictions.value = props.household.dietaryRestrictions;
 }
+
 async function updateOverview() {
   try {
     if (selectedOrg.value) {
@@ -55,9 +59,19 @@ async function getAudioForLanguage() {
   }
 }
 
+async function getAllocation() {
+  try {
+    allocation.value = await fetchy(`/api/profile/allocate/${props.household._id}`, "GET");
+    console.log("hey", allocation.value);
+  } catch {
+    return;
+  }
+}
+
 onBeforeMount(async () => {
   try {
     await getAudioForLanguage();
+    await getAllocation();
   } catch (error) {
     return;
   }
@@ -75,7 +89,7 @@ onBeforeMount(async () => {
           </div>
           <p>
             Past visits: {{ props.household.pastVisits.length }}
-            <button class="icon" @click="emit('refreshVisits')" title="Add visit">
+            <button class="icon" @click="showAllocateModal = true" title="Add visit">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
                 <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
                 <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
@@ -149,6 +163,15 @@ onBeforeMount(async () => {
         <button class="button-39" v-if="editMode" @click="updateOverview">Update</button>
       </div>
     </div>
+    <teleport to="body">
+      <AllocateItemsModal
+        :show="showAllocateModal"
+        :household="household"
+        :allocation="allocation"
+        @close="showAllocateModal = false"
+        @refreshHouseholds="emit('refreshHouseholds'), (showAllocateModal = false)"
+      />
+    </teleport>
   </div>
 </template>
 

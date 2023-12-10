@@ -2,7 +2,6 @@
 import { ref } from "vue";
 import { fetchy } from "../../utils/fetchy";
 import AddPatronModal from "./AddPatronModal.vue";
-import AllocateItemsModal from "./AllocateItemsModal.vue";
 import DeleteHouseholdModal from "./DeleteHouseholdModal.vue";
 import DeletePatronModal from "./DeletePatronModal.vue";
 import HouseholdInfoComponent from "./HouseholdInfoComponent.vue";
@@ -15,9 +14,6 @@ const props = defineProps(["household", "allLanguages", "allDiets"]);
 const emit = defineEmits(["refreshHouseholds", "refreshById"]);
 const members = ref<Array<any>>(props.household.members);
 
-const showAllocateModal = ref<boolean>(false);
-const allocation = ref();
-
 const deleteHousehold = async () => {
   try {
     await fetchy(`/api/profile/${props.household._id}`, "DELETE");
@@ -26,19 +22,6 @@ const deleteHousehold = async () => {
   }
   emit("refreshHouseholds");
 };
-
-const addVisit = async () => {
-  await getAllocation();
-  showAllocateModal.value = true;
-};
-
-async function getAllocation() {
-  try {
-    allocation.value = await fetchy(`/api/profile/allocate/${props.household._id}`, "GET");
-  } catch {
-    return;
-  }
-}
 
 async function refreshPatron(patronId: string) {
   const idx = members.value.findIndex((patron) => patron._id === patronId);
@@ -69,7 +52,7 @@ async function deletePatrons(patrons: Array<string>) {
   <main style="margin: 10px 0px">
     <div class="row">
       <div>
-        <HouseholdInfoComponent :allDiets="allDiets" :allLanguages="allLanguages" :household="household" @refreshHouseholds="emit('refreshHouseholds')" @refreshVisits="addVisit" />
+        <HouseholdInfoComponent :allDiets="allDiets" :allLanguages="allLanguages" :household="household" @refreshHouseholds="emit('refreshHouseholds')" />
       </div>
       <div class="row">
         <div class="column">
@@ -110,13 +93,6 @@ async function deletePatrons(patrons: Array<string>) {
         <AddPatronModal :show="showPatronAddModal" :householdId="household._id" @close="showPatronAddModal = false" @add="emit('refreshById', props.household._id)" />
       </teleport>
     </div>
-    <AllocateItemsModal
-      :show="showAllocateModal"
-      :household="household"
-      :allocation="allocation"
-      @close="showAllocateModal = false"
-      @refreshHouseholds="emit('refreshHouseholds'), (showAllocateModal = false)"
-    />
   </main>
 </template>
 

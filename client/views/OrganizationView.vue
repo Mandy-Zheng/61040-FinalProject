@@ -5,26 +5,32 @@ import { useOrganizationStore } from "@/stores/organization";
 import { fetchy } from "@/utils/fetchy";
 import { storeToRefs } from "pinia";
 import { onBeforeMount, ref } from "vue";
+import { useToastStore } from "../stores/toast";
 
 const { selectedOrg } = storeToRefs(useOrganizationStore());
 const { setOrganization } = useOrganizationStore();
 const orgWithNames = ref<Array<any>>([]);
 const allOrgs = ref<Array<string>>([]);
 const curOrg = ref<string | undefined>(selectedOrg.value?.id);
-
+console.log(curOrg.value);
 function changeOrganization() {
   if (curOrg.value) {
     const selected = orgWithNames.value.filter((org) => org.id === curOrg.value);
     if (selected) {
       setOrganization(selected[0]);
+      useToastStore().showToast({ message: "Successfully Changed Workspace to " + selected[0].name, style: "success" });
+
+      //return { msg: "Successfully Changed Workspace to:" + selected[0].name };
     }
   }
 }
 
 async function leavingOrganizations(org: any) {
+  console.log("hey");
   if (org === curOrg.value) {
-    curOrg.value = "";
+    curOrg.value = undefined;
     selectedOrg.value = undefined;
+    console.log(selectedOrg.value);
   }
   await getUserOrganizations();
 }

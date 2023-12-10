@@ -1,8 +1,15 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { TAG_COLORS } from "../../../server/framework/utils";
-const props = defineProps(["household", "stock"]);
+
+const props = defineProps(["household", "stock", "idx"]);
+const emit = defineEmits(["updateAllocation"]);
 const diet = computed(() => props.stock.diet);
+
+function update(event: any) {
+  console.log(props.stock, props.idx, event.target.value);
+  emit("updateAllocation", props.idx, event.target.value);
+}
 </script>
 
 <template>
@@ -34,7 +41,7 @@ const diet = computed(() => props.stock.diet);
           </div>
           <div style="display: flex; flex-direction: column; align-content: flex-end">
             <h4 class="units">Units:</h4>
-            <input class="number-input" type="number" v-model="props.stock.allocation" min="0" :max="props.stock.maxPerPerson * household.members.length" />
+            <input @input="update" class="number-input" type="number" :value="props.stock.allocation" min="0" :max="props.stock.maxPerPerson * household.members.length" />
           </div>
         </div>
         <div class="diet">
