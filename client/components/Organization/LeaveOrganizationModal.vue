@@ -7,7 +7,7 @@ const emit = defineEmits(["close", "leave"]);
   <transition name="modal">
     <div v-if="show" class="modal-mask">
       <div class="modal-container">
-        <div class="modal-header">Leave {{ props.organization.name }}</div>
+        <h3>Leave {{ props.organization.name }}</h3>
         This action will make you leave from {{ props.organization.name }}. Are you sure you wish to continue?
         <div class="modal-footer">
           <button class="button-39" @click="emit('close')">Close</button>
@@ -29,6 +29,7 @@ img {
 .modal-footer {
   display: flex;
   justify-content: space-between;
+  margin-top: 1em;
 }
 
 .edit-btn {
@@ -53,7 +54,7 @@ img {
 }
 
 .modal-container {
-  width: 300px;
+  width: 350px;
   margin: auto;
   padding: 20px 30px;
   background-color: #fff;

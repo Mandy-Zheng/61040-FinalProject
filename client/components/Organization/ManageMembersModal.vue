@@ -39,14 +39,16 @@ function update() {
   <transition name="modal">
     <div v-if="show" class="modal-mask">
       <div class="modal-container">
-        <div class="modal-header">Settings for {{ props.organization.name }}</div>
-        Choose member:
-        <select v-if="adminsAndMembers.length !== 0" v-model="currMember" @change="changeMember">
-          <option value="" :selected="currMember === ''" disabled>--select a member--</option>
-          <option v-for="u in adminsAndMembers" :key="u" :selected="currMember === u" :value="u">{{ u }}</option>
-        </select>
+        <h3>Manage Members {{ props.organization.name }}</h3>
+        <div v-if="adminsAndMembers.length !== 0" class="space">
+          Choose member:
+          <select v-model="currMember" @change="changeMember">
+            <option value="" :selected="currMember === ''" disabled>--select a member--</option>
+            <option v-for="u in adminsAndMembers" :key="u" :selected="currMember === u" :value="u">{{ u }}</option>
+          </select>
+        </div>
         <div v-else>No members yet!</div>
-        <div v-if="currMember !== ''">
+        <div v-if="currMember !== ''" class="space">
           Action:
           <select v-model="currAction">
             <option value="" :selected="currAction === ''" disabled>--select an action--</option>
@@ -99,7 +101,7 @@ img {
 }
 
 .modal-container {
-  width: 300px;
+  width: 370px;
   margin: auto;
   padding: 20px 30px;
   background-color: #fff;
@@ -123,5 +125,20 @@ img {
 
 span {
   color: black;
+}
+
+select {
+  height: 35px;
+  padding: 5px;
+  border-color: rgb(188, 188, 188);
+  border-radius: 5px;
+}
+
+.space {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1em;
 }
 </style>

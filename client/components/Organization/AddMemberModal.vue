@@ -28,11 +28,10 @@ onBeforeMount(async () => {
   <transition name="modal">
     <div v-if="props.show" class="modal-mask">
       <div class="modal-container">
-        <div class="modal-header">Settings for {{ props.organization.name }}</div>
-        Add Members:
-
-        <Multiselect class="multiselect" v-model="usersToAdd" mode="tags" :options="nonTeamMembers" :searchable="true" required />
-
+        <h3>Add Members for {{ props.organization.name }}</h3>
+        <div class="column">
+          <Multiselect class="multiselect" v-model="usersToAdd" mode="tags" :options="nonTeamMembers" :searchable="true" required />
+        </div>
         <div class="modal-footer">
           <button class="button-39" @click="emit('close')">Close</button>
           <button class="button-39" @click="emit('add', usersToAdd)">Add Members</button>
@@ -61,7 +60,7 @@ onBeforeMount(async () => {
 }
 
 .modal-container {
-  width: 300px;
+  width: 400px;
   margin: auto;
   padding: 20px 30px;
   background-color: #fff;
@@ -81,6 +80,10 @@ onBeforeMount(async () => {
 
 .modal-default-button {
   float: right;
+}
+
+.multiselect {
+  margin-bottom: 2em;
 }
 
 span {

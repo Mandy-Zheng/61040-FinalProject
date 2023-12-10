@@ -78,7 +78,6 @@ onBeforeMount(async () => {
 <template>
   <main v-if="selectedOrg" style="margin-left: 80px">
     <!-- <form class="pure-form pure-form-aligned" @submit.prevent="search"> -->
-
     <div class="right">
       <button class="inventory-btn button-39" @click.prevent="showCreateModal = true">Create New Item</button>
       <button class="inventory-btn button-39 reset" @click.prevent="getMaxAllocation()">Update Daily Allocation</button>
@@ -94,7 +93,6 @@ onBeforeMount(async () => {
         placeholder="Search for an item"
       ></Multiselect>
     </div>
-
     <teleport to="body">
       <CreateStockModal :allDiets="allDiets" :show="showCreateModal" @close="showCreateModal = false" @add="addItem" />
     </teleport>
@@ -141,5 +139,11 @@ onBeforeMount(async () => {
   background-color: var(--secondary);
   color: black;
   margin-left: -30px;
+}
+
+.search {
+  display: flex;
+  margin-left: 4.5em;
+  margin-bottom: 1.5em;
 }
 </style>
