@@ -20,7 +20,7 @@ const allDiets = computed(() => [...new Set(households.value.flatMap((household)
 let searchId = ref("");
 const { selectedOrg } = storeToRefs(useOrganizationStore());
 
-async function getHouseholds(_id?: string) {
+async function getHouseholds(_id?: number) {
   let results;
   loaded.value = false;
   try {
@@ -40,9 +40,9 @@ async function getHouseholds(_id?: string) {
   households.value = results;
 }
 
-async function refreshHouseholdById(id: string) {
+async function refreshHouseholdById(id: number) {
   try {
-    const idx = households.value.findIndex((household) => household._id === id);
+    const idx = households.value.findIndex((household) => household.numericalId === id);
     if (idx !== -1) {
       households.value[idx] = await fetchy(`/api/profile/one/${id}`, "GET");
     }

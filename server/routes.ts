@@ -183,7 +183,7 @@ class Routes {
     await Team.isAdmin(org, user);
     const households = await Household.getProfilesByOwner(org);
     for (const h of households) {
-      await Household.resetVisitsByNumericalId(h.numericalId);
+      await Household.resetVisits(h._id);
     }
     return { msg: "Successfully reset all visits!" };
   }
@@ -205,39 +205,43 @@ class Routes {
 
   // update household members, diet restrictions, language, special requests
   @Router.patch("/profile")
-  async updateHouseholdDetails(session: WebSessionDoc, id: number, update: Partial<HouseholdDoc>) {
-    const household = await Household.getProfileByNumericalId(id);
+  async updateHouseholdDetails(session: WebSessionDoc, id: ObjectId, update: Partial<HouseholdDoc>) {
+    const household = await Household.getProfileById(id);
+    const ID = new ObjectId(id);
     const user = WebSession.getUser(session);
     await Team.isTeamMember(household.organization, user);
-    return await Household.updateByNumericalId(id, update);
+    return await Household.update(ID, update);
   }
 
   @Router.patch("/profile/addPatron")
-  async addPatronToHousehold(session: WebSessionDoc, id: number, name: string, birthday: string, img: string) {
+  async addPatronToHousehold(session: WebSessionDoc, id: ObjectId, name: string, birthday: string, img: string) {
     const user = WebSession.getUser(session);
-    const household = await Household.getProfileByNumericalId(id);
+    const ID = new ObjectId(id);
+    const household = await Household.getProfileById(ID);
     await Team.isTeamMember(household.organization, user);
     const patron = (await Patron.create(name, birthday, img)).patron;
-    return await Household.addMemberByNumericalId(id, patron._id);
+    return await Household.addMember(ID, patron._id);
   }
 
   @Router.patch("/profile/removePatron")
-  async removePatronFromHousehold(session: WebSessionDoc, patrons: Array<string>, household: number) {
+  async removePatronFromHousehold(session: WebSessionDoc, patrons: Array<string>, household: ObjectId) {
     const user = WebSession.getUser(session);
-    const householdInfo = await Household.getProfileByNumericalId(household);
+    const householdId = new ObjectId(household);
+    const householdInfo = await Household.getProfileById(householdId);
     const patronId = patrons.map((patron) => new ObjectId(patron));
     await Team.isTeamMember(householdInfo.organization, user);
     const removePatrons = new Set(patrons);
     const updatedMembers = householdInfo.members.filter((member) => !removePatrons.has(member.toString()));
-    await Household.updateMembersByNumericalId(household, updatedMembers);
+    await Household.updateMembers(householdId, updatedMembers);
     await Promise.all(patronId.map((patron) => Patron.deletePatron(patron)));
     return { msg: "Successfully updated Household" };
   }
 
   @Router.patch("/profile/updatePatron")
-  async updatePatron(session: WebSessionDoc, household: number, patron: ObjectId, update: Partial<PatronDoc>) {
+  async updatePatron(session: WebSessionDoc, household: ObjectId, patron: ObjectId, update: Partial<PatronDoc>) {
+    const householdId = new ObjectId(household);
     const patronId = new ObjectId(patron);
-    const householdInfo = await Household.getProfileByNumericalId(household);
+    const householdInfo = await Household.getProfileById(householdId);
     const user = WebSession.getUser(session);
     await Team.isTeamMember(householdInfo.organization, user);
     return await Patron.updatePatron(patronId, update);
@@ -253,7 +257,7 @@ class Routes {
   @Router.get("/profile/:id")
   async signInHousehold(session: WebSessionDoc, id: ObjectId) {
     const ID = new ObjectId(id);
-    const household = await Household.getProfileByNumericalId(ID);
+    const household = await Household.getProfileById(ID);
     const user = WebSession.getUser(session);
     await Team.isTeamMember(household.organization, user);
     return household;
@@ -261,8 +265,9 @@ class Routes {
 
   // return household
   @Router.get("/profile/one/:id")
-  async getSingleHousehold(session: WebSessionDoc, id: number) {
-    const household = await Household.getProfileByNumericalId(id);
+  async getSingleHousehold(session: WebSessionDoc, id: ObjectId) {
+    const householdId = new ObjectId(id);
+    const household = await Household.getProfileById(householdId);
     const user = WebSession.getUser(session);
     await Team.isTeamMember(household.organization, user);
     return { ...household, members: await Patron.getPatrons(household.members) };
@@ -281,28 +286,31 @@ class Routes {
   }
 
   @Router.patch("/profile/visit/:id")
-  async addVisit(session: WebSessionDoc, id: number) {
-    const household = await Household.getProfileByNumericalId(id);
+  async addVisit(session: WebSessionDoc, id: ObjectId) {
+    const orgId = new ObjectId(id);
+    const household = await Household.getProfileById(orgId);
     const user = WebSession.getUser(session);
     await Team.isTeamMember(household.organization, user);
-    await Household.addVisitByNumericalId(id);
+    await Household.addVisit(orgId);
     return { msg: "Successfully added visit!" };
   }
 
   @Router.delete("/profile/:id")
-  async removeHouseholdProfile(session: WebSessionDoc, id: number) {
-    const household = await Household.getProfileByNumericalId(id);
+  async removeHouseholdProfile(session: WebSessionDoc, id: ObjectId) {
+    const orgId = new ObjectId(id);
+    const household = await Household.getProfileById(orgId);
     const user = WebSession.getUser(session);
     await Team.isTeamMember(household.organization, user);
     for (const patron of household.members) {
       await Patron.deletePatron(patron);
     }
-    return await Household.deleteByNumericalId(id);
+    return await Household.delete(orgId);
   }
 
   @Router.get("/profile/allocate/:id")
-  async getHouseholdAllocation(session: WebSessionDoc, id: number) {
-    const household = await Household.getProfileByNumericalId(id);
+  async getHouseholdAllocation(session: WebSessionDoc, id: ObjectId) {
+    const ID = new ObjectId(id);
+    const household = await Household.getProfileById(ID);
     const user = WebSession.getUser(session);
     const team = household.organization;
     await Team.isTeamMember(team, user);
