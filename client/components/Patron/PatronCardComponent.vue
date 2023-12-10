@@ -23,7 +23,7 @@ async function updatePatrons() {
   <main>
     <div v-if="patron">
       <div class="column" v-if="isEditing">
-        <div class="patron-card">
+        <form class="patron-card" @submit.prevent="updatePatrons">
           <div class="title">
             <img class="circle" v-if="!img.length" src="../../assets/images/image.svg" />
             <img class="circle" v-else :src="img" alt="Having Trouble uploading item picture" />
@@ -34,8 +34,8 @@ async function updatePatrons() {
           </div>
           <div class="form-input"><span>Birthdate:</span> <input type="date" :max="today" v-model="birthday" required /></div>
           <div class="form-input"><span>Photo Link:</span> <input v-model="img" /></div>
-        </div>
-        <button class="button-39" @click.prevent="updatePatrons">Save Changes</button>
+          <button class="button-39" type="submit">Save Changes</button>
+        </form>
       </div>
       <div class="row" v-else>
         <div class="box">

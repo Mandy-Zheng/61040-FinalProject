@@ -18,13 +18,19 @@ const purchaseLink = ref<string>("");
 const diet = ref<Array<string>>([]);
 const maxPerPerson = ref<number>(0);
 
-async function emptyForm() {
+function emptyForm() {
   name.value = "";
   imgLink.value = "";
   units.value = 0;
   purchaseLink.value = "";
   diet.value = [];
   maxPerPerson.value = 0;
+  emit("close");
+}
+
+function addItem() {
+  emit("add", name.value, imgLink.value, purchaseLink.value, units.value, diet.value, maxPerPerson.value);
+  emptyForm();
 }
 
 onBeforeMount(async () => {});
@@ -35,7 +41,7 @@ onBeforeMount(async () => {});
   <transition name="modal">
     <div v-if="props.show" class="modal-mask">
       <div class="modal-container">
-        <form @submit.prevent="emit('add', name, imgLink, purchaseLink, units, diet, maxPerPerson), emptyForm()">
+        <form @submit.prevent="addItem">
           <h1>Create New Inventory</h1>
           <div class="form">
             <img v-if="!imgLink.length" src="../../assets/images/image.svg" />
@@ -54,7 +60,7 @@ onBeforeMount(async () => {});
             </div>
           </div>
           <div class="modal-footer">
-            <button class="button-39" @click="emit('close'), emptyForm()">Cancel</button>
+            <button class="button-39" @click.prevent="emptyForm">Cancel</button>
             <button class="button-39" type="submit">Add</button>
           </div>
         </form>

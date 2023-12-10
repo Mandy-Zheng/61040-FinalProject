@@ -394,12 +394,10 @@ class Routes {
   async decrementInventoryItem(session: WebSessionDoc, id: ObjectId, update: Partial<StockDoc>) {
     const user = WebSession.getUser(session);
     const ID = new ObjectId(id);
-    console.log(update);
     const stock = await Stock.getStockById(ID);
     await Team.isTeamMember(stock.owner, user);
     if (update.count) {
       await Stock.updateStockQuantity(ID, update.count);
-      console.log(update.count);
     }
     return { msg: "Stock successfully updated!" };
   }

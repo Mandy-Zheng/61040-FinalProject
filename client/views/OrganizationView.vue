@@ -11,26 +11,17 @@ const { selectedOrg } = storeToRefs(useOrganizationStore());
 const { setOrganization } = useOrganizationStore();
 const orgWithNames = ref<Array<any>>([]);
 const allOrgs = ref<Array<string>>([]);
-const curOrg = ref<string | undefined>(selectedOrg.value?.id);
-console.log(curOrg.value);
-function changeOrganization() {
-  if (curOrg.value) {
-    const selected = orgWithNames.value.filter((org) => org.id === curOrg.value);
-    if (selected) {
-      setOrganization(selected[0]);
-      useToastStore().showToast({ message: "Successfully Changed Workspace to " + selected[0].name, style: "success" });
-
-      //return { msg: "Successfully Changed Workspace to:" + selected[0].name };
-    }
+async function changeOrganization(orgId: string) {
+  const selected = orgWithNames.value.filter((org) => org.id === orgId);
+  if (selected && selected[0] !== selectedOrg.value?.name) {
+    setOrganization(selected[0]);
+    await useToastStore().showToast({ message: "Successfully Changed Workspace to " + selected[0].name, style: "success" });
   }
 }
 
 async function leavingOrganizations(org: any) {
-  console.log("hey");
-  if (org === curOrg.value) {
-    curOrg.value = undefined;
-    selectedOrg.value = undefined;
-    console.log(selectedOrg.value);
+  if (org === selectedOrg.value?.id) {
+    setOrganization(undefined);
   }
   await getUserOrganizations();
 }
@@ -56,17 +47,13 @@ onBeforeMount(async () => {
 <template>
   <main>
     <div style="margin-left: 50px">
-      <h3>Current Organization</h3>
-      <!-- <Multiselect class="multiselect" v-model="selected" :options="allOrgNames" :searchable="true" required /> -->
-      <select v-if="allOrgs.length !== 0" v-model="curOrg" @change="changeOrganization">
-        <option :value="undefined" :selected="curOrg === undefined" disabled>--Select an Organization--</option>
-        <option v-for="org in orgWithNames" :key="org" :selected="curOrg === org.id" :value="org.id">{{ org.name }}</option>
-      </select>
-      <p v-else>You are currently not a part of organization</p>
+      <h3>Current Organization: {{ selectedOrg?.name ?? "None" }}</h3>
       <h3>Manage Your Organizations</h3>
       <div class="grid">
         <!-- <div v-for="org in allOrgs" :key="org"><OrganizationComponent :orgId="org" @leaveOrg="leavingOrganizations" @updateName="getUserOrganizations" /></div> -->
-        <div v-for="org in allOrgs" :key="org"><OrganizationComponent :orgId="org" @leaveOrg="leavingOrganizations" @updateName="getUserOrganizations" /></div>
+        <div v-for="org in allOrgs" :key="org">
+          <OrganizationComponent :orgId="org" :isSelected="selectedOrg?.id === org" @leaveOrg="leavingOrganizations" @updateName="getUserOrganizations" @select="changeOrganization" />
+        </div>
       </div>
       <RegisterOrganizationForm @addOrg="getUserOrganizations" />
     </div>

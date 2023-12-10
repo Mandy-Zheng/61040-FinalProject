@@ -7,7 +7,6 @@ const emit = defineEmits(["updateAllocation"]);
 const diet = computed(() => props.stock.diet);
 
 function update(event: any) {
-  console.log(props.stock, props.idx, event.target.value);
   emit("updateAllocation", props.idx, event.target.value);
 }
 </script>

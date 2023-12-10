@@ -80,13 +80,13 @@ async function addHousehold() {
             <h3>Overview</h3>
             <div class="form-input">
               <div>Language</div>
-              <div>
+              <div class="dropdown language">
                 <Multiselect class="multiselect" v-model="language" :createTag="true" :options="languageOptions" :searchable="true" @create="onCreate" />
               </div>
             </div>
             <div class="form-input">
               <div>Diet</div>
-              <div>
+              <div class="dropdown">
                 <Multiselect class="multiselect" v-model="diet" mode="tags" :options="multiselectDietTags" :createTag="true" @create="onCreate" :searchable="true" />
               </div>
             </div>
@@ -96,7 +96,7 @@ async function addHousehold() {
             <div class="member-title">
               <h3>Members</h3>
               <div>
-                <button class="icon" @click="addPatron">
+                <button class="icon" @click.prevent="addPatron">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
                     <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z" />
                   </svg>
@@ -120,7 +120,7 @@ async function addHousehold() {
         </div>
         <div class="footer">
           <div>
-            <button class="button-39" @click="resetForm">Cancel</button>
+            <button class="button-39" @click.prevent="resetForm">Cancel</button>
           </div>
           <div>
             <button class="button-39" type="submit" @click="addHousehold">Submit</button>
@@ -132,6 +132,10 @@ async function addHousehold() {
 </template>
 
 <style scoped>
+.dropdown {
+  font-weight: 300;
+}
+
 select {
   height: 35px;
   padding: 5px;
@@ -169,6 +173,7 @@ select {
   --ms-py: 0;
   --ms-tag-bg: var(--primary);
   border-color: rgb(188, 188, 188);
+  --ms-px: 0.875rem;
 }
 
 img {

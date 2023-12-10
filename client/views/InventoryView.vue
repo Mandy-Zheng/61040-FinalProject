@@ -78,29 +78,40 @@ onBeforeMount(async () => {
 <template>
   <main v-if="selectedOrg" style="margin-left: 80px">
     <!-- <form class="pure-form pure-form-aligned" @submit.prevent="search"> -->
-    <Multiselect
-      v-model="item"
-      class="search"
-      :searchable="true"
-      :options="inventories.map((item) => item.item)"
-      @clear="getAllInventories"
-      @select="getInventory"
-      placeholder="Search for an item"
-    ></Multiselect>
+
     <div class="right">
-      <button class="button-39" @click.prevent="showCreateModal = true">Create New Item</button>
-      <button class="button-39 reset" @click.prevent="getMaxAllocation()">Update Daily Allocation</button>
+      <button class="inventory-btn button-39" @click.prevent="showCreateModal = true">Create New Item</button>
+      <button class="inventory-btn button-39 reset" @click.prevent="getMaxAllocation()">Update Daily Allocation</button>
     </div>
+    <div class="search-dropdown">
+      <Multiselect
+        v-model="item"
+        class="search"
+        :searchable="true"
+        :options="inventories.map((item) => item.item)"
+        @clear="getAllInventories"
+        @select="getInventory"
+        placeholder="Search for an item"
+      ></Multiselect>
+    </div>
+
     <teleport to="body">
       <CreateStockModal :allDiets="allDiets" :show="showCreateModal" @close="showCreateModal = false" @add="addItem" />
     </teleport>
     <div v-for="stock in inventory" :key="stock" class="stocks">
-      <StockComponent :allDiets="allDiets" @refreshStocks="getAllInventories(), getInventories(), console.log('hi')" :stockId="stock._id" />
+      <StockComponent :allDiets="allDiets" @refreshStocks="getAllInventories(), getInventories()" :stockId="stock._id" />
     </div>
   </main>
 </template>
 
 <style scoped>
+.search-dropdown {
+  display: flex;
+  margin-left: 10%;
+  padding-left: 1em;
+  padding-bottom: 4em;
+  font-weight: 300;
+}
 .stocks {
   margin-left: 10%;
   margin-right: 10%;
@@ -108,11 +119,10 @@ onBeforeMount(async () => {
   flex-direction: column;
   align-items: flex-start;
 }
-
 .search {
-  margin-left: -35px;
   margin-top: 5px;
   width: 30em;
+  margin-left: 0;
 }
 
 .button-39 {
@@ -120,14 +130,12 @@ onBeforeMount(async () => {
   border: none;
   margin: 1em;
   margin-right: 5em;
-  margin-bottom: 3em;
   color: white;
 }
 .right {
+  margin-top: 1em;
   display: flex;
   justify-content: flex-end;
-  margin-top: 2em;
-  margin-right: 10em;
 }
 .reset {
   background-color: var(--secondary);

@@ -4,11 +4,9 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "editor.codeActionsOnSave": {
-    "source.fixAll": true,
-    "source.organizeImports": true
+    "source.fixAll": "explicit",
+    "source.organizeImports": "explicit"
   },
   "typescript.preferences.importModuleSpecifier": "project-relative",
-  "cSpell.words": [
-    "fetchy"
-  ]
+  "cSpell.words": ["fetchy"]
 }

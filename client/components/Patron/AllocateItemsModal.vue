@@ -8,18 +8,14 @@ const emit = defineEmits(["close", "refreshHouseholds"]);
 
 const newAllocations = ref<Array<number>>(
   props.allocation.map((stock) => {
-    console.log("booo", stock.allocation);
     return stock.allocation;
   }),
 );
-console.log("start", props.allocation);
 async function allocateItems() {
   try {
-    console.log(newAllocations.value);
     await fetchy(`/api/profile/visit/${props.household._id}`, "PATCH");
     await Promise.all(
       props.allocation.map(async (stock: any, idx) => {
-        console.log(stock.count, newAllocations.value[idx]);
         const body = { id: stock._id, update: { count: stock.count - newAllocations.value[idx] } };
         return fetchy(`/api/inventories/allocate`, "PATCH", { body: body });
       }),
@@ -31,10 +27,7 @@ async function allocateItems() {
   emit("refreshHouseholds");
 }
 
-console.log(props.household, props.allocation, newAllocations.value);
 function update(idx: number, amount: number) {
-  console.log(idx, Number(amount));
-  console.log(newAllocations.value);
   newAllocations.value[idx] = Number(amount);
 }
 </script>

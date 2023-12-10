@@ -32,7 +32,7 @@ export function onCreate(option: { value: string; label: string } | string) {
     return capitalizePhrase(option);
   } else {
     // Handle the case when the option has value and label properties
-    option.label = capitalizePhrase(option.label);
+    option.label = capitalizePhrase(option.label) + "- New Option";
     option.value = option.label;
   }
   return option;
