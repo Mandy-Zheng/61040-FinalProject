@@ -7,7 +7,7 @@ const emit = defineEmits(["close", "delete"]);
   <transition name="modal">
     <div v-if="show" class="modal-mask">
       <div class="modal-container">
-        <div class="modal-header">Delete {{ props.organization.name }}</div>
+        <h3>Delete {{ props.organization.name }}</h3>
         This action will delete the organization permanently. Are you sure?
         <div class="modal-footer">
           <button class="button-39" @click="emit('close')">Close</button>
@@ -29,6 +29,7 @@ img {
 .modal-footer {
   display: flex;
   justify-content: space-between;
+  margin-top: 1em;
 }
 
 .edit-btn {
