@@ -20,15 +20,16 @@ const allDiets = computed(() => [...new Set(households.value.flatMap((household)
 let searchId = ref("");
 const { selectedOrg } = storeToRefs(useOrganizationStore());
 
-async function getHouseholds(_id?: number) {
+async function getHouseholds(_id?: string) {
   let results;
   loaded.value = false;
   try {
     if (_id) {
-      results = [await fetchy(`/api/profile/one/${_id}`, "GET")];
+      results = [await fetchy(`/api/profile/num/${_id}`, "GET")];
       searchId.value = _id;
     } else if (_id === undefined && searchId.value) {
-      results = [await fetchy(`/api/profile/one/${searchId.value}`, "GET")];
+      console.log(searchId.value);
+      results = [await fetchy(`/api/profile/num/${searchId.value}`, "GET")];
     } else if (selectedOrg.value) {
       results = await fetchy(`/api/profile/org/${selectedOrg.value.id}`, "GET");
       searchId.value = "";
@@ -40,9 +41,9 @@ async function getHouseholds(_id?: number) {
   households.value = results;
 }
 
-async function refreshHouseholdById(id: number) {
+async function refreshHouseholdById(id: string) {
   try {
-    const idx = households.value.findIndex((household) => household.numericalId === id);
+    const idx = households.value.findIndex((household) => household._id === id);
     if (idx !== -1) {
       households.value[idx] = await fetchy(`/api/profile/one/${id}`, "GET");
     }

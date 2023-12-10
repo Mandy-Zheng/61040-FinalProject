@@ -82,7 +82,7 @@ onBeforeMount(async () => {
   <div v-if="props.household" class="item-card">
     <div class="item">
       <div>
-        <h3>ID: {{ props.household._id }}</h3>
+        <h3>ID: {{ props.household.numericalId }}</h3>
         <div class="info">
           <div style="display: flex; justify-content: center">
             <button @click="editMode = true" title="Edit Overview" class="icon"></button>

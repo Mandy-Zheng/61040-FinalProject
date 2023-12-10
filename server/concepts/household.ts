@@ -42,6 +42,14 @@ export default class HouseholdConcept {
     return household;
   }
 
+  async getProfileByNumericalId(_id: number) {
+    const household = await this.households.readOne({numericalId:_id });
+    if (!household) {
+      throw new NotFoundError("Household Profile not found for specified id");
+    }
+    return household;
+  }
+
   async updateMembers(_id: ObjectId, members: Array<ObjectId>) {
     await this.getProfileById(_id);
     if (!members.length) {
