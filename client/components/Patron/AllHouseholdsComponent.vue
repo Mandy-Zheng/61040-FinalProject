@@ -140,6 +140,6 @@ article {
   display: flex;
   justify-content: flex-end;
   margin-top: 2em;
-  margin-right: 10em;
+  margin-right: 15em;
 }
 </style>
