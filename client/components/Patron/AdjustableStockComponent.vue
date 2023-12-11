@@ -80,7 +80,7 @@ function update(event: any) {
   display: flex;
   flex-direction: row;
   height: max-content;
-  width: 16em;
+  width: 100%;
   align-items: center;
 }
 
