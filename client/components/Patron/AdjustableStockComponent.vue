@@ -148,6 +148,7 @@ img {
   gap: 0.5em;
   flex-wrap: wrap;
   row-gap: 0.5em;
+  width: 100%;
 }
 
 p {

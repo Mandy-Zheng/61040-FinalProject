@@ -39,7 +39,7 @@ function update(idx: number, amount: number) {
         <div class="modal-header"><h2>Allocate the following items</h2></div>
         This action will automatically update the inventory. Are you sure?
         <div class="row stocks">
-          <article v-for="(stock, idx) in props.allocation" :key="stock" style="width: 24em">
+          <article v-for="(stock, idx) in props.allocation" :key="stock" style="width: 25em">
             <AdjustableStockComponent :household="household" :stock="stock" :idx="idx" @updateAllocation="update" />
           </article>
         </div>
