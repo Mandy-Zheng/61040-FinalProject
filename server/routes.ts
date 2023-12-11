@@ -454,6 +454,14 @@ class Routes {
     return { msg: created.msg, shift: Responses.shift(created.shift) };
   }
 
+  @Router.patch("/shift")
+  async updateShift(session: WebSessionDoc, id: ObjectId, start: string, end: string) {
+    const user = WebSession.getUser(session);
+    const shift = await Shift.getShiftById(id);
+    await Team.isAdmin(shift.owner, user);
+    return await Shift.updateShiftTime(id, new Date(start), new Date(end));
+  }
+
   @Router.patch("/shift/claim/:id")
   async claimShift(session: WebSessionDoc, id: ObjectId) {
     const user = WebSession.getUser(session);

@@ -92,7 +92,7 @@ onBeforeMount(async () => {
 async function createShift(event: any) {
   try {
     if (selectedOrg.value) {
-      const body = { orgId: selectedOrg.value.id, start: event.start, end: event.end };
+      const body = { orgId: selectedOrg.value.id, start: event.start, end: event.end, event: event };
       await fetchy("api/shift", "POST", {
         body: body,
       });
@@ -102,6 +102,22 @@ async function createShift(event: any) {
   }
   await getAllShifts();
   return event;
+}
+
+async function updateShift(event: any) {
+  try {
+    if (selectedOrg.value) {
+      const body = { id: event.event.shift._id, start: event.event.start, end: event.event.end, event: event.event };
+      await fetchy("api/shift", "PATCH", {
+        body: body,
+      });
+    }
+  } catch (_) {
+    await getAllShifts();
+    return;
+  }
+  await getAllShifts();
+  return;
 }
 
 const triggerModal = async (event: any) => {
@@ -134,7 +150,7 @@ const triggerModal = async (event: any) => {
       :time-to="22 * 60"
       :snap-to-time="15"
       :disable-views="['years', 'year']"
-      :editable-events="{ title: false, drag: false, resize: false, delete: false, create: selectedOrg?.isAdmin }"
+      :editable-events="{ title: false, drag: true, resize: true, delete: false, create: selectedOrg?.isAdmin }"
       :drag-to-create-threshold="15"
       style="height: 100%"
       :events="convertDates(showOnlyMyShifts ? myShifts : shifts)"
@@ -142,6 +158,8 @@ const triggerModal = async (event: any) => {
       :on-event-click="triggerModal"
       @event-drag-create="createShift"
       :min-date="today"
+      @event-duration-change="updateShift"
+      @event-drop="updateShift"
     >
     </vue-cal>
   </div>
