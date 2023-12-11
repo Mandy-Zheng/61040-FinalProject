@@ -25,11 +25,11 @@ async function getHouseholds(_id?: string) {
   loaded.value = false;
   try {
     if (_id) {
-      results = [await fetchy(`/api/profile/num/${_id}`, "GET")];
+      results = [await fetchy(`/api/profile/one/${_id}`, "GET")];
       searchId.value = _id;
     } else if (_id === undefined && searchId.value) {
       console.log(searchId.value);
-      results = [await fetchy(`/api/profile/num/${searchId.value}`, "GET")];
+      results = [await fetchy(`/api/profile/one/${searchId.value}`, "GET")];
     } else if (selectedOrg.value) {
       results = await fetchy(`/api/profile/org/${selectedOrg.value.id}`, "GET");
       searchId.value = "";

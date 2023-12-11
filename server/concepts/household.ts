@@ -9,7 +9,6 @@ export interface HouseholdDoc extends BaseDoc {
   preferredLanguage: string;
   pastVisits: Array<Date>;
   specialRequests: string;
-  numericalId: number;
 }
 
 export default class HouseholdConcept {
@@ -19,10 +18,7 @@ export default class HouseholdConcept {
     if (members.length === 0) {
       throw new BadValuesError("Households must have at least one member");
     }
-    const newest = await this.households.readOne({}, {sort:{_id:-1}});
-    let newId=0;
-    if(newest) newId=newest.numericalId+1;
-    const _id = await this.households.createOne({ organization: org, members: members, dietaryRestrictions: diet, preferredLanguage: language, specialRequests: requests, pastVisits: [],numericalId:newId });
+    const _id = await this.households.createOne({ organization: org, members: members, dietaryRestrictions: diet, preferredLanguage: language, specialRequests: requests, pastVisits: [] });
     return { msg: "HouseholdProfile successfully created!", household: await this.households.readOne({ _id }) };
   }
 
@@ -36,14 +32,6 @@ export default class HouseholdConcept {
 
   async getProfileById(_id: ObjectId) {
     const household = await this.households.readOne({ _id });
-    if (!household) {
-      throw new NotFoundError("Household Profile not found for specified id");
-    }
-    return household;
-  }
-
-  async getProfileByNumericalId(_id: number) {
-    const household = await this.households.readOne({numericalId:_id });
     if (!household) {
       throw new NotFoundError("Household Profile not found for specified id");
     }

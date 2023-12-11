@@ -7,6 +7,7 @@ export interface TeamDoc extends BaseDoc {
   name: string;
   admins: Array<ObjectId>;
   members: Array<ObjectId>;
+  openDays: number;
 }
 
 export default class TeamConcept {
@@ -15,11 +16,12 @@ export default class TeamConcept {
   async create(name: string, founder: ObjectId) {
     const admins: Array<ObjectId> = [founder];
     const members: Array<ObjectId> = [];
+    const openDays = 5;
     if (!name) {
       throw new BadValuesError("Missing Organization Name");
     }
     await this.isTeamNameUnique(name);
-    const _id = await this.teams.createOne({ name, admins, members });
+    const _id = await this.teams.createOne({ name, admins, members,openDays });
     return { msg: "Team successfully created!", team: await this.teams.readOne({ _id }) };
   }
 
@@ -62,6 +64,11 @@ export default class TeamConcept {
     await this.isAdmin(_id, editor);
     await this.teams.updateOne({ _id }, { name });
     return { msg: "Successfully Updated Team Name" };
+  }
+  async updateOpenDays(_id: ObjectId,days:number, editor: ObjectId) {
+    await this.isAdmin(_id, editor);
+    await this.teams.updateOne({ _id }, { openDays:days });
+    return { msg: "Successfully Updated Team OpenDays" };
   }
 
   async removeUsersFromTeam(_id: ObjectId, exMembers: Array<ObjectId>, editor: ObjectId) {
