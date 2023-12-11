@@ -13,7 +13,7 @@ const orgWithNames = ref<Array<any>>([]);
 const allOrgs = ref<Array<string>>([]);
 async function changeOrganization(orgId: string) {
   const selected = orgWithNames.value.filter((org) => org.id === orgId);
-  if (selected && selected[0] !== selectedOrg.value?.name) {
+  if (selected && selected[0].name !== selectedOrg.value?.name) {
     setOrganization(selected[0]);
     await useToastStore().showToast({ message: "Successfully Changed Workspace to " + selected[0].name, style: "success" });
   }
@@ -46,10 +46,12 @@ onBeforeMount(async () => {
 
 <template>
   <main>
-    <div style="margin-left: 50px">
-      <RegisterOrganizationForm @addOrg="getUserOrganizations" />
-      <h3 style="margin-bottom: 1em">Current Organization:</h3>
-      <p style="margin-bottom: 2em">{{ selectedOrg?.name ?? "None" }}</p>
+    <div style="">
+      <RegisterOrganizationForm class="form" @addOrg="getUserOrganizations" />
+      <h3>
+        Current Organization:
+        <span>{{ selectedOrg?.name ?? "None" }}</span>
+      </h3>
       <h3>Manage Your Organizations</h3>
       <div class="grid">
         <!-- <div v-for="org in allOrgs" :key="org"><OrganizationComponent :orgId="org" @leaveOrg="leavingOrganizations" @updateName="getUserOrganizations" /></div> -->
@@ -62,10 +64,19 @@ onBeforeMount(async () => {
 </template>
 
 <style scoped>
+span {
+  font-weight: lighter;
+}
+.form {
+  margin-left: 2em;
+}
+
 h1 {
   text-align: center;
 }
-
+h3 {
+  margin-left: 2em;
+}
 select {
   height: 35px;
   padding: 5px;
@@ -74,9 +85,11 @@ select {
 }
 .grid {
   display: flex;
+  justify-content: center;
   flex-direction: row;
   flex-wrap: wrap;
   gap: 2em 2em;
+  margin-bottom: 4em;
 }
 
 .box {
