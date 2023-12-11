@@ -327,7 +327,7 @@ class Routes {
             found = true;
             break;
           }
-        if (!found) {
+        if (found) {
           canBeGiven = false;
           break;
         }

@@ -85,7 +85,7 @@ async function addHousehold() {
               </div>
             </div>
             <div class="form-input">
-              <div>Diet</div>
+              <div>Avoid</div>
               <div class="dropdown">
                 <Multiselect class="multiselect" v-model="diet" mode="tags" :options="multiselectDietTags" :createTag="true" @create="onCreate" :searchable="true" />
               </div>
