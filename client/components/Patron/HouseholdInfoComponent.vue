@@ -102,7 +102,17 @@ onBeforeMount(async () => {
         <div class="box">
           <div v-if="editMode" class="row">
             <p class="label">Avoid:</p>
-            <Multiselect class="multiselect" v-model="dietRestrictions" mode="tags" :options="multiselectDietTags" :searchable="true" @create="onCreate" :createTag="true" required />
+            <Multiselect
+              class="multiselect"
+              v-model="dietRestrictions"
+              mode="tags"
+              :options="multiselectDietTags"
+              :searchable="true"
+              @create="onCreate"
+              :createTag="true"
+              :closeOnSelect="false"
+              required
+            />
           </div>
           <div class="info" v-else>
             <div class="overview-header">
