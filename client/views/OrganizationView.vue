@@ -47,6 +47,7 @@ onBeforeMount(async () => {
 <template>
   <main>
     <div style="margin-left: 50px">
+      <RegisterOrganizationForm @addOrg="getUserOrganizations" />
       <h3>Current Organization: {{ selectedOrg?.name ?? "None" }}</h3>
       <h3>Manage Your Organizations</h3>
       <div class="grid">
@@ -55,7 +56,6 @@ onBeforeMount(async () => {
           <OrganizationComponent :orgId="org" :isSelected="selectedOrg?.id === org" @leaveOrg="leavingOrganizations" @updateName="getUserOrganizations" @select="changeOrganization" />
         </div>
       </div>
-      <RegisterOrganizationForm @addOrg="getUserOrganizations" />
     </div>
   </main>
 </template>

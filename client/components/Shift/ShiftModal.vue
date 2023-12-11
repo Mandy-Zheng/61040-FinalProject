@@ -5,6 +5,7 @@ import { fetchy } from "@/utils/fetchy";
 import { formatDate } from "@/utils/formatDate";
 import { storeToRefs } from "pinia";
 import { ref } from "vue";
+import DeleteShiftModal from "./DeleteShiftModal.vue";
 
 const showDeleteModal = ref<boolean>(false);
 const showClaimModal = ref<boolean>(false);
@@ -14,6 +15,7 @@ const { currentUsername } = storeToRefs(useUserStore());
 const props = defineProps(["shift", "show"]);
 const emit = defineEmits(["refreshShifts", "close"]);
 const { selectedOrg } = storeToRefs(useOrganizationStore());
+const today = new Date().toISOString();
 
 const deleteShift = async () => {
   try {
@@ -61,16 +63,26 @@ const unclaimShift = async () => {
           <div v-if="shift.volunteers.includes(currentUsername)" style="display: flex; margin-top: 1em">
             <div class="modify">
               <button class="button-39" @click="emit('close')">Cancel</button>
-              <button class="button-39" @click.prevent="unclaimShift">Unclaim</button>
-              <button v-if="selectedOrg?.isAdmin" class="button-39 red" @click.prevent="deleteShift">Delete Shift</button>
+              <button v-if="shift.end > today" class="button-39" @click.prevent="unclaimShift">Unclaim</button>
+              <button v-if="selectedOrg?.isAdmin && shift.end > today" class="button-39 red" @click.prevent="showDeleteModal = true">Delete Shift</button>
             </div>
+            <teleport to="body">
+              <div v-if="selectedOrg?.isAdmin">
+                <DeleteShiftModal :show="showDeleteModal" :shift="shift" @close="showDeleteModal = false" @delete="deleteShift(), (showDeleteModal = false)" />
+              </div>
+            </teleport>
           </div>
           <div v-else style="display: flex; margin-top: 1em">
             <div class="modify">
               <button class="button-39" @click="emit('close')">Cancel</button>
-              <button class="button-39" @click.prevent="claimShift">Claim</button>
-              <button v-if="selectedOrg?.isAdmin" class="button-39 red" @click.prevent="deleteShift">Delete Shift</button>
+              <button v-if="shift.end > today" class="button-39" @click.prevent="claimShift">Claim</button>
+              <button v-if="selectedOrg?.isAdmin && shift.end > today" class="button-39 red" @click.prevent="showDeleteModal = true">Delete Shift</button>
             </div>
+            <teleport to="body">
+              <div v-if="selectedOrg?.isAdmin">
+                <DeleteShiftModal :show="showDeleteModal" :shift="shift" @close="showDeleteModal = false" @delete="deleteShift(), (showDeleteModal = false)" />
+              </div>
+            </teleport>
           </div>
         </div>
       </div>

@@ -105,7 +105,7 @@ onBeforeMount(async () => {
 <style scoped>
 .search-dropdown {
   display: flex;
-  margin-left: 10%;
+  margin-left: 4%;
   padding-left: 1em;
   padding-bottom: 4em;
   font-weight: 300;
