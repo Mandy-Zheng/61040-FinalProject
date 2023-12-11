@@ -23,7 +23,7 @@ function update(event: any) {
               {{ props.stock.item }}
             </h2>
             <div class="subtext">
-              <p class="maxp">Max for household: {{ props.stock.maxPerPerson * household.members.length }}</p>
+              <p class="maxp">Max for household: {{ props.stock.maxPerPerson }}</p>
             </div>
             <div>
               <p class="maxp">Max per Day: {{ props.stock.maxPerDay }}</p>

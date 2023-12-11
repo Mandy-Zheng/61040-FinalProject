@@ -58,7 +58,7 @@ onBeforeMount(async () => {
         </div>
         <div class="subtext">
           <p class="count">{{ item.count }} Units</p>
-          <p class="maxp">Max per Person: {{ item.maxPerPerson }}</p>
+          <p class="maxp">Max per Household: {{ item.maxPerPerson }}</p>
           <p class="maxp">Max per Day: {{ item.maxPerDay }}</p>
         </div>
         <div class="diet">

@@ -323,7 +323,6 @@ class Routes {
     const user = WebSession.getUser(session);
     const team = household.organization;
     await Team.isTeamMember(team, user);
-    const patrons = household.members.length;
     const inventory = await Stock.getStocksByOwner(team);
     const allocation = new Array<StockDoc>();
     const diet = household.dietaryRestrictions;
@@ -345,7 +344,7 @@ class Routes {
     }
     const maxPer = new Array<number>();
     allocation.forEach((stock) => {
-      maxPer.push(Math.min(patrons * stock.maxPerPerson, stock.maxPerDay));
+      maxPer.push(Math.min(stock.maxPerPerson, stock.maxPerDay));
     });
     const response = await Responses.stocks(allocation);
     const ret = response.map((stock, i) => ({ ...stock, allocation: maxPer[i] }));
