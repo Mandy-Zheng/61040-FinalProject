@@ -1,5 +1,5 @@
 export const LANGUAGES = ["English", "Spanish", "French", "Portuguese", "Arabic", "Russian", "Japanese", "Bengali", "Dutch", "Urdu", "Polish", "Indonesian", "Korean", "Mandarin", "Cantonese"];
-export const DIETARY_RESTRICTIONS = ["Vegetarian", "Halal", "Gluten-Free", "Nut-Free", "Low-Sodium", "Seafood-Free", "Dairy-Free", "Kosher"];
+export const DIETARY_RESTRICTIONS = ["Gluten", "Tree Nuts", "Peanuts", "Milk", "Eggs", "Soy", "Fish", "Shellfish", "Sesame", "Chicken", "Beef", "Pork", "Meat"];
 
 export const TAG_COLORS = ["#b9fbc0", "#fde4cf", "#fbf8cc", "#ffcfd2", "#8eecf5", "#90dbf4", "#a3c4f3", "#cfbaf0"];
 

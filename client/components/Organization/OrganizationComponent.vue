@@ -228,7 +228,8 @@ onBeforeMount(async () => {
 }
 
 .selectedOrg {
-  box-shadow: 0px 0px 0px 4px var(--primary);
+  border: none;
+  box-shadow: 0px 0px 0px 2px var(--primary);
   transition: box-shadow 0.3s ease;
 }
 

@@ -90,7 +90,7 @@ img {
 
 .modal-container {
   max-height: 90%;
-  width: 80%;
+  width: 82em;
   margin: auto;
   padding: 20px 30px;
   background-color: #fff;
@@ -119,12 +119,14 @@ span {
 
 .row {
   display: flex;
-
-  flex-direction: column;
-  gap: 1.5em;
+  flex-direction: row;
+  gap: 0.5em 1.5em;
+  flex-wrap: wrap;
+  overflow-wrap: normal;
+  width: 85em;
 }
 .stocks {
-  overflow-y: scroll;
   max-height: 75%;
+  overflow: scroll;
 }
 </style>
