@@ -17,7 +17,7 @@ export default class ShiftConcept {
     if (end <= start) {
       throw new BadValuesError("Invalid start/end times for shift");
     }
-    await this.isFutureShift(end);
+    await this.isFutureShift(end, "create");
     const _id = await this.shifts.createOne({ owner: owner, volunteers: [], start: start, end: end });
     return { msg: "Shift successfully created!", shift: await this.shifts.readOne({ _id }) };
   }
@@ -59,7 +59,7 @@ export default class ShiftConcept {
     if (!shift) {
       throw new NotFoundError(`Shift not found`);
     }
-    await this.isFutureShift(shift.end);
+    await this.isFutureShift(shift.end, "claim");
     await this.notClaimed(shift, user);
     const newVolunteers = shift.volunteers;
     newVolunteers.push(user);
@@ -76,6 +76,19 @@ export default class ShiftConcept {
     const newVolunteers = shift.volunteers.filter((u) => u.toString() !== user.toString());
     await this.shifts.updateOne({ _id }, { volunteers: newVolunteers });
     return { msg: "Unclaimed shift successfully!" };
+  }
+
+  async updateShiftTime(_id: ObjectId, start: Date, end: Date) {
+    const shift = await this.shifts.readOne({ _id });
+    if (!shift) {
+      throw new NotFoundError(`Shift not found`);
+    }
+    await this.isFutureShift(shift.end, "edit");
+    if (shift.volunteers.length > 0) {
+      throw new NotAllowedError(`Cannot edit shift after volunteers have claimed it!`);
+    }
+    await this.shifts.updateOne({ _id }, { start: start, end: end });
+    return { msg: "Updated shift successfully!" };
   }
 
   async unclaimShiftsByUser(user: ObjectId) {
@@ -111,10 +124,10 @@ export default class ShiftConcept {
   }
 
   // throw error if shift has already passed
-  private async isFutureShift(end: Date) {
+  private async isFutureShift(end: Date, action: string) {
     const today = new Date();
     if (end <= today) {
-      throw new NotAllowedError("Cannot create shifts in the past");
+      throw new NotAllowedError(`Cannot ${action} shifts in the past`);
     }
   }
 }
