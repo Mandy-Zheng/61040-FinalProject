@@ -86,7 +86,9 @@ section {
   flex-direction: column;
   gap: 1em;
 }
-
+h2 {
+  font-weight: 100;
+}
 section,
 p,
 .row {
@@ -111,7 +113,6 @@ article {
   display: flex;
   justify-content: space-between;
   margin: 0 auto;
-  max-width: 60em;
 }
 
 .household {
