@@ -62,7 +62,6 @@ async function getAudioForLanguage() {
 async function getAllocation() {
   try {
     allocation.value = await fetchy(`/api/profile/allocate/${props.household._id}`, "GET");
-    console.log("hey", allocation.value);
   } catch {
     return;
   }

@@ -12,8 +12,10 @@ import { onBeforeMount, ref } from "vue";
 const { currentUsername } = storeToRefs(useUserStore());
 const { setOrganization } = useOrganizationStore();
 const { selectedOrg } = storeToRefs(useOrganizationStore());
-const props = defineProps(["orgId"]);
-const emit = defineEmits(["updateName", "leaveOrg"]);
+
+const props = defineProps(["orgId", "isSelected"]);
+const emit = defineEmits(["updateName", "leaveOrg", "select"]);
+
 const showAddModal = ref<boolean>(false);
 const showManageModal = ref<boolean>(false);
 const showDeleteModal = ref<boolean>(false);
@@ -104,7 +106,7 @@ onBeforeMount(async () => {
 
 <template>
   <div v-if="organization">
-    <div class="org">
+    <div class="org" :class="isSelected ? 'selectedOrg' : 'nonSelected'" @click="emit('select', props.orgId)">
       <div v-if="organization.admins.includes(currentUsername)">
         <h3 v-if="!isEditingName">
           {{ orgName }}
@@ -217,8 +219,17 @@ onBeforeMount(async () => {
   width: 24em;
   height: 15em;
   border-radius: 0.4rem;
-  overflow: scroll;
+  overflow-y: scroll;
   transition: 0.2s;
+}
+
+.nonSelected:hover {
+  box-shadow: 0px 0px 1em 2px var(--primary);
+}
+
+.selectedOrg {
+  box-shadow: 0px 0px 0px 4px var(--primary);
+  transition: box-shadow 0.3s ease;
 }
 
 .modify {

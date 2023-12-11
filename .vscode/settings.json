@@ -8,7 +8,5 @@
     "source.organizeImports": "explicit"
   },
   "typescript.preferences.importModuleSpecifier": "project-relative",
-  "cSpell.words": [
-    "fetchy"
-  ]
+  "cSpell.words": ["fetchy"]
 }

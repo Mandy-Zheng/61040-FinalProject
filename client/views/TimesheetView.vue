@@ -184,6 +184,7 @@ select {
 }
 
 .toggletext {
+  font-weight: lighter;
   margin-top: 15px;
 }
 
@@ -250,5 +251,9 @@ input:checked + .slider:before {
 
 .slider.round:before {
   border-radius: 50%;
+}
+
+.vuecal--month-view {
+  min-height: 800px;
 }
 </style>
