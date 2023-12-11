@@ -48,7 +48,8 @@ onBeforeMount(async () => {
   <main>
     <div style="margin-left: 50px">
       <RegisterOrganizationForm @addOrg="getUserOrganizations" />
-      <h3>Current Organization: {{ selectedOrg?.name ?? "None" }}</h3>
+      <h3 style="margin-bottom: 1em">Current Organization:</h3>
+      <p style="margin-bottom: 2em">{{ selectedOrg?.name ?? "None" }}</p>
       <h3>Manage Your Organizations</h3>
       <div class="grid">
         <!-- <div v-for="org in allOrgs" :key="org"><OrganizationComponent :orgId="org" @leaveOrg="leavingOrganizations" @updateName="getUserOrganizations" /></div> -->
