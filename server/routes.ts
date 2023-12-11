@@ -402,6 +402,8 @@ class Routes {
   @Router.patch("/inventories/allocate")
   async decrementInventoryItem(session: WebSessionDoc, id: ObjectId, update: Partial<StockDoc>) {
     const user = WebSession.getUser(session);
+    console.log(id);
+    console.log(update);
     const ID = new ObjectId(id);
     const stock = await Stock.getStockById(ID);
     await Team.isTeamMember(stock.owner, user);
