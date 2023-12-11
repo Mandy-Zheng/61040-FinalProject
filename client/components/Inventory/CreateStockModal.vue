@@ -49,7 +49,7 @@ onBeforeMount(async () => {});
             <div class="item">
               <div class="form-input">Name<input v-model="name" required /></div>
               <div class="form-input">
-                Diet
+                Contains
                 <div><Multiselect class="multiselect" v-model="diet" mode="tags" @create="onCreate" :createTag="true" :options="multiselectDietTags" :searchable="true" :closeOnSelect="false" /></div>
               </div>
               <div class="form-input">Image Link<input v-model="imgLink" /></div>

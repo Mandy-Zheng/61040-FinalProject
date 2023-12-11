@@ -62,11 +62,14 @@ onBeforeMount(async () => {
           <p class="maxp">Max per Day: {{ item.maxPerDay }}</p>
         </div>
         <div class="diet">
-          <p class="diet-title">Dietary Restrictions:</p>
-          <div class="row">
+          <p class="diet-title">Contains:</p>
+          <div v-if="diet.length !== 0" class="row">
             <div v-for="(tag, idx) in diet" :key="tag">
               <p class="tag" v-bind:style="{ backgroundColor: TAG_COLORS[idx % TAG_COLORS.length] }">{{ tag }}</p>
             </div>
+          </div>
+          <div v-else>
+            <p class="tag" v-bind:style="{ backgroundColor: TAG_COLORS[2] }">No allergens</p>
           </div>
         </div>
       </div>

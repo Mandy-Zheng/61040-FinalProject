@@ -101,7 +101,7 @@ onBeforeMount(async () => {
         </div>
         <div class="box">
           <div v-if="editMode" class="row">
-            <p class="label">Diet:</p>
+            <p class="label">Avoid:</p>
             <Multiselect
               class="multiselect"
               v-model="dietRestrictions"
@@ -129,11 +129,14 @@ onBeforeMount(async () => {
                 </svg>
               </button>
             </div>
-            <p class="diet-title">Dietary Restrictions:</p>
-            <div style="display: flex; gap: 0.5em">
+            <p class="diet-title">Avoid:</p>
+            <div v-if="$props.household.dietaryRestrictions.length !== 0" style="display: flex; gap: 0.5em">
               <div v-for="(tag, idx) in props.household.dietaryRestrictions" :key="tag">
                 <p class="tag" v-bind:style="{ backgroundColor: TAG_COLORS[idx % TAG_COLORS.length] }">{{ tag }}</p>
               </div>
+            </div>
+            <div v-else>
+              <p class="tag" v-bind:style="{ backgroundColor: TAG_COLORS[2] }">No foods to avoid</p>
             </div>
           </div>
           <div>

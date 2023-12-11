@@ -16,39 +16,34 @@ function update(event: any) {
     <img v-if="props.stock.image.length" :src="props.stock.image" />
     <img v-else src="../../assets/images/image.svg" />
     <div class="item">
-      <div class="row" style="align-items: center; gap: 2px; width: 25em">
-        <h2 class="title">
-          {{ props.stock.item }}
-          <!-- <div class="link">
-            <a :href="props.stock.supplyLink" v-if="props.stock.supplyLink"
-              ><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="black" class="bi bi-cart-fill" viewBox="0 0 16 16">
-                <path
-                  d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5M5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4m7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4m-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2m7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2"
-                />
-              </svg>
-            </a>
-          </div> -->
-        </h2>
-        <div class="distribution-overview">
-          <div>
-            <div class="subtext" style="margin-right: 3em">
+      <div class="row" style="align-items: center; font-size: x-small">
+        <div style="display: flex; width: 100%; justify-content: space-between">
+          <div style="display: flex; flex-direction: column">
+            <h2 class="title">
+              {{ props.stock.item }}
+            </h2>
+            <div class="subtext">
               <p class="maxp">Max for household: {{ props.stock.maxPerPerson * household.members.length }}</p>
             </div>
             <div>
               <p class="maxp">Max per Day: {{ props.stock.maxPerDay }}</p>
             </div>
           </div>
-          <div style="display: flex; flex-direction: column; align-content: flex-end">
+          <div style="display: flex; flex-direction: column">
             <h4 class="units">Units:</h4>
             <input @input="update" class="number-input" type="number" :value="props.stock.allocation" min="0" :max="props.stock.maxPerPerson * household.members.length" />
           </div>
         </div>
+
         <div class="diet">
-          <p class="diet-title">Dietary Restrictions:</p>
-          <div class="row">
+          <p class="diet-title">Contains:</p>
+          <div v-if="diet.length !== 0" class="row">
             <div v-for="(tag, idx) in diet" :key="tag">
               <p class="tag" v-bind:style="{ backgroundColor: TAG_COLORS[idx % TAG_COLORS.length] }">{{ tag }}</p>
             </div>
+          </div>
+          <div v-else>
+            <p class="tag" v-bind:style="{ backgroundColor: TAG_COLORS[2] }">No allergens</p>
           </div>
         </div>
       </div>
@@ -59,19 +54,12 @@ function update(event: any) {
 <style scoped>
 .units {
   margin-top: 0;
-  margin-bottom: 1em;
+  margin-bottom: 0em;
 }
 .title {
   display: flex;
   width: 100%;
-  justify-content: space-between;
   align-items: center;
-}
-.distribution-overview {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  width: 100%;
 }
 .modify {
   display: flex;
@@ -86,26 +74,19 @@ function update(event: any) {
 .subtext {
   display: flex;
   flex-direction: row;
-  margin-bottom: 1em;
+  margin-bottom: 0.25em;
 }
 .item {
   display: flex;
   flex-direction: row;
   height: max-content;
-  width: 35em;
-  justify-content: space-between;
+  width: 16em;
   align-items: center;
-}
-
-.form {
-  height: fit-content;
-  margin-bottom: 1.5em;
 }
 
 input {
   padding-left: 0.5em;
-  padding-left: 0.5em;
-  margin-left: 1em;
+
   border-radius: 64px;
   border: solid;
   border-color: rgb(216, 216, 216);
@@ -117,7 +98,7 @@ input {
 
 .number-input {
   border-radius: 4px;
-  width: 4em;
+  width: 2.5em;
   font-size: larger;
   text-align: center;
   margin: 0;
@@ -125,8 +106,8 @@ input {
 
 .tag {
   border: 1px solid rgba(0, 0, 0, 0.296);
-  font-size: smaller;
-  padding: 5px;
+  font-size: 8px;
+  padding: 3px;
   border-radius: 64px;
   width: fit-content;
 }
@@ -137,36 +118,28 @@ input {
   height: 50%;
 }
 .diet-title {
-  margin-bottom: 1em;
-  margin-top: 1em;
+  margin-bottom: 0.25em;
+  margin-top: 0.25em;
 }
 
 h2 {
-  margin-bottom: 1;
+  margin-bottom: 0.25em;
   font-weight: lighter;
   margin-top: 0px;
 }
 
-.count {
-  margin: 0;
-}
-
-.link {
-  margin: 0;
-  padding: 0;
-}
 .maxp {
   margin: 0;
   margin-left: 0em;
-  padding-right: 1em;
+  padding-right: 0em;
 }
 
 img {
-  width: 200px;
-  height: 200px;
+  width: 100px;
+  height: 100px;
   border-radius: 20px;
   border: 1px solid var(--primary);
-  margin-right: 4em;
+  margin-right: 2em;
 }
 
 .row {
