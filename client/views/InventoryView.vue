@@ -80,7 +80,20 @@ onBeforeMount(async () => {
     <!-- <form class="pure-form pure-form-aligned" @submit.prevent="search"> -->
     <div class="right">
       <button class="inventory-btn button-39" @click.prevent="showCreateModal = true">Create New Item</button>
-      <button class="inventory-btn button-39 reset" @click.prevent="getMaxAllocation()">Update Daily Allocation</button>
+      <button class="inventory-btn button-39 reset align" @click.prevent="getMaxAllocation()">
+        Update Daily Allocation
+        <div class="tooltip">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
+            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+            <path
+              d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"
+            />
+          </svg>
+          <span class="tooltiptext"
+            >Click here at the end of each day to recalculate and update max per day allocation. Ensures optimal distribution to make your supplies last throughout the rest of the week.
+          </span>
+        </div>
+      </button>
     </div>
     <div class="search-dropdown">
       <h2>Inventory</h2>
@@ -147,6 +160,8 @@ h2 {
 }
 .right {
   margin-top: 1em;
+  margin-right: 11em;
+  margin-bottom: 1em;
   display: flex;
   justify-content: flex-end;
 }
@@ -154,5 +169,48 @@ h2 {
   background-color: var(--secondary);
   color: black;
   margin-left: -30px;
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 160px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 100;
+  top: 150%;
+  left: 50%;
+  margin-left: -65px;
+  font-size: x-small;
+  line-height: normal;
+}
+
+.tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent black transparent;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+
+.align {
+  display: flex;
+  align-content: center;
+  gap: 0.5em;
 }
 </style>
