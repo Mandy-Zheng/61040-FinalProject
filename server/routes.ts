@@ -273,15 +273,6 @@ class Routes {
     return { ...household, members: await Patron.getPatrons(household.members) };
   }
 
-  // return household
-  @Router.get("/profile/num/:id")
-  async getSingleHouseholdByNumber(session: WebSessionDoc, id: string) {
-    const household = await Household.getProfileByNumericalId(parseInt(id));
-    const user = WebSession.getUser(session);
-    await Team.isTeamMember(household.organization, user);
-    return { ...household, members: await Patron.getPatrons(household.members) };
-  }
-
   @Router.get("/profile/org/:orgId")
   async getHouseholdsByOrg(session: WebSessionDoc, orgId: ObjectId) {
     const id = new ObjectId(orgId);

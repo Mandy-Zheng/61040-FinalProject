@@ -91,6 +91,8 @@ export default class StockConcept {
   async setTodaysAllocation(_id: ObjectId) {
     const stock = await this.stocks.readOne({ _id });
     if (!stock) return;
+    const owner=stock.owner;
+    
     const currentDate = new Date();
     const currentDay = currentDate.getDay(); // sunday is 0, monday is 1, etc.
     await this.stocks.updateOne({ _id }, { maxPerDay: Math.floor(stock.count / (7 - currentDay)) });
