@@ -6,9 +6,9 @@ import AdjustableStockComponent from "./AdjustableStockComponent.vue";
 const props = defineProps(["show", "household", "allocation"]);
 const emit = defineEmits(["close", "refreshHouseholds"]);
 
-const newAllocations = computed(()=>{
-  const help=new Array<number>;
-  props.allocation.map((stock:any,_)=>{
+const newAllocations = computed(() => {
+  const help = new Array<number>();
+  props.allocation.map((stock: any, _) => {
     help.push(stock.allocation);
   });
   return help;

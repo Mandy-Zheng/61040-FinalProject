@@ -30,7 +30,7 @@ onBeforeMount(async () => {
       <div class="modal-container">
         <h3>Add Members for {{ props.organization.name }}</h3>
         <div class="column">
-          <Multiselect class="multiselect" v-model="usersToAdd" mode="tags" :options="nonTeamMembers" :searchable="true" :closeOnSelect="false" required />
+          <Multiselect class="multiselect" v-model="usersToAdd" mode="tags" :options="nonTeamMembers" :searchable="true" :closeOnSelect="false" placeholder="Select members to add" required />
         </div>
         <div class="modal-footer">
           <button class="button-39" @click="emit('close')">Close</button>
