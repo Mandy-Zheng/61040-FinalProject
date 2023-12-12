@@ -90,7 +90,7 @@ onBeforeMount(async () => {
             />
           </svg>
           <span class="tooltiptext"
-            >Click here at the end of each day to recalculate and update max per day allocation. Ensures optimal distribution to make your supplies last throughout the rest of the week.
+            >Click here at the start of each day to recalculate and update max per day allocation. Ensures optimal distribution to make your supplies last throughout the rest of the week.
           </span>
         </div>
       </button>
