@@ -145,7 +145,7 @@ class Routes {
     const user = WebSession.getUser(session);
     const id = new ObjectId(orgId);
     const shiftsWithOrg = (await Shift.getShiftsByUser(user)).filter((s) => s.owner.toString() === orgId.toString());
-    shiftsWithOrg.forEach((s) => Shift.unclaimShift(s._id, user));
+    await Promise.all(shiftsWithOrg.map((s) => Shift.unclaimShift(s._id, user)));
     await Team.removeUsersFromTeam(orgId, [user], user);
     await Membership.removeMembership(user, id);
     return { msg: "Successfully left organization" };
@@ -157,7 +157,7 @@ class Routes {
     const id = new ObjectId(orgId);
     const memberId = new ObjectId(member);
     const shiftsWithOrg = (await Shift.getShiftsByUser(member)).filter((s) => s.owner.toString() === orgId.toString());
-    shiftsWithOrg.forEach((s) => Shift.unclaimShift(s._id, member));
+    await Promise.all(shiftsWithOrg.map((s) => Shift.unclaimShift(s._id, member)));
     const msg = await Team.removeUsersFromTeam(id, [memberId], user);
     await Membership.removeMembership(memberId, id);
     return msg;
