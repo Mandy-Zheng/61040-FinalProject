@@ -49,7 +49,7 @@ onBeforeMount(async () => {
     <div class="org">
       <h1>
         Current Organization:
-        <span>{{ selectedOrg?.name ?? "no organization selected" }}</span>
+        <span>{{ selectedOrg?.name ?? "No Organization Selected" }}</span>
       </h1>
       <RegisterOrganizationForm class="form" @addOrg="getUserOrganizations" />
       <h3 class="manage">Manage Your Organizations</h3>
@@ -85,7 +85,7 @@ main {
   background-color: rgb(247, 247, 247);
   padding-top: 2em;
   padding-bottom: 10em;
-  height: 100vh;
+  height: 100%;
 }
 .org {
   display: flex;

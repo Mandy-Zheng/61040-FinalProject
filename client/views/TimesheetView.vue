@@ -13,8 +13,11 @@ let hidePastShifts = ref(true);
 let showOnlyMyShifts = ref(false);
 let shifts = ref<Array<Record<string, string>>>([]);
 let myShifts = ref<Array<Record<string, string>>>([]);
+
+const { getCurrentOrganization } = useOrganizationStore();
 const { selectedOrg } = storeToRefs(useOrganizationStore());
 const { currentUsername } = storeToRefs(useUserStore());
+
 const showShiftModal = ref<boolean>(false);
 const showDeleteModal = ref<boolean>(false);
 const showCreateModal = ref<boolean>(false);
@@ -88,6 +91,7 @@ function convertDates(shifts: Record<string, string>[]) {
 onBeforeMount(async () => {
   try {
     await getAllShifts();
+    await getCurrentOrganization();
   } catch {
     return;
   }

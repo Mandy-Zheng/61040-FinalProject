@@ -57,7 +57,7 @@ onBeforeMount(async () => {
       <teleport to="body">
         <CreateAudioModal @close="showCreateModal = false" :show="showCreateModal" :allLanguages="allLanguages" @add="refresh" />
       </teleport>
-      <div v-if="allLanguageAudio.length !== 0" class="language">
+      <div v-if="allLanguageAudio.length" class="language">
         <AudioComponent
           v-for="languageAudio in allLanguageAudio"
           :key="languageAudio"
