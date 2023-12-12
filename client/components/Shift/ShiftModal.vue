@@ -55,6 +55,7 @@ async function updateCapacity() {
   <transition name="modal fade">
     <div v-if="show" class="modal-mask">
       <div class="modal-container">
+        <h2>Shift Information</h2>
         <div :class="showDeleteModal ? 'hide' : ''">
           <p>Start: {{ formatDate(shift.start) }}</p>
           <p>End: {{ formatDate(shift.end) }}</p>
@@ -216,7 +217,7 @@ img {
   border-radius: 2px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
   transition: all 0.3s ease;
-  max-height: 17em;
+  max-height: 20em;
 }
 h4 {
   margin-top: 0;

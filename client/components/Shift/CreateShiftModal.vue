@@ -31,9 +31,10 @@ async function createShift() {
     <div v-if="show" class="modal-mask">
       <div class="modal-container">
         <form>
+          <h3>Create Shift</h3>
           <div class="form" @submit.prevent="createShift">
             <div class="item">
-              <div class="form-input">Max number of volunteers <input class="number-input" type="number" v-model="capacity" min="0" required /></div>
+              <div class="form-input">Max number of volunteers: <input class="number-input" type="number" v-model="capacity" min="0" required /></div>
             </div>
           </div>
           <div class="modal-footer">
@@ -116,6 +117,7 @@ img {
 .modal-footer {
   display: flex;
   justify-content: space-between;
+  margin-top: 1em;
 }
 
 .edit-btn {
@@ -140,7 +142,7 @@ img {
 }
 
 .modal-container {
-  width: 26em;
+  width: 18em;
   margin: auto;
   padding: 20px 30px;
   background-color: #fff;
@@ -163,5 +165,16 @@ h4 {
 
 span {
   color: black;
+}
+
+input {
+  height: 1em;
+  width: 3em;
+  border: solid;
+  border-width: 1px;
+  border-color: rgb(188, 188, 188);
+  border-radius: 3px;
+  margin-bottom: 0px;
+  padding: 5px;
 }
 </style>

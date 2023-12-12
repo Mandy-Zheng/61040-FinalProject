@@ -9,7 +9,8 @@ const emit = defineEmits(["close", "delete"]);
   <transition name="modal">
     <div v-if="show" class="modal-mask">
       <div class="modal-container">
-        <div class="modal-header">Delete shift from {{ formatDate(props.shift.start) }} to {{ formatDate(props.shift.end) }}</div>
+        <h2>Delete Shift</h2>
+        <div class="modal-header">From: {{ formatDate(props.shift.start) }} to {{ formatDate(props.shift.end) }}</div>
         This action will delete the shift permanently. Are you sure?
         <div class="modal-footer">
           <button class="button-39" @click="emit('close')">Cancel</button>
@@ -31,6 +32,7 @@ img {
 .modal-footer {
   display: flex;
   justify-content: space-between;
+  margin-top: 1em;
 }
 
 .edit-btn {
@@ -55,7 +57,7 @@ img {
 }
 
 .modal-container {
-  width: 300px;
+  width: 35em;
   margin: auto;
   padding: 20px 30px;
   background-color: #fff;
