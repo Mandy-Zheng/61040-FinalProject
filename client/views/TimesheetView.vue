@@ -177,7 +177,7 @@ const triggerModal = async (event: any) => {
       <DeleteShiftModal :show="showDeleteModal" :shift="shift" @close="showDeleteModal = false" @delete="deleteShift" />
     </teleport>
   </div>
-  <div class="cal">
+  <div class="cal" title="Click and drag or double click to create shifts!">
     <vue-cal
       ref="vuecal"
       :time-from="7 * 60"
