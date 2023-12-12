@@ -115,9 +115,9 @@ article {
   margin: 0 auto;
 }
 
-.household {
+/* .household {
   margin-left: 4em;
-}
+} */
 
 .button-39 {
   background-color: var(--primary);

@@ -48,7 +48,18 @@ function resetForm() {
           <div class="item">
             <div class="form-input">
               Language
-              <div><Multiselect class="multiselect" v-model="language" :createTag="true" :options="languageOptions" :searchable="true" @create="onCreate" required /></div>
+              <div>
+                <Multiselect
+                  class="multiselect"
+                  placeholder="Select or Enter a New Language"
+                  v-model="language"
+                  :createTag="true"
+                  :options="languageOptions"
+                  :searchable="true"
+                  @create="onCreate"
+                  required
+                />
+              </div>
             </div>
             <div class="form-input">Audio Link:<input v-model="audioLink" /></div>
             <div class="form-input">Translation: <input v-model="translation" /></div>
@@ -113,7 +124,7 @@ function resetForm() {
 }
 
 .multiselect {
-  width: 11em;
+  width: 22.75em;
   height: fit-content;
 }
 

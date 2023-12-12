@@ -80,8 +80,8 @@ async function addHousehold() {
             <h3>Overview</h3>
             <div class="form-input">
               <div>Language</div>
-              <div class="dropdown language">
-                <Multiselect class="multiselect" v-model="language" :createTag="true" :options="languageOptions" :searchable="true" @create="onCreate" />
+              <div class="dropdown">
+                <Multiselect class="multiselect" placeholder="Select or Enter a New Language" v-model="language" :createTag="true" :options="languageOptions" :searchable="true" @create="onCreate" />
               </div>
             </div>
             <div class="form-input">
@@ -132,10 +132,6 @@ async function addHousehold() {
 </template>
 
 <style scoped>
-.dropdown {
-  font-weight: 300;
-}
-
 select {
   height: 35px;
   padding: 5px;
@@ -143,6 +139,7 @@ select {
   border-radius: 5px;
 }
 .overview {
+  width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -166,16 +163,19 @@ select {
 }
 
 .multiselect {
+  padding-right: 1em;
   margin-left: 1em;
-  width: 16em;
   --ms-ring-color: #eb721630;
   padding-left: 8px;
   --ms-py: 0;
   --ms-tag-bg: var(--primary);
   border-color: rgb(188, 188, 188);
-  --ms-px: 0.875rem;
+  --ms-px: 0rem;
+  margin: 0;
+  width: 19em;
+  font-weight: 300;
+  height: 2em;
 }
-
 img {
   height: 125px;
   width: 125px;
@@ -194,7 +194,7 @@ img {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
-  gap: 3em;
+  gap: 2em;
 }
 
 span {
@@ -222,13 +222,9 @@ textarea {
 }
 
 .footer {
-  width: 100%;
+  width: 50%;
   gap: 1em;
   display: flex;
-  justify-content: space-around;
-}
-
-.multiselect {
-  height: 2em;
+  justify-content: space-between;
 }
 </style>

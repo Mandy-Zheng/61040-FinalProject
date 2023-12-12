@@ -139,17 +139,19 @@ onBeforeMount(async () => {
               <p class="tag" v-bind:style="{ backgroundColor: TAG_COLORS[2] }">No foods to avoid</p>
             </div>
           </div>
-          <div>
-            <div v-if="editMode" class="row">
-              <p class="label">Requests:</p>
-              <input v-model="requests" />
-            </div>
-            <p v-else-if="household.specialRequests">Requests: {{ props.household.specialRequests }}</p>
-          </div>
-          <div class="row">
+          <div class="">
             <div v-if="editMode" class="row">
               <p class="label">Language:</p>
-              <Multiselect class="multiselect" style="height: 2em" v-model="language" @create="onCreate" :createTag="true" :options="languageOptions" :searchable="true" />
+              <Multiselect
+                class="multiselect language-multiselect"
+                style="height: 2em"
+                v-model="language"
+                @create="onCreate"
+                :createTag="true"
+                :options="languageOptions"
+                placeholder="Select or Enter a New Language"
+                :searchable="true"
+              />
             </div>
             <div v-else class="language">
               <p>Language: {{ props.household.preferredLanguage }}</p>
@@ -170,9 +172,18 @@ onBeforeMount(async () => {
               </div>
             </div>
           </div>
+          <div>
+            <div v-if="editMode" class="row">
+              <p class="label">Requests:</p>
+              <input v-model="requests" />
+            </div>
+            <p v-else-if="household.specialRequests">Requests: {{ props.household.specialRequests }}</p>
+          </div>
         </div>
-        <button class="button-39" v-if="editMode" @click="resetUpdate">Cancel</button>
-        <button class="button-39" v-if="editMode" @click="updateOverview">Update</button>
+        <div class="btn-group">
+          <button class="button-39" v-if="editMode" @click="resetUpdate">Cancel</button>
+          <button class="button-39" v-if="editMode" @click="updateOverview">Update</button>
+        </div>
       </div>
     </div>
     <teleport to="body">
@@ -195,6 +206,18 @@ onBeforeMount(async () => {
   display: flex;
   align-items: center;
 }
+
+.button-39 {
+  margin: 0;
+}
+
+.btn-group {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding-right: 1em;
+}
+
 .modify {
   display: flex;
   height: fit-content;
@@ -209,16 +232,21 @@ onBeforeMount(async () => {
   padding: 0em;
 }
 .multiselect {
+  padding-right: 1em;
   margin: 0;
   margin-left: 1em;
-  width: 16em;
+  width: 18em;
   --ms-ring-color: #eb721630;
   padding-left: 8px;
   --ms-py: 0;
+  --ms-px: 0;
   --ms-tag-bg: var(--primary);
   border-color: rgb(188, 188, 188);
   height: fit-content;
+  font-weight: lighter;
+  font-size: small;
 }
+
 .edit-row {
   display: flex;
   width: 100%;
@@ -254,6 +282,13 @@ h2 {
   margin-bottom: 1;
   font-weight: lighter;
 }
+.language-row {
+  display: flex;
+  flex-direction: row;
+  gap: 0.25em;
+  row-gap: 0.5em;
+  width: 100%;
+}
 
 .row {
   display: flex;
@@ -283,11 +318,6 @@ p {
   gap: 0.5em;
 }
 
-button {
-  margin: 0px;
-  padding: 0px;
-}
-
 .audio {
   display: flex;
   align-items: flex-start;
@@ -300,8 +330,8 @@ audio {
 }
 
 input {
-  height: 1.6em;
-  width: 15.65em;
+  height: 6em;
+  width: 14.3em;
 
   border: solid;
   border-width: 1px;
@@ -315,10 +345,5 @@ input {
   gap: 1em;
   margin-bottom: 2em;
   padding-right: 1em;
-}
-
-.button-39 {
-  margin-right: 2em;
-  padding: 0.5em;
 }
 </style>
