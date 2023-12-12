@@ -485,7 +485,7 @@ class Routes {
   async createNewShift(session: WebSessionDoc, orgId: ObjectId, start: string, end: string) {
     const user = WebSession.getUser(session);
     await Team.isAdmin(orgId, user);
-    const created = await Shift.createShift(orgId, new Date(start), new Date(end));
+    const created = await Shift.createShift(orgId, new Date(start), new Date(end), undefined);
     return { msg: created.msg, shift: Responses.shift(created.shift) };
   }
 

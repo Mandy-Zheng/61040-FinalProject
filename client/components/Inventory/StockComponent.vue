@@ -35,10 +35,11 @@ async function editStock(name: string, imgLink: string, purchaseLink: string, un
   showEditModal.value = false;
   try {
     await fetchy(`/api/inventory/${props.stockId}`, "PATCH", { body: { update: update } });
+    await getItem();
   } catch (e) {
     return;
   }
-  emit("refreshStocks");
+  //emit("refreshStocks");
 }
 
 onBeforeMount(async () => {
