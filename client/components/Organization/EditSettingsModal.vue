@@ -11,7 +11,6 @@ const newRestockDay = ref<string>();
 
 onBeforeMount(async () => {
   newDays.value=[];
-  console.log(props.organization.restockDay);
   if(props.organization.openDays)
     props.organization.openDays.forEach(day => {
       newDays.value.push(days.value[day]);

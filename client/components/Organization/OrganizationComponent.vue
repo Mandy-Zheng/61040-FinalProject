@@ -101,12 +101,13 @@ async function editDays(openDays:Array<string>,restockDay:string)
   const m = new Map<string,number>([["Sunday",0],["Monday",1],["Tuesday",2],["Wednesday",3],["Thursday",4],["Friday",5],["Saturday",6]]);
   const k= new Array<number>;
   openDays.forEach(day => {
-    k.push(m.get(day));
+    const name=m.get(day);
+    if(name)k.push(name);
   });
   const l= m.get(restockDay);
   try {
     await fetchy(`/api/organization/days/open/${props.orgId}`, "PATCH",{ body: { days: k }});
-    await fetchy(`/api/organization/days/restock/${props.orgId}`, "PATCH",{ body: { day: l }});
+    if(l) await fetchy(`/api/organization/days/restock/${props.orgId}`, "PATCH",{ body: { day: l }});
   } catch (error) {
     console.log(error);
     return;

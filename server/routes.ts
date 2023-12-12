@@ -178,7 +178,6 @@ class Routes {
   async updateRestockDay(session: WebSessionDoc, id: ObjectId, day: number) {
     const user = WebSession.getUser(session);
     const orgId = new ObjectId(id);
-    console.log(day);
     Team.updateRestockDay(orgId,day,user);
     return { msg: "Successfully updated restock day" };
   }
