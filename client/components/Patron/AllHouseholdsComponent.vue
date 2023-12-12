@@ -11,7 +11,7 @@ import SearchHouseholdsForm from "./SearchHouseholdsForm.vue";
 
 const showCreateComponent = ref<boolean>(false);
 const showResetModal = ref<boolean>(false);
-
+const empty = ref<boolean>(false);
 const loaded = ref(false);
 const households = ref<Array<any>>([]);
 const allLanguages = computed(() => [...new Set(households.value.map((household) => household.preferredLanguage).filter((lang) => lang.length !== 0))]);
@@ -56,6 +56,14 @@ async function refreshHouseholdById(id: string) {
   }
 }
 
+async function clearForm() {
+  empty.value = true;
+}
+
+async function resetClear() {
+  empty.value = false;
+}
+
 onBeforeMount(async () => {
   await getHouseholds();
   loaded.value = true;
@@ -73,14 +81,14 @@ onBeforeMount(async () => {
     <div class="row">
       <h2 v-if="!searchId">Households:</h2>
       <div v-else style="display: flex; align-items: center">
-        <button class="icon" @click="(searchId = ''), getHouseholds()">
+        <button class="icon" @click="clearForm(), getHouseholds()">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-arrow-left-circle-fill" viewBox="0 0 16 16">
             <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z" />
           </svg>
         </button>
         <h2>Back</h2>
       </div>
-      <SearchHouseholdsForm @search="getHouseholds" />
+      <SearchHouseholdsForm :empty="empty" @search="getHouseholds" @resetEmpty="resetClear" />
     </div>
     <section class="posts" v-if="loaded && households.length !== 0">
       <article v-for="household in households" :key="household">
