@@ -88,14 +88,10 @@ export default class StockConcept {
     return { msg: "Stock successfully deleted!" };
   }
 
-  async setTodaysAllocation(_id: ObjectId) {
+  async setTodaysAllocation(_id: ObjectId, count:number) {
     const stock = await this.stocks.readOne({ _id });
     if (!stock) return;
-    const owner=stock.owner;
-    
-    const currentDate = new Date();
-    const currentDay = currentDate.getDay(); // sunday is 0, monday is 1, etc.
-    await this.stocks.updateOne({ _id }, { maxPerDay: Math.floor(stock.count / (7 - currentDay)) });
+    await this.stocks.updateOne({ _id }, { maxPerDay: count });
   }
 
   private sanitizeUpdate(update: Partial<StockDoc>) {

@@ -93,7 +93,7 @@ class Routes {
     const org = await Team.get(orgI);
     const admins = await User.idsToUsernames(org.admins);
     const members = await User.idsToUsernames(org.members);
-    return { id: orgI, name: org.name, admins: admins, members: members };
+    return { id: orgI, name: org.name, admins: admins, members: members, openDays: org.openDays, restockDay: org.restockDay };
   }
 
   @Router.get("/organization")
@@ -161,6 +161,26 @@ class Routes {
     const msg = await Team.removeUsersFromTeam(id, [memberId], user);
     await Membership.removeMembership(memberId, id);
     return msg;
+  }
+
+  @Router.patch("/organization/days/open/:id")
+  async updateOpenDays(session: WebSessionDoc, id: ObjectId, days: Array<number>) {
+    const user = WebSession.getUser(session);
+    const orgId = new ObjectId(id);
+    const openDays = new Array<number>;
+    for(let day of days) openDays.push(day);
+    openDays.sort();
+    Team.updateOpenDays(orgId,openDays,user);
+    return { msg: "Successfully updated open days" };
+  }
+
+  @Router.patch("/organization/days/restock/:id")
+  async updateRestockDay(session: WebSessionDoc, id: ObjectId, day: number) {
+    const user = WebSession.getUser(session);
+    const orgId = new ObjectId(id);
+    console.log(day);
+    Team.updateRestockDay(orgId,day,user);
+    return { msg: "Successfully updated restock day" };
   }
 
   @Router.delete("/organization/:orgId")
@@ -364,14 +384,29 @@ class Routes {
       return response;
     }
   }
+
   // generate max per day allocation
   @Router.get("/inventories/:orgId")
   async setInventoryMaxPerDay(session: WebSessionDoc, orgId: ObjectId) {
     const user = WebSession.getUser(session);
     const org = new ObjectId(orgId);
     await Team.isTeamMember(org, user);
+    const team = await Team.get(org);
     const inventory = await Stock.getStocksByOwner(org);
-    await Promise.all(inventory.map((stock) => Stock.setTodaysAllocation(stock._id)));
+    const openDays = team.openDays;
+    const restockDay = team.restockDay;
+    const currentDate = new Date();
+    let days = currentDate.getDay()-restockDay;
+    if(days<0)days+=7;
+    let cnt=0,day=restockDay,dayCount=0;
+    while(cnt<days)
+    {
+      if(openDays.includes(day))
+        dayCount++;
+      cnt++;
+      day=(day+1)%7;
+    }
+    await Promise.all(inventory.map((stock) => Stock.setTodaysAllocation(stock._id,Math.floor(stock.count/(openDays.length-dayCount)))));
     return { msg: "Inventory max per day successfully set!" };
   }
 
