@@ -39,7 +39,6 @@ async function editStock(name: string, imgLink: string, purchaseLink: string, un
   } catch (e) {
     return;
   }
-  //emit("refreshStocks");
 }
 
 onBeforeMount(async () => {

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Multiselect from "@vueform/multiselect";
-import { computed, onBeforeMount, ref } from "vue";
+import { computed, ref } from "vue";
 import { DIETARY_RESTRICTIONS, onCreate } from "../../../server/framework/utils";
 const props = defineProps(["show", "stock", "allDiets"]);
 const emit = defineEmits(["close", "update"]);
@@ -10,21 +10,13 @@ const multiselectDietTags = dietOptions.value.map((tag) => {
   return { label: tag, value: tag };
 });
 
-const name = ref<string>("");
-const imgLink = ref<string>("");
-const units = ref<number>(0);
-const purchaseLink = ref<string>("");
-const diet = ref<Array<string>>([]);
-const maxPerPerson = ref<number>(0);
+const name = ref<string>(props.stock.item);
+const imgLink = ref<string>(props.stock.image);
+const units = ref<number>(props.stock.count);
+const purchaseLink = ref<string>(props.stock.supplyLink);
+const diet = ref<Array<string>>(props.stock.diet);
+const maxPerPerson = ref<number>(props.stock.maxPerPerson);
 
-onBeforeMount(async () => {
-  name.value = props.stock.item;
-  imgLink.value = props.stock.image;
-  units.value = props.stock.count;
-  purchaseLink.value = props.stock.supplyLink;
-  diet.value = props.stock.diet;
-  maxPerPerson.value = props.stock.maxPerPerson;
-});
 //test link https://drive.google.com/uc?export=view&id=1K3GKKH13ZdvlpePlfIx62OFRsfjMxwoE
 </script>
 
