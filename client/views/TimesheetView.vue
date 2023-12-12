@@ -6,6 +6,7 @@ import moment from "moment";
 import { storeToRefs } from "pinia";
 import { onBeforeMount, ref } from "vue";
 import VueCal from "vue-cal";
+import CreateShiftModal from "../components/Shift/CreateShiftModal.vue";
 import DeleteShiftModal from "../components/Shift/DeleteShiftModal.vue";
 import ShiftModal from "../components/Shift/ShiftModal.vue";
 let hidePastShifts = ref(true);
@@ -16,8 +17,9 @@ const { selectedOrg } = storeToRefs(useOrganizationStore());
 const { currentUsername } = storeToRefs(useUserStore());
 const showShiftModal = ref<boolean>(false);
 const showDeleteModal = ref<boolean>(false);
+const showCreateModal = ref<boolean>(false);
 
-const shift = ref(undefined);
+const shift = ref<any>(undefined);
 const today = new Date();
 
 async function getOrgShifts() {
@@ -66,18 +68,16 @@ function convertDates(shifts: Record<string, string>[]) {
       const start = moment(s.start).format("YYYY-MM-DD, HH:mm");
       const end = moment(s.end).format("YYYY-MM-DD, HH:mm");
       let cls;
-      let content;
       if (showOnlyMyShifts.value) {
         cls = s.owner === org ? "currentOrg" : "otherOrg";
-        content = s.owner;
       } else {
         cls = s.volunteers.includes(currentUsername.value) ? "claimedShift" : "unclaimedShift";
-        content = "Volunteers: " + s.volunteers.length;
       }
       return {
         start: start,
         end: end,
-        content: content,
+        capacity: s.capacity,
+        volunteers: s.volunteers.length,
         shift: s,
         class: cls,
       };
@@ -92,39 +92,6 @@ onBeforeMount(async () => {
     return;
   }
 });
-
-async function createShift(event: any) {
-  try {
-    if (selectedOrg.value) {
-      const body = { orgId: selectedOrg.value.id, start: event.start, end: event.end, event: event };
-      await fetchy("api/shift", "POST", {
-        body: body,
-      });
-    }
-  } catch (_) {
-    return;
-  }
-  await getAllShifts();
-  return event;
-}
-
-async function createShiftFromDblClick(event: any) {
-  try {
-    if (selectedOrg.value) {
-      const start = event;
-      const startTime = new Date(start).getTime();
-      const end = new Date(startTime + 2 * 60 * 60 * 1000).toISOString();
-      const body = { orgId: selectedOrg.value.id, start: start, end: end, event: event };
-      await fetchy("api/shift", "POST", {
-        body: body,
-      });
-    }
-  } catch (_) {
-    return;
-  }
-  await getAllShifts();
-  return event;
-}
 
 async function updateShift(event: any) {
   try {
@@ -156,6 +123,19 @@ const triggerModal = async (event: any) => {
   shift.value = event.shift;
   showShiftModal.value = true;
 };
+
+const triggerCreateModal = async (event: any) => {
+  shift.value = { start: event.start, end: event.end };
+  showCreateModal.value = true;
+};
+
+const triggerCreateModalDblClick = async (event: any) => {
+  const start = event;
+  const startTime = new Date(start).getTime();
+  const end = new Date(startTime + 2 * 60 * 60 * 1000).toISOString();
+  shift.value = { start: start, end: end };
+  showCreateModal.value = true;
+};
 </script>
 
 <template>
@@ -175,6 +155,7 @@ const triggerModal = async (event: any) => {
     <teleport to="body">
       <ShiftModal :show="showShiftModal" :shift="shift" @close="showShiftModal = false" @delete="showDeleteModal = true" @refreshShifts="getAllShifts(), (showShiftModal = false)" />
       <DeleteShiftModal :show="showDeleteModal" :shift="shift" @close="showDeleteModal = false" @delete="deleteShift" />
+      <CreateShiftModal :show="showCreateModal" :shift="shift" @close="showCreateModal = false" @refreshShifts="getAllShifts(), (showCreateModal = false)" />
     </teleport>
   </div>
   <div class="cal" title="Click and drag or double click to create shifts!">
@@ -190,12 +171,16 @@ const triggerModal = async (event: any) => {
       :events="convertDates(showOnlyMyShifts ? myShifts : shifts)"
       today-button
       :on-event-click="triggerModal"
-      @event-drag-create="createShift"
+      @event-drag-create="triggerCreateModal"
       :min-date="today"
       @event-duration-change="updateShift"
       @event-drop="updateShift"
-      @cell-dblclick="createShiftFromDblClick"
+      @cell-dblclick="triggerCreateModalDblClick"
     >
+      <template #event="{ event }">
+        <div>{{ moment(event.start).format("HH:mm") }} - {{ moment(event.end).format("HH:mm") }}</div>
+        <small> Volunteers: {{ event.volunteers }} Capacity: {{ event.capacity }} </small>
+      </template>
     </vue-cal>
   </div>
 </template>

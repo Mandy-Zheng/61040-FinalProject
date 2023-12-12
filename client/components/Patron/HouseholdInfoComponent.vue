@@ -196,10 +196,10 @@ onBeforeMount(async () => {
           </div>
           <div>
             <div v-if="editMode" class="row">
-              <p class="label">Requests:</p>
+              <p class="label">Notes:</p>
               <input v-model="requests" />
             </div>
-            <p v-else-if="household.specialRequests">Requests: {{ props.household.specialRequests }}</p>
+            <p v-else-if="household.specialRequests">Notes: {{ props.household.specialRequests }}</p>
           </div>
         </div>
         <div class="btn-group">

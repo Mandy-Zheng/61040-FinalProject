@@ -1,71 +1,45 @@
 <script setup lang="ts">
 import { useOrganizationStore } from "@/stores/organization";
-import { useUserStore } from "@/stores/user";
 import { fetchy } from "@/utils/fetchy";
-import { formatDate } from "@/utils/formatDate";
 import { storeToRefs } from "pinia";
 import { ref } from "vue";
 
-const showDeleteModal = ref<boolean>(false);
-const { currentUsername } = storeToRefs(useUserStore());
-
 const props = defineProps(["shift", "show"]);
-const emit = defineEmits(["refreshShifts", "close", "delete"]);
+const emit = defineEmits(["refreshShifts", "close", "create"]);
 const { selectedOrg } = storeToRefs(useOrganizationStore());
-const today = new Date().toISOString();
+const capacity = ref<number>(0);
 
-const claimShift = async () => {
+async function createShift() {
   try {
-    await fetchy(`api/shift/claim/${props.shift._id}`, "PATCH");
-  } catch {
+    if (selectedOrg.value) {
+      const body = { orgId: selectedOrg.value.id, start: props.shift.start, end: props.shift.end, capacity: capacity.value };
+      await fetchy("api/shift", "POST", {
+        body: body,
+      });
+    }
+  } catch (_) {
     return;
   }
+  capacity.value = 0;
   emit("refreshShifts");
-};
-
-const unclaimShift = async () => {
-  try {
-    await fetchy(`api/shift/unclaim/${props.shift._id}`, "PATCH");
-  } catch {
-    return;
-  }
-  emit("refreshShifts");
-};
+}
 </script>
 
 <template>
   <transition name="modal fade">
     <div v-if="show" class="modal-mask">
       <div class="modal-container">
-        <div :class="showDeleteModal ? 'hide' : ''">
-          <p>Start: {{ formatDate(shift.start) }}</p>
-          <p>End: {{ formatDate(shift.end) }}</p>
-          <div class="shift" v-if="shift.volunteers.length !== 0">
-            <h4>Max volunteers: {{ shift.capacity }}</h4>
-            <div class="row">
-              <article v-for="volunteer in shift.volunteers" :key="volunteer" style="background-color: #cdb9a29c">{{ volunteer }}</article>
+        <form>
+          <div class="form">
+            <div class="item">
+              <div class="form-input">Max number of volunteers <input class="number-input" type="number" v-model="capacity" min="0" required /></div>
             </div>
           </div>
-          <div v-else class="shift">
-            <h4>Max volunteers: {{ shift.capacity }}</h4>
-            <p>No volunteers yet!</p>
+          <div class="modal-footer">
+            <button class="button-39" @click="emit('close')">Cancel</button>
+            <button class="button-39" type="submit" @click.prevent="createShift">Create shift</button>
           </div>
-
-          <div v-if="shift.volunteers.includes(currentUsername)" class="btn-group">
-            <div class="modify">
-              <button class="button-39" @click="emit('close')">Cancel</button>
-              <button v-if="shift.end > today" class="button-39" @click.prevent="unclaimShift">Unclaim</button>
-              <button v-if="selectedOrg?.isAdmin && shift.end > today" class="button-39 red" @click.prevent="emit('close'), emit('delete')">Delete Shift</button>
-            </div>
-          </div>
-          <div v-else style="margin-top: 1em">
-            <div class="modify">
-              <button class="button-39" @click="emit('close')">Cancel</button>
-              <button v-if="shift.end > today" class="button-39" @click.prevent="claimShift">Claim</button>
-              <button v-if="selectedOrg?.isAdmin && shift.end > today" class="button-39 red" @click.prevent="emit('close'), emit('delete')">Delete Shift</button>
-            </div>
-          </div>
-        </div>
+        </form>
       </div>
     </div>
   </transition>
@@ -127,11 +101,6 @@ article {
   flex-wrap: wrap;
   gap: 0.25em;
   padding: 0.5em;
-  font-weight: 400;
-  font-size: small;
-}
-
-p {
   font-weight: 400;
   font-size: small;
 }

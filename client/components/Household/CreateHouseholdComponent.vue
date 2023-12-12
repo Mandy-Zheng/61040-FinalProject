@@ -121,7 +121,7 @@ async function addHousehold() {
                 />
               </div>
             </div>
-            <div class="special-request">Special Requests<textarea v-model="specialRequests"></textarea></div>
+            <div class="special-request">Notes<textarea v-model="specialRequests"></textarea></div>
           </div>
           <div class="member-add">
             <div class="member-title">

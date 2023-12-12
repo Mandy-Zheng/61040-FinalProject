@@ -489,10 +489,11 @@ class Routes {
     return await Stock.deleteStock(ID);
   }
 
-  @Router.get("/shift/org/:orgId/:futureOnly")
-  async getOrganizationShifts(session: WebSessionDoc, orgId: ObjectId, futureOnly: string) {
+  @Router.get("/shift/org/:id/:futureOnly")
+  async getOrganizationShifts(session: WebSessionDoc, id: ObjectId, futureOnly: string) {
     const futureOnlyBool = futureOnly === "true";
     const user = WebSession.getUser(session);
+    const orgId = new ObjectId(id);
     await Team.isTeamMember(orgId, user);
     let shifts;
     if (futureOnlyBool) {
@@ -517,44 +518,48 @@ class Routes {
   }
 
   @Router.post("/shift")
-  async createNewShift(session: WebSessionDoc, orgId: ObjectId, start: string, end: string) {
+  async createNewShift(session: WebSessionDoc, orgId: ObjectId, start: string, end: string, capacity: number) {
     const org = new ObjectId(orgId);
     const user = WebSession.getUser(session);
     await Team.isAdmin(org, user);
-    const created = await Shift.createShift(org, new Date(start), new Date(end), undefined);
+    const created = await Shift.createShift(org, new Date(start), new Date(end), capacity);
     return { msg: created.msg, shift: Responses.shift(created.shift) };
   }
 
   @Router.patch("/shift")
   async updateShift(session: WebSessionDoc, id: ObjectId, start: string, end: string) {
+    const orgId = new ObjectId(id);
     const user = WebSession.getUser(session);
-    const shift = await Shift.getShiftById(id);
+    const shift = await Shift.getShiftById(orgId);
     await Team.isAdmin(shift.owner, user);
-    return await Shift.updateShiftTime(id, new Date(start), new Date(end));
+    return await Shift.updateShiftTime(orgId, new Date(start), new Date(end));
   }
 
   @Router.patch("/shift/claim/:id")
   async claimShift(session: WebSessionDoc, id: ObjectId) {
+    const orgId = new ObjectId(id);
     const user = WebSession.getUser(session);
-    const shift = await Shift.getShiftById(id);
+    const shift = await Shift.getShiftById(orgId);
     await Team.isTeamMember(shift.owner, user);
-    return await Shift.claimShift(id, user);
+    return await Shift.claimShift(orgId, user);
   }
 
   @Router.patch("/shift/unclaim/:id")
   async unclaimShift(session: WebSessionDoc, id: ObjectId) {
+    const orgId = new ObjectId(id);
     const user = WebSession.getUser(session);
-    const shift = await Shift.getShiftById(id);
+    const shift = await Shift.getShiftById(orgId);
     await Team.isTeamMember(shift.owner, user);
-    return await Shift.unclaimShift(id, user);
+    return await Shift.unclaimShift(orgId, user);
   }
 
   @Router.delete("/shift/:id")
   async deleteShift(session: WebSessionDoc, id: ObjectId) {
+    const orgId = new ObjectId(id);
     const user = WebSession.getUser(session);
-    const shift = await Shift.getShiftById(id);
+    const shift = await Shift.getShiftById(orgId);
     await Team.isAdmin(shift.owner, user);
-    return await Shift.deleteShift(id);
+    return await Shift.deleteShift(orgId);
   }
 
   @Router.post("/languageAudio")
