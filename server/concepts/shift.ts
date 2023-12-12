@@ -65,8 +65,8 @@ export default class ShiftConcept {
     await this.notClaimed(shift, user);
     const newVolunteers = shift.volunteers;
     newVolunteers.push(user);
-    if (shift.capacity && newVolunteers.length > shift.capacity){
-      throw new NotAllowedError('Too Many')
+    if (shift.capacity && newVolunteers.length > shift.capacity) {
+      throw new NotAllowedError("Too Many");
     }
     await this.shifts.updateOne({ _id }, { volunteers: newVolunteers });
     return { msg: "Claimed shift successfully!" };

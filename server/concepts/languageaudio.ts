@@ -51,6 +51,11 @@ export default class LanguageAudioConcept {
     return languageAudio;
   }
 
+  async getAllAudioByOwner(owner: ObjectId) {
+    const languageAudios = await this.languageAudio.readMany({ owner });
+    return languageAudios;
+  }
+
   async updateAudio(_id: ObjectId, editor: ObjectId, update: Partial<LanguageAudioDoc>) {
     this.sanitize(update);
     const languageAudio = await this.getById(_id);

@@ -53,8 +53,27 @@ class Routes {
     for (const orgId of organizations) {
       const oldTeam = await Team.get(orgId);
       if (oldTeam.admins.length === 1 && oldTeam.admins[0].toString() === user.toString()) {
+        // delete everything associated with team if user is only admin
+        const team = await Team.get(orgId);
+        // delete stocks
+        const stocks = await Stock.getStocksByOwner(orgId);
+        await Promise.all(stocks.map((stock) => Stock.deleteStock(stock._id)));
+        // delete households and patrons
+        const households = await Household.getProfilesByOwner(orgId);
+        const patrons = new Array<ObjectId>();
+        households.forEach((household) => patrons.push(...household.members));
+        await Promise.all(households.map((household) => Household.delete(household._id)));
+        await Promise.all(patrons.map((patron) => Patron.deletePatron(patron)));
+        // delete shifts
+        await Shift.deleteShiftsByOwner(orgId);
+        // delete audio
+        const audios = await LanguageAudio.getAllAudioByOwner(orgId);
+        await Promise.all(audios.map((audio) => LanguageAudio.deleteAudio(audio._id, orgId)));
+        // delete memberships
+        const allMembers = team.members.concat(...team.admins);
+        await Promise.all(allMembers.map((member) => Membership.removeMembership(member, orgId)));
+        // delete team
         await Team.delete(orgId, user);
-        await Promise.all(oldTeam.members.map((member) => Membership.removeMembership(member, orgId)));
       } else {
         await Team.removeUsersFromTeam(orgId, [user], user);
       }
@@ -182,16 +201,32 @@ class Routes {
     return { msg: "Successfully updated restock day" };
   }
 
-  @Router.delete("/organization/:orgId")
-  async deleteOrganization(session: WebSessionDoc, orgId: ObjectId) {
+  @Router.delete("/organization/:org")
+  async deleteOrganization(session: WebSessionDoc, org: ObjectId) {
     const user = WebSession.getUser(session);
-    const org = new ObjectId(orgId);
-    await Team.isAdmin(org, user);
-    const { admins, members } = await Team.get(org);
-    const allMembers = members.concat(admins);
+    const orgId = new ObjectId(org);
+    await Team.isAdmin(orgId, user);
+    const team = await Team.get(orgId);
+    // delete stocks
+    const stocks = await Stock.getStocksByOwner(orgId);
+    await Promise.all(stocks.map((stock) => Stock.deleteStock(stock._id)));
+    // delete households and patrons
+    const households = await Household.getProfilesByOwner(orgId);
+    const patrons = new Array<ObjectId>();
+    households.forEach((household) => patrons.push(...household.members));
+    await Promise.all(households.map((household) => Household.delete(household._id)));
+    await Promise.all(patrons.map((patron) => Patron.deletePatron(patron)));
+    // delete shifts
     await Shift.deleteShiftsByOwner(orgId);
-    await Promise.all(allMembers.map((member) => Membership.removeMembership(member, org)));
-    return Team.delete(org, user);
+    // delete audio
+    const audios = await LanguageAudio.getAllAudioByOwner(orgId);
+    await Promise.all(audios.map((audio) => LanguageAudio.deleteAudio(audio._id, orgId)));
+    // delete memberships
+    const allMembers = team.members.concat(...team.admins);
+    await Promise.all(allMembers.map((member) => Membership.removeMembership(member, orgId)));
+    // delete team
+    await Team.delete(orgId, user);
+    return { msg: "Successfully deleted organization!" };
   }
 
   // reset all visits for all households in organization
