@@ -5,7 +5,6 @@ import { DIETARY_RESTRICTIONS, onCreate } from "../../../server/framework/utils"
 
 const props = defineProps(["show", "allDiets"]);
 const emit = defineEmits(["close", "add"]);
-const info = ref(false);
 const dietOptions = computed(() => [...new Set([...props.allDiets, ...DIETARY_RESTRICTIONS])]);
 const multiselectDietTags = dietOptions.value.map((tag) => {
   return { label: tag, value: tag };

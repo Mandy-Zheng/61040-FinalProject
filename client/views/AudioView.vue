@@ -57,7 +57,14 @@ onBeforeMount(async () => {
       <teleport to="body">
         <CreateAudioModal @close="showCreateModal = false" :show="showCreateModal" :allLanguages="allLanguages" @add="refresh" />
       </teleport>
+<<<<<<< Updated upstream
       <div v-if="allLanguageAudio.length" class="language">
+||||||| Stash base
+      <div class="language">
+=======
+
+      <div v-if="allLanguageAudio.length !== 0" class="language">
+>>>>>>> Stashed changes
         <AudioComponent
           v-for="languageAudio in allLanguageAudio"
           :key="languageAudio"
@@ -67,9 +74,14 @@ onBeforeMount(async () => {
           @refresh="refresh"
         />
       </div>
+<<<<<<< Updated upstream
       <div class="no-file" v-else>
         <h2><i>No Files Yet</i></h2>
       </div>
+||||||| Stash base
+=======
+      <h3 v-else>No audio yet!</h3>
+>>>>>>> Stashed changes
     </div>
   </main>
 </template>

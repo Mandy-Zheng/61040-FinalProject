@@ -97,8 +97,16 @@ onBeforeMount(async () => {
         <HouseholdComponent :household="household" :allDiets="allDiets" :allLanguages="allLanguages" @refreshHouseholds="getHouseholds" @refreshById="refreshHouseholdById" />
       </article>
     </section>
+<<<<<<< Updated upstream
     <p class="no-household" v-else-if="loaded"><i>No households yet!</i></p>
     <p v-else>Loading...</p>
+||||||| Stash base
+    <p v-else-if="loaded">No households yet!</p>
+    <p v-else>Loading...</p>
+=======
+    <h3 style="padding: 2em" v-else-if="loaded">No households yet!</h3>
+    <h3 style="padding: 2em" v-else>Loading...</h3>
+>>>>>>> Stashed changes
   </div>
 </template>
 
