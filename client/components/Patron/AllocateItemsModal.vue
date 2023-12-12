@@ -125,10 +125,9 @@ span {
   gap: 0.5em 1.5em;
   flex-wrap: wrap;
   overflow-wrap: normal;
-  width: 85em;
 }
 .stocks {
   max-height: 75%;
-  overflow: scroll;
+  overflow-y: scroll;
 }
 </style>

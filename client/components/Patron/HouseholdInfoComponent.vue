@@ -199,6 +199,9 @@ onBeforeMount(async () => {
 </template>
 
 <style scoped>
+h3 {
+  font-weight: lighter;
+}
 .overview-title {
   margin-right: 10em;
 }

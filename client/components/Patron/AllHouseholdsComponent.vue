@@ -20,19 +20,23 @@ const allDiets = computed(() => [...new Set(households.value.flatMap((household)
 let searchId = ref("");
 const { selectedOrg } = storeToRefs(useOrganizationStore());
 
-async function getHouseholds(_id?: string) {
+async function getHouseholds(query?: string) {
   let results;
   loaded.value = false;
   try {
-    if (_id) {
-      results = [await fetchy(`/api/profile/one/${_id}`, "GET")];
-      searchId.value = _id;
-    } else if (_id === undefined && searchId.value) {
-      console.log(searchId.value);
-      results = [await fetchy(`/api/profile/one/${searchId.value}`, "GET")];
+    if (query && /\d/.test(query)) {
+      results = [await fetchy(`/api/profile/one/${query}`, "GET")];
+      searchId.value = query;
+    } else if (query && selectedOrg.value) {
+      const allHouseholds = await fetchy(`/api/profile/org/${selectedOrg.value.id}`, "GET");
+      const patronHousehold = allHouseholds.filter((household) => household.members.some((member) => member.name.toLowerCase().includes(query.toLowerCase())));
+      results = await Promise.all(patronHousehold.map((household) => fetchy(`/api/profile/one/${household._id}`, "GET")));
+      searchId.value = query;
     } else if (selectedOrg.value) {
       results = await fetchy(`/api/profile/org/${selectedOrg.value.id}`, "GET");
       searchId.value = "";
+    } else {
+      results = [];
     }
   } catch (_) {
     return;

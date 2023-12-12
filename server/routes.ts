@@ -167,10 +167,10 @@ class Routes {
   async updateOpenDays(session: WebSessionDoc, id: ObjectId, days: Array<number>) {
     const user = WebSession.getUser(session);
     const orgId = new ObjectId(id);
-    const openDays = new Array<number>;
-    for(let day of days) openDays.push(day);
+    const openDays = new Array<number>();
+    for (const day of days) openDays.push(day);
     openDays.sort();
-    Team.updateOpenDays(orgId,openDays,user);
+    Team.updateOpenDays(orgId, openDays, user);
     return { msg: "Successfully updated open days" };
   }
 
@@ -178,7 +178,7 @@ class Routes {
   async updateRestockDay(session: WebSessionDoc, id: ObjectId, day: number) {
     const user = WebSession.getUser(session);
     const orgId = new ObjectId(id);
-    Team.updateRestockDay(orgId,day,user);
+    Team.updateRestockDay(orgId, day, user);
     return { msg: "Successfully updated restock day" };
   }
 
@@ -395,17 +395,17 @@ class Routes {
     const openDays = team.openDays;
     const restockDay = team.restockDay;
     const currentDate = new Date();
-    let days = currentDate.getDay()-restockDay;
-    if(days<0)days+=7;
-    let cnt=0,day=restockDay,dayCount=0;
-    while(cnt<days)
-    {
-      if(openDays.includes(day))
-        dayCount++;
+    let days = currentDate.getDay() - restockDay;
+    if (days < 0) days += 7;
+    let cnt = 0,
+      day = restockDay,
+      dayCount = 0;
+    while (cnt < days) {
+      if (openDays.includes(day)) dayCount++;
       cnt++;
-      day=(day+1)%7;
+      day = (day + 1) % 7;
     }
-    await Promise.all(inventory.map((stock) => Stock.setTodaysAllocation(stock._id,Math.floor(stock.count/(openDays.length-dayCount)))));
+    await Promise.all(inventory.map((stock) => Stock.setTodaysAllocation(stock._id, Math.floor(stock.count / (openDays.length - dayCount)))));
     return { msg: "Inventory max per day successfully set!" };
   }
 

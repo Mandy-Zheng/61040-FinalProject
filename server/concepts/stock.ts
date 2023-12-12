@@ -88,7 +88,7 @@ export default class StockConcept {
     return { msg: "Stock successfully deleted!" };
   }
 
-  async setTodaysAllocation(_id: ObjectId, count:number) {
+  async setTodaysAllocation(_id: ObjectId, count: number) {
     const stock = await this.stocks.readOne({ _id });
     if (!stock) return;
     await this.stocks.updateOne({ _id }, { maxPerDay: count });
