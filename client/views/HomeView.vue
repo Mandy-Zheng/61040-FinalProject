@@ -73,19 +73,20 @@
         </ul>
       </div>
     </div>
-    <hr />
-    <div class="about">
-      <h3 style="margin-top: 0">About us</h3>
-      <p>
-        We are 3rd and 4th-year computer science undergraduates at MIT, currently taking Software Design (6.1040), tasked with creating an authentic app that addresses an important problem domain for
-        our final project. We were initially inspired to create Cornucopia during an interview with Phoebe Heyman, the coordinator of the Margaret Fuller House Food Pantry; we saw many opportunities
-        to digitize processes at these important organizations and hope that our app will provide a more efficient, streamlined, centralized, and accommodative experience for administrators,
-        volunteers, and patrons.
-      </p>
+    <div class="bottom">
+      <div class="about">
+        <h4 style="margin-top: 0">About us</h4>
+        <p>
+          We are 3rd and 4th-year computer science undergraduates at MIT, currently taking Software Design (6.1040), tasked with creating an authentic app that addresses an important problem domain
+          for our final project. We were initially inspired to create Cornucopia during an interview with Phoebe Heyman, the coordinator of the Margaret Fuller House Food Pantry; we saw many
+          opportunities to digitize processes at these important organizations and hope that our app will provide a more efficient, streamlined, centralized, and accommodative experience for
+          administrators, volunteers, and patrons.
+        </p>
+      </div>
+      <footer>
+        <small> Questions or feedback? Contact us at aaap at mit dot edu. </small>
+      </footer>
     </div>
-    <footer>
-      <small> Questions or feedback? Contact us at aaap at mit dot edu. </small>
-    </footer>
   </main>
 </template>
 
@@ -139,6 +140,7 @@ h1 {
   font-size: x-large;
   flex-direction: column;
   width: 41em;
+  margin-bottom: 0.5em;
 }
 
 .subinfo {
@@ -155,9 +157,9 @@ h1 {
 }
 
 .about {
-  width: 50em;
   font-size: medium;
   padding-left: 3em;
+  padding-right: 3em;
   padding-top: 2em;
 }
 
@@ -220,5 +222,12 @@ hr {
   /* Set the hr color */
   color: #a2a2a2; /* old IE */
   background-color: #333; /* Modern Browsers */
+}
+
+.bottom {
+  width: 100%;
+  height: 100%;
+  background-color: #d6d6d6;
+  padding-bottom: 1em;
 }
 </style>
