@@ -483,9 +483,10 @@ class Routes {
 
   @Router.post("/shift")
   async createNewShift(session: WebSessionDoc, orgId: ObjectId, start: string, end: string) {
+    const org = new ObjectId(orgId);
     const user = WebSession.getUser(session);
-    await Team.isAdmin(orgId, user);
-    const created = await Shift.createShift(orgId, new Date(start), new Date(end), undefined);
+    await Team.isAdmin(org, user);
+    const created = await Shift.createShift(org, new Date(start), new Date(end), undefined);
     return { msg: created.msg, shift: Responses.shift(created.shift) };
   }
 
