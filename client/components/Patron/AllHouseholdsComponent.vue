@@ -58,6 +58,7 @@ async function refreshHouseholdById(id: string) {
 
 async function clearForm() {
   empty.value = true;
+  await getHouseholds();
 }
 
 async function resetClear() {
@@ -72,35 +73,41 @@ onBeforeMount(async () => {
 
 <template>
   <div class="right" v-if="!showCreateComponent">
-    <button class="button-39" style="color: white" @click.prevent="showCreateComponent = true">Create New Household</button>
-    <button class="button-39 reset" @click.prevent="showResetModal = true">Reset All Visits</button>
+    <SearchHouseholdsForm :empty="empty" @search="getHouseholds" @resetEmpty="resetClear" />
+    <div>
+      <button class="button-39" style="color: white" @click.prevent="showCreateComponent = true">Create New Household</button>
+      <button class="button-39 reset" @click.prevent="showResetModal = true">Reset All Visits</button>
+    </div>
   </div>
   <CreateHouseholdComponent :show="showCreateComponent" :allLanguages="allLanguages" :allDiets="allDiets" @close="showCreateComponent = false" @refreshHouseholds="getHouseholds" />
   <ResetVisitsModal :show="showResetModal" @close="showResetModal = false" @refreshHouseholds="getHouseholds" />
   <div v-if="!showCreateComponent">
     <div class="row">
-      <h2 v-if="!searchId">Households:</h2>
-      <div v-else style="display: flex; align-items: center">
-        <button class="icon" @click="clearForm(), getHouseholds()">
+      <div v-if="searchId" style="display: flex; align-items: center">
+        <button class="icon" @click="clearForm">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-arrow-left-circle-fill" viewBox="0 0 16 16">
             <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z" />
           </svg>
         </button>
         <h2>Back</h2>
       </div>
-      <SearchHouseholdsForm :empty="empty" @search="getHouseholds" @resetEmpty="resetClear" />
     </div>
     <section class="posts" v-if="loaded && households.length !== 0">
       <article v-for="household in households" :key="household">
         <HouseholdComponent :household="household" :allDiets="allDiets" :allLanguages="allLanguages" @refreshHouseholds="getHouseholds" @refreshById="refreshHouseholdById" />
       </article>
     </section>
-    <p v-else-if="loaded">No households yet!</p>
+    <p class="no-household" v-else-if="loaded"><i>No households yet!</i></p>
     <p v-else>Loading...</p>
   </div>
 </template>
 
 <style scoped>
+.no-household {
+  margin-top: 4em;
+  color: var(--faded);
+  font-size: 36px;
+}
 section {
   display: flex;
   flex-direction: column;
@@ -144,14 +151,17 @@ article {
   color: black;
   margin: 1em;
   border: none;
+  height: 4em;
 }
 .reset {
   background-color: var(--secondary);
 }
 .right {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: center;
   margin-top: 2em;
   margin-right: 15em;
+  margin-left: 15em;
 }
 </style>

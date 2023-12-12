@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import AddMemberComponent from "@/components/Organization/AddMemberModal.vue";
 import DeleteOrganizationComponent from "@/components/Organization/DeleteOrganizationModal.vue";
+import EditSettingsComponent from "@/components/Organization/EditSettingsModal.vue";
 import LeaveOrganizationComponent from "@/components/Organization/LeaveOrganizationModal.vue";
 import ManageMemberComponent from "@/components/Organization/ManageMembersModal.vue";
-import EditSettingsComponent from "@/components/Organization/EditSettingsModal.vue";
 import { useOrganizationStore } from "@/stores/organization";
 import { useUserStore } from "@/stores/user";
 import { fetchy } from "@/utils/fetchy";
@@ -96,18 +96,25 @@ async function leaveOrg() {
   }
 }
 
-async function editDays(openDays:Array<string>,restockDay:string)
-{
-  const m = new Map<string,number>([["Sunday",0],["Monday",1],["Tuesday",2],["Wednesday",3],["Thursday",4],["Friday",5],["Saturday",6]]);
-  const k= new Array<number>;
-  openDays.forEach(day => {
-    const name=m.get(day);
-    if(name)k.push(name);
+async function editDays(openDays: Array<string>, restockDay: string) {
+  const m = new Map<string, number>([
+    ["Sunday", 0],
+    ["Monday", 1],
+    ["Tuesday", 2],
+    ["Wednesday", 3],
+    ["Thursday", 4],
+    ["Friday", 5],
+    ["Saturday", 6],
+  ]);
+  const k = new Array<number>();
+  openDays.forEach((day) => {
+    const name = m.get(day);
+    if (name) k.push(name);
   });
-  const l= m.get(restockDay);
+  const l = m.get(restockDay);
   try {
-    await fetchy(`/api/organization/days/open/${props.orgId}`, "PATCH",{ body: { days: k }});
-    if(l) await fetchy(`/api/organization/days/restock/${props.orgId}`, "PATCH",{ body: { day: l }});
+    await fetchy(`/api/organization/days/open/${props.orgId}`, "PATCH", { body: { days: k } });
+    if (l) await fetchy(`/api/organization/days/restock/${props.orgId}`, "PATCH", { body: { day: l } });
   } catch (error) {
     console.log(error);
     return;

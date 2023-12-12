@@ -43,10 +43,11 @@ onBeforeMount(async () => {
 
 <template>
   <main>
+    <h1>Language Audio Files</h1>
     <div style="margin-left: 170px; margin-right: 200px">
       <div class="right">
         <button class="button-39" @click="showCreateModal = true">
-          Upload New Audio File
+          Upload Audio File
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-up-circle-fill" viewBox="0 0 16 16">
             <path d="M16 8A8 8 0 1 0 0 8a8 8 0 0 0 16 0m-7.5 3.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707z" />
           </svg>
@@ -56,7 +57,7 @@ onBeforeMount(async () => {
       <teleport to="body">
         <CreateAudioModal @close="showCreateModal = false" :show="showCreateModal" :allLanguages="allLanguages" @add="refresh" />
       </teleport>
-      <div class="language">
+      <div v-if="allLanguageAudio.length" class="language">
         <AudioComponent
           v-for="languageAudio in allLanguageAudio"
           :key="languageAudio"
@@ -66,15 +67,36 @@ onBeforeMount(async () => {
           @refresh="refresh"
         />
       </div>
+      <div class="no-file" v-else>
+        <h2><i>No Files Yet</i></h2>
+      </div>
     </div>
   </main>
 </template>
 
 <style scoped>
+.no-file,
+h2 {
+  margin-top: 3em;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
 h1 {
   text-align: center;
 }
 
+h2 {
+  color: var(--faded);
+  font-weight: lighter;
+  font-size: 36px;
+}
+.button-39 {
+  margin-top: 1em;
+}
 select {
   height: 35px;
   padding: 5px;

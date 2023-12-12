@@ -17,13 +17,13 @@ export default class TeamConcept {
   async create(name: string, founder: ObjectId) {
     const admins: Array<ObjectId> = [founder];
     const members: Array<ObjectId> = [];
-    const openDays = [1,2,3,4,5];
+    const openDays = [1, 2, 3, 4, 5];
     if (!name) {
       throw new BadValuesError("Missing Organization Name");
     }
-    let restockDay=0;
+    const restockDay = 0;
     await this.isTeamNameUnique(name);
-    const _id = await this.teams.createOne({ name, admins, members,openDays,restockDay });
+    const _id = await this.teams.createOne({ name, admins, members, openDays, restockDay });
     return { msg: "Team successfully created!", team: await this.teams.readOne({ _id }) };
   }
 
@@ -67,16 +67,16 @@ export default class TeamConcept {
     await this.teams.updateOne({ _id }, { name });
     return { msg: "Successfully Updated Team Name" };
   }
-  
-  async updateOpenDays(_id: ObjectId,days:Array<number>, editor: ObjectId) {
+
+  async updateOpenDays(_id: ObjectId, days: Array<number>, editor: ObjectId) {
     await this.isAdmin(_id, editor);
-    await this.teams.updateOne({ _id }, { openDays:days });
+    await this.teams.updateOne({ _id }, { openDays: days });
     return { msg: "Successfully Updated Team OpenDays" };
   }
 
-  async updateRestockDay(_id: ObjectId,day:number, editor: ObjectId) {
+  async updateRestockDay(_id: ObjectId, day: number, editor: ObjectId) {
     await this.isAdmin(_id, editor);
-    await this.teams.updateOne({ _id }, { restockDay:day });
+    await this.teams.updateOne({ _id }, { restockDay: day });
     return { msg: "Successfully Updated Team RestockDay" };
   }
 

@@ -76,68 +76,109 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <div v-if="selectedOrg">
+  <div class="inventory" v-if="selectedOrg">
+    <h1>Inventory</h1>
     <!-- <form class="pure-form pure-form-aligned" @submit.prevent="search"> -->
-    <div class="right">
-      <button class="inventory-btn button-39" @click.prevent="showCreateModal = true">Create New Item</button>
-      <button class="inventory-btn button-39 reset align" @click.prevent="getMaxAllocation()">
-        Update Daily Allocation
-        <div class="tooltip">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
-            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
-            <path
-              d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"
-            />
-          </svg>
-          <span class="tooltiptext"
-            >Click here at the start of each day to recalculate and update max per day allocation. Ensures optimal distribution to make your supplies last throughout the rest of the week.
-          </span>
-        </div>
-      </button>
-    </div>
-    <div class="search-dropdown">
-      <h2>Inventory</h2>
-      <Multiselect
-        v-model="item"
-        class="search"
-        :searchable="true"
-        :options="inventories.map((item) => item.item)"
-        @clear="getAllInventories"
-        @select="getInventory"
-        placeholder="Search for an item"
-      ></Multiselect>
+    <div class="top-header">
+      <div class="search-dropdown">
+        <Multiselect
+          v-model="item"
+          class="search"
+          :searchable="true"
+          :options="inventories.map((item) => item.item)"
+          @clear="getAllInventories"
+          @select="getInventory"
+          placeholder="Search for an item"
+        ></Multiselect>
+      </div>
+      <div class="btn-group">
+        <button class="button-39" @click.prevent="showCreateModal = true">Create New Item</button>
+        <button class="button-39 reset align" @click.prevent="getMaxAllocation()">
+          Update Daily Allocation
+          <div class="tooltip">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
+              <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+              <path
+                d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"
+              />
+            </svg>
+            <span class="tooltiptext"
+              >Click here at the start of each day to recalculate and update max per day allocation. Ensures optimal distribution to make your supplies last throughout the rest of the week.
+            </span>
+          </div>
+        </button>
+      </div>
     </div>
 
     <teleport to="body">
       <CreateStockModal :allDiets="allDiets" :show="showCreateModal" @close="showCreateModal = false" @add="addItem" />
     </teleport>
-    <div class="allStocks">
+    <div class="allStocks" v-if="inventory.length">
       <div v-for="stock in inventory" :key="stock" class="stocks">
         <StockComponent :allDiets="allDiets" @refreshStocks="getAllInventories(), getInventories()" :stockId="stock._id" />
       </div>
+    </div>
+    <div class="no-file" v-else>
+      <h2><i>No Files Yet</i></h2>
     </div>
   </div>
 </template>
 
 <style scoped>
+.no-file,
+h2 {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  color: var(--faded);
+  font-weight: lighter;
+  font-size: 36px;
+  margin: 0;
+  margin-top: 4em;
+}
+h2 {
+  margin-right: 0;
+}
+.btn-group {
+  display: flex;
+}
+.inventory {
+  text-align: center;
+}
 .allStocks {
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
+
 h2 {
   font-weight: 100;
   margin: 0;
-  margin-right: 15em;
 }
+
+.top-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin-left: 10%;
+  margin-right: 10%;
+  padding-top: 2em;
+  padding-left: 4em;
+  padding-bottom: 1em;
+  padding-right: 4em;
+
+  font-weight: 300;
+}
+
 .search-dropdown {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-left: 10%;
-  margin-right: 10%;
-  padding-bottom: 4em;
   font-weight: 300;
+  width: 24em;
 }
 .stocks {
   margin-left: 10%;
@@ -146,16 +187,11 @@ h2 {
   flex-direction: column;
   align-items: center;
 }
-.search {
-  margin: 0;
-  width: 30em;
-}
 
 .button-39 {
   background-color: var(--primary);
   border: none;
   margin: 1em;
-  margin-right: 5em;
   color: white;
 }
 .right {
@@ -168,7 +204,7 @@ h2 {
 .reset {
   background-color: var(--secondary);
   color: black;
-  margin-left: -30px;
+  margin-right: 5em;
 }
 
 .tooltip {

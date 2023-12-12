@@ -35,6 +35,9 @@ watch(
 </template>
 
 <style scoped>
+form {
+  margin-top: 0.4em;
+}
 .search {
   margin-left: -35px;
   margin-top: 5px;

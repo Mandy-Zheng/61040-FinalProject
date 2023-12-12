@@ -6,8 +6,15 @@ const { selectedOrg } = storeToRefs(useOrganizationStore());
 </script>
 
 <template>
-  <div class="household" v-if="selectedOrg">
-    <AllHouseholdsComponent />
+  <div class="patron-view">
+    <h1>Patron Households</h1>
+    <div class="household" v-if="selectedOrg">
+      <AllHouseholdsComponent />
+    </div>
   </div>
 </template>
-<style scoped></style>
+<style scoped>
+.patron-view {
+  text-align: center;
+}
+</style>

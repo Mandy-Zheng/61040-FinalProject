@@ -29,6 +29,14 @@ async function register() {
   </form>
 </template>
 <style scoped>
+h3 {
+  font-weight: lighter;
+  margin-left: 0;
+  margin: 0;
+}
+input {
+  margin: 0em;
+}
 .button-39 {
   background-color: var(--primary);
   color: white;

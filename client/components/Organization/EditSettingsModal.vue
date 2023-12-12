@@ -1,22 +1,20 @@
 <script setup lang="ts">
-import { fetchy } from "@/utils/fetchy";
-import { ref, onBeforeMount } from "vue";
 import Multiselect from "@vueform/multiselect";
+import { onBeforeMount, ref } from "vue";
 
 const props = defineProps(["show", "organization"]);
 const emit = defineEmits(["close", "edit"]);
 const newDays = ref<Array<string>>([]);
-const days = ref<Array<string>>(["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]);
+const days = ref<Array<string>>(["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]);
 const newRestockDay = ref<string>();
 
 onBeforeMount(async () => {
-  newDays.value=[];
-  if(props.organization.openDays)
-    props.organization.openDays.forEach(day => {
+  newDays.value = [];
+  if (props.organization.openDays)
+    props.organization.openDays.forEach((day) => {
       newDays.value.push(days.value[day]);
     });
-  if(props.organization.restockDay)
-    newRestockDay.value=days.value[props.organization.restockDay];
+  if (props.organization.restockDay) newRestockDay.value = days.value[props.organization.restockDay];
 });
 </script>
 
@@ -32,13 +30,13 @@ onBeforeMount(async () => {
         <h5>Restock Day</h5>
         <div class="column">
           <select class="restockDays" v-model="newRestockDay">
-            <option v-for="day in days" :value="day">{{day}}</option>
+            <option v-for="day in days" :value="day">{{ day }}</option>
           </select>
         </div>
 
         <div class="modal-footer">
           <button class="button-39" @click="emit('close')">Close</button>
-          <button class="button-39" @click="emit('edit', newDays, newRestockDay),emit('close')">Edit Days</button>
+          <button class="button-39" @click="emit('edit', newDays, newRestockDay), emit('close')">Edit Days</button>
         </div>
       </div>
     </div>

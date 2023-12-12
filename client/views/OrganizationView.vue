@@ -46,14 +46,14 @@ onBeforeMount(async () => {
 
 <template>
   <main>
-    <div style="">
-      <RegisterOrganizationForm class="form" @addOrg="getUserOrganizations" />
-      <h3>
+    <div class="org">
+      <h1 class="title">
         Current Organization:
         <span>{{ selectedOrg?.name ?? "None" }}</span>
-      </h3>
-      <h3>Manage Your Organizations</h3>
-      <div class="grid">
+      </h1>
+      <RegisterOrganizationForm class="form" @addOrg="getUserOrganizations" />
+      <h3 class="manage">Manage Your Organizations</h3>
+      <div :class="allOrgs.length < 3 ? 'small-grid' : 'grid'">
         <!-- <div v-for="org in allOrgs" :key="org"><OrganizationComponent :orgId="org" @leaveOrg="leavingOrganizations" @updateName="getUserOrganizations" /></div> -->
         <div v-for="org in allOrgs" :key="org">
           <OrganizationComponent :orgId="org" :isSelected="selectedOrg?.id === org" @leaveOrg="leavingOrganizations" @updateName="getUserOrganizations" @select="changeOrganization" />
@@ -64,6 +64,26 @@ onBeforeMount(async () => {
 </template>
 
 <style scoped>
+.org {
+  display: flex;
+  flex-direction: column;
+}
+main {
+  padding: 4em;
+}
+.title {
+  font-size: 32px;
+  font-weight: bolder;
+  margin: 0;
+  margin-bottom: 1em;
+  margin-left: 1em;
+  text-align: start;
+}
+.manage {
+  font-weight: lighter;
+  margin-left: 1.75em;
+}
+
 span {
   font-weight: lighter;
 }
@@ -74,9 +94,7 @@ span {
 h1 {
   text-align: center;
 }
-h3 {
-  margin-left: 2em;
-}
+
 select {
   height: 35px;
   padding: 5px;
@@ -90,6 +108,15 @@ select {
   flex-wrap: wrap;
   gap: 2em 2em;
   margin-bottom: 4em;
+}
+
+.small-grid {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 2em 2em;
+  margin-bottom: 4em;
+  margin-left: 2em;
 }
 
 .box {
