@@ -45,14 +45,14 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <main>
+  <main style="background-color: rgb(246, 246, 246); padding-top: 2em">
     <div style="">
       <RegisterOrganizationForm class="form" @addOrg="getUserOrganizations" />
       <h3>
         Current Organization:
         <span>{{ selectedOrg?.name ?? "None" }}</span>
       </h3>
-      <h3>Manage Your Organizations</h3>
+      <h3 style="margin-top: 2em">Manage Your Organizations</h3>
       <div class="grid">
         <!-- <div v-for="org in allOrgs" :key="org"><OrganizationComponent :orgId="org" @leaveOrg="leavingOrganizations" @updateName="getUserOrganizations" /></div> -->
         <div v-for="org in allOrgs" :key="org">
