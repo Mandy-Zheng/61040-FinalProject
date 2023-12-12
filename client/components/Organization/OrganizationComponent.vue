@@ -155,7 +155,7 @@ onBeforeMount(async () => {
               </svg>
             </button>
           </h3>
-          <div v-else>
+          <div v-else class="update-name">
             <input style="padding: 0.5em; border-radius: 0.5em; border-color: rgb(197, 197, 197); border-width: 0.5px" v-model.trim="orgName" />
             <button class="icon" @click="updateOrgName" title="Update Name">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
@@ -185,7 +185,7 @@ onBeforeMount(async () => {
         </div>
       </div>
       <div v-if="organization.admins.includes(currentUsername)" style="display: flex; justify-content: center">
-        <div class="btn-group row">
+        <div class="btn-group row" v-if="isSelected">
           <button class="icon" @click.prevent="showAddModal = true" title="Add Member">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="black" class="bi bi-person-fill-add" viewBox="0 0 16 16">
               <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7m.5-5v1h1a.5.5 0 0 1 0 1h-1v1a.5.5 0 0 1-1 0v-1h-1a.5.5 0 0 1 0-1h1v-1a.5.5 0 0 1 1 0m-2-6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
@@ -264,6 +264,16 @@ onBeforeMount(async () => {
 </template>
 
 <style scoped>
+.update-name {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 0.5em;
+  margin-top: 2em;
+}
+input {
+  width: 8em;
+  margin-left: 2em;
+}
 .btn-group {
   display: flex;
   flex-direction: column;

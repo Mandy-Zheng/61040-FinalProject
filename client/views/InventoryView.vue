@@ -119,12 +119,15 @@ onBeforeMount(async () => {
       </div>
     </div>
     <div class="no-file" v-else>
-      <h2><i>No Files Yet</i></h2>
+      <h2><i>No Items in Inventory Yet</i></h2>
     </div>
   </div>
 </template>
 
 <style scoped>
+h1 {
+  margin-bottom: 0;
+}
 .no-file,
 h2 {
   display: flex;

@@ -53,21 +53,39 @@ onBeforeMount(async () => {
       </h1>
       <RegisterOrganizationForm class="form" @addOrg="getUserOrganizations" />
       <h3 class="manage">Manage Your Organizations</h3>
-      <div :class="allOrgs.length < 3 ? 'small-grid' : 'grid'">
-        <!-- <div v-for="org in allOrgs" :key="org"><OrganizationComponent :orgId="org" @leaveOrg="leavingOrganizations" @updateName="getUserOrganizations" /></div> -->
-        <div v-for="org in allOrgs" :key="org">
-          <OrganizationComponent :orgId="org" :isSelected="selectedOrg?.id === org" @leaveOrg="leavingOrganizations" @updateName="getUserOrganizations" @select="changeOrganization" />
+      <div v-if="allOrgs.length">
+        <div :class="allOrgs.length < 3 ? 'small-grid' : 'grid'">
+          <!-- <div v-for="org in allOrgs" :key="org"><OrganizationComponent :orgId="org" @leaveOrg="leavingOrganizations" @updateName="getUserOrganizations" /></div> -->
+          <div v-for="org in allOrgs" :key="org">
+            <OrganizationComponent :orgId="org" :isSelected="selectedOrg?.id === org" @leaveOrg="leavingOrganizations" @updateName="getUserOrganizations" @select="changeOrganization" />
+          </div>
         </div>
+      </div>
+      <div class="no-org" v-else>
+        <h2><i>No Organizations</i></h2>
       </div>
     </div>
   </main>
 </template>
 
 <style scoped>
+.no-org,
+h2 {
+  margin-top: 1em;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  color: var(--faded);
+  font-weight: lighter;
+  font-size: 36px;
+}
 main {
   background-color: rgb(247, 247, 247);
   padding-top: 2em;
   padding-bottom: 10em;
+  height: 100vh;
 }
 .org {
   display: flex;
@@ -121,7 +139,7 @@ select {
   flex-wrap: wrap;
   gap: 2em 2em;
   margin-bottom: 4em;
-  margin-left: 2em;
+  margin-left: 8em;
 }
 
 .box {
