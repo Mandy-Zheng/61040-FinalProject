@@ -45,7 +45,7 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <main style="background-color: rgb(246, 246, 246); padding-top: 2em; padding-bottom: 10em">
+  <main style="background-color: rgb(247, 247, 247); padding-top: 2em; padding-bottom: 10em">
     <div style="">
       <RegisterOrganizationForm class="form" @addOrg="getUserOrganizations" />
       <h3>

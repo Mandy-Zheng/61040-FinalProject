@@ -117,16 +117,21 @@ p,
 }
 
 article {
-  background-color: #cfeaeda0;
+  /* background-color: #cfeaeda0; */
+  background-color: white;
   border-radius: 1em;
   display: flex;
   flex-direction: column;
   gap: 0.5em;
   padding: 1em 2em;
+  box-shadow: 20px 20px 30px -20px rgba(5, 5, 5, 0.24);
 }
 
 .posts {
-  padding: 1em;
+  padding: 2em;
+  display: flex;
+  flex-direction: column;
+  gap: 3em;
 }
 
 .row {

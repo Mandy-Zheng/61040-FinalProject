@@ -9,7 +9,7 @@ import { useUserStore } from "@/stores/user";
 import { fetchy } from "@/utils/fetchy";
 import { storeToRefs } from "pinia";
 import { onBeforeMount, ref } from "vue";
-
+import { WEEK } from "../../../server/framework/utils";
 const { currentUsername } = storeToRefs(useUserStore());
 const { setOrganization } = useOrganizationStore();
 const { selectedOrg } = storeToRefs(useOrganizationStore());
@@ -119,15 +119,20 @@ async function editDays(openDays: Array<string>, restockDay: string) {
     console.log(error);
     return;
   }
+  await getOrganization();
 }
 
-onBeforeMount(async () => {
+async function getOrganization() {
   try {
     organization.value = await fetchy(`/api/organization/${props.orgId}`, "GET");
     orgName.value = organization.value.name;
   } catch (error) {
     return;
   }
+}
+
+onBeforeMount(async () => {
+  await getOrganization();
 });
 </script>
 
@@ -163,7 +168,12 @@ onBeforeMount(async () => {
       <div v-else>
         <h3>{{ orgName }}</h3>
       </div>
-
+      <h5 style="display: flex; gap: 0.25em; justify-content: center">
+        Open Days:
+        <div class="week">
+          <div v-for="day in organization.openDays" :key="day">{{ WEEK[day] }}</div>
+        </div>
+      </h5>
       <h5>Admins</h5>
       <div class="row">
         <article v-for="admin in organization.admins" :key="admin" style="background-color: #cdb9a29c">{{ admin }}</article>
@@ -194,10 +204,11 @@ onBeforeMount(async () => {
                 />
               </svg>
             </button>
-            <button class="icon" @click.prevent="showEditModal = true" title="Organization Settings">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-gear-fill" viewBox="0 0 16 16">
+            <button class="icon" @click.prevent="showEditModal = true" title="Edit Days Open">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-calendar-check" viewBox="0 0 16 16">
+                <path d="M10.854 7.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 9.793l2.646-2.647a.5.5 0 0 1 .708 0z" />
                 <path
-                  d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872l-.1-.34zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z"
+                  d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"
                 />
               </svg>
             </button>
@@ -267,7 +278,7 @@ onBeforeMount(async () => {
   border-color: rgb(186, 185, 185);
   padding: 1em 1em;
   width: 20em;
-  height: 19em;
+  height: 22em;
   border-radius: 0.4rem;
   overflow-y: scroll;
   transition: 0.2s;
@@ -334,5 +345,11 @@ summary::after {
   display: inline-block;
   transition: 0.2s;
   color: var(--primary);
+}
+
+.week {
+  display: flex;
+  gap: 0.25em;
+  flex-direction: row;
 }
 </style>

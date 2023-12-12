@@ -6,7 +6,7 @@ const { selectedOrg } = storeToRefs(useOrganizationStore());
 </script>
 
 <template>
-  <div class="household" v-if="selectedOrg">
+  <div class="household" v-if="selectedOrg" style="background-color: rgb(246, 246, 246); padding-top: 2em; padding-bottom: 10em">
     <AllHouseholdsComponent />
   </div>
 </template>
