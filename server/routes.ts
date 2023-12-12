@@ -189,7 +189,7 @@ class Routes {
     const openDays = new Array<number>();
     for (const day of days) openDays.push(day);
     openDays.sort();
-    Team.updateOpenDays(orgId, openDays, user);
+    await Team.updateOpenDays(orgId, openDays, user);
     return { msg: "Successfully updated open days" };
   }
 
@@ -197,7 +197,7 @@ class Routes {
   async updateRestockDay(session: WebSessionDoc, id: ObjectId, day: number) {
     const user = WebSession.getUser(session);
     const orgId = new ObjectId(id);
-    Team.updateRestockDay(orgId, day, user);
+    await Team.updateRestockDay(orgId, day, user);
     return { msg: "Successfully updated restock day" };
   }
 

@@ -173,6 +173,7 @@ onBeforeMount(async () => {
 .diet-title {
   margin-bottom: 1em;
   margin-top: 1em;
+  text-align: left;
 }
 
 h2 {

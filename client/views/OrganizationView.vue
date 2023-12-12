@@ -49,7 +49,7 @@ onBeforeMount(async () => {
     <div class="org">
       <h1 class="title">
         Current Organization:
-        <span>{{ selectedOrg?.name ?? "None" }}</span>
+        <span>{{ selectedOrg?.name ?? "No Organization Selected" }}</span>
       </h1>
       <RegisterOrganizationForm class="form" @addOrg="getUserOrganizations" />
       <h3 class="manage">Manage Your Organizations</h3>
