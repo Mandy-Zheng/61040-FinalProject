@@ -5,6 +5,7 @@ import { BadValuesError, NotAllowedError, NotFoundError } from "./errors";
 
 export interface ShiftDoc extends BaseDoc {
   owner: ObjectId;
+  capacity: number | undefined;
   volunteers: Array<ObjectId>;
   start: Date;
   end: Date;
@@ -13,12 +14,13 @@ export interface ShiftDoc extends BaseDoc {
 export default class ShiftConcept {
   public readonly shifts = new DocCollection<ShiftDoc>("shifts");
 
-  async createShift(owner: ObjectId, start: Date, end: Date) {
+  async createShift(owner: ObjectId, start: Date, end: Date, capacity: number | undefined) {
     if (end <= start) {
       throw new BadValuesError("Invalid start/end times for shift");
     }
     await this.isFutureShift(end, "create");
-    const _id = await this.shifts.createOne({ owner: owner, volunteers: [], start: start, end: end });
+    const volunteers: Array<ObjectId> = [];
+    const _id = await this.shifts.createOne({ owner, volunteers, capacity, start, end });
     return { msg: "Shift successfully created!", shift: await this.shifts.readOne({ _id }) };
   }
 
@@ -63,6 +65,9 @@ export default class ShiftConcept {
     await this.notClaimed(shift, user);
     const newVolunteers = shift.volunteers;
     newVolunteers.push(user);
+    if (shift.capacity && newVolunteers.length > shift.capacity){
+      throw new NotAllowedError('Too Many')
+    }
     await this.shifts.updateOne({ _id }, { volunteers: newVolunteers });
     return { msg: "Claimed shift successfully!" };
   }

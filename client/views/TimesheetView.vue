@@ -25,6 +25,7 @@ async function getOrgShifts() {
   try {
     if (selectedOrg.value) {
       results = await fetchy(`/api/shift/org/${selectedOrg.value.id}/${hidePastShifts.value}`, "GET");
+      console.log(results);
     }
   } catch (_) {
     return;
@@ -36,6 +37,7 @@ async function getMyShifts() {
   let results;
   try {
     results = await fetchy(`/api/shift/user/${hidePastShifts.value}`, "GET");
+    console.log(results);
   } catch (_) {
     return;
   }
