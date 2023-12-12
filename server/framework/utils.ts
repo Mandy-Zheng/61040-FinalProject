@@ -3,6 +3,7 @@ export const DIETARY_RESTRICTIONS = ["Gluten", "Tree Nuts", "Peanuts", "Milk", "
 
 export const TAG_COLORS = ["#b9fbc0", "#fde4cf", "#fbf8cc", "#ffcfd2", "#8eecf5", "#90dbf4", "#a3c4f3", "#cfbaf0"];
 
+export const WEEK = ["U", "M", "T", "W", "Th", "F", "S"];
 export function getParamNames(f: Function) {
   return f
     .toString()
