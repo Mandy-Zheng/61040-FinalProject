@@ -153,7 +153,24 @@ const triggerCreateModalDblClick = async (event: any) => {
       </label>
     </div>
     <teleport to="body">
-      <ShiftModal :show="showShiftModal" :shift="shift" @close="showShiftModal = false" @delete="showDeleteModal = true" @refreshShifts="getAllShifts(), (showShiftModal = false)" />
+      <article v-for="s in shifts" :key="s._id">
+        <ShiftModal
+          :show="showShiftModal && shift._id === s._id"
+          :shift="s"
+          @close="showShiftModal = false"
+          @delete="showDeleteModal = true"
+          @refreshShifts="getAllShifts(), (showShiftModal = false)"
+          @updateCapacity="getAllShifts"
+        />
+      </article>
+      <!-- <ShiftModal
+        :show="showShiftModal"
+        :shift="shift"
+        @close="showShiftModal = false"
+        @delete="showDeleteModal = true"
+        @refreshShifts="getAllShifts(), (showShiftModal = false)"
+        @updateCapacity="getAllShifts"
+      /> -->
       <DeleteShiftModal :show="showDeleteModal" :shift="shift" @close="showDeleteModal = false" @delete="deleteShift" />
       <CreateShiftModal :show="showCreateModal" :shift="shift" @close="showCreateModal = false" @refreshShifts="getAllShifts(), (showCreateModal = false)" />
     </teleport>
@@ -179,7 +196,10 @@ const triggerCreateModalDblClick = async (event: any) => {
     >
       <template #event="{ event }">
         <div>{{ moment(event.start).format("HH:mm") }} - {{ moment(event.end).format("HH:mm") }}</div>
-        <small> Volunteers: {{ event.volunteers }} Capacity: {{ event.capacity }} </small>
+        <small>
+          Volunteers: {{ event.volunteers }} <br />
+          Capacity: {{ event.capacity }}
+        </small>
       </template>
     </vue-cal>
   </div>

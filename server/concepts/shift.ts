@@ -96,6 +96,19 @@ export default class ShiftConcept {
     return { msg: "Updated shift successfully!" };
   }
 
+  async updateShiftCapacity(_id: ObjectId, capacity: number) {
+    const shift = await this.shifts.readOne({ _id });
+    if (!shift) {
+      throw new NotFoundError(`Shift not found`);
+    }
+    await this.isFutureShift(shift.end, "edit");
+    if (capacity < shift.volunteers.length) {
+      throw new NotAllowedError("Capacity must be at least the current number of volunteers!");
+    }
+    await this.shifts.updateOne({ _id }, { capacity: capacity });
+    return { msg: "Updated shift successfully!" };
+  }
+
   async unclaimShiftsByUser(user: ObjectId) {
     const claimedShifts = await this.getShiftsByUser(user);
     claimedShifts.forEach((s) => this.unclaimShift(s._id, user));
