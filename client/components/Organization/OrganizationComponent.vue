@@ -271,7 +271,7 @@ onBeforeMount(async () => {
   margin-top: 2em;
 }
 input {
-  width: 8em;
+  width: fit-content;
   margin-left: 2em;
 }
 .btn-group {

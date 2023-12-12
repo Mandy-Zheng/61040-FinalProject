@@ -140,7 +140,7 @@ const triggerCreateModalDblClick = async (event: any) => {
 
 <template>
   <div class="shifts">
-    <h1>TimeSheet</h1>
+    <h1>Timesheet</h1>
     <div class="row">
       <div class="toggletext">Show only future shifts:</div>
       <label class="switch" style="margin-right: 3em">

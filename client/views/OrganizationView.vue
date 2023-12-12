@@ -47,7 +47,7 @@ onBeforeMount(async () => {
 <template>
   <main>
     <div class="org">
-      <h1 class="title">
+      <h1>
         Current Organization:
         <span>{{ selectedOrg?.name ?? "no organization selected" }}</span>
       </h1>
