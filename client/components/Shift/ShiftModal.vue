@@ -65,11 +65,6 @@ const unclaimShift = async () => {
               <button v-if="shift.end > today" class="button-39" @click.prevent="unclaimShift">Unclaim</button>
               <button v-if="selectedOrg?.isAdmin && shift.end > today" class="button-39 red" @click.prevent="showDeleteModal = true">Delete Shift</button>
             </div>
-            <!-- <teleport to="body">
-              <div v-if="selectedOrg?.isAdmin">
-                <DeleteShiftModal :show="showDeleteModal" :shift="shift" @close="showDeleteModal = false" @delete="deleteShift(), (showDeleteModal = false)" />
-              </div>
-            </teleport> -->
           </div>
           <div v-else style="margin-top: 1em">
             <div class="modify">
@@ -84,7 +79,7 @@ const unclaimShift = async () => {
           This action will delete the shift permanently. Are you sure?
           <div class="modal-footer">
             <button class="button-39" @click="emit('close')">Cancel</button>
-            <button class="button-39 red" @click="emit('delete')">Delete shift</button>
+            <button class="button-39 red" @click="deleteShift(), (showDeleteModal = false)">Delete shift</button>
           </div>
         </div>
       </div>
