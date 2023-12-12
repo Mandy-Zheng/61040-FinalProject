@@ -18,6 +18,7 @@ const claimShift = async () => {
   try {
     await fetchy(`api/shift/claim/${props.shift._id}`, "PATCH");
   } catch {
+    emit("close");
     return;
   }
   emit("refreshShifts");
@@ -27,6 +28,7 @@ const unclaimShift = async () => {
   try {
     await fetchy(`api/shift/unclaim/${props.shift._id}`, "PATCH");
   } catch {
+    emit("close");
     return;
   }
   emit("refreshShifts");
@@ -61,7 +63,7 @@ const unclaimShift = async () => {
           <div v-else style="margin-top: 1em">
             <div class="modify">
               <button class="button-39" @click="emit('close')">Cancel</button>
-              <button v-if="shift.end > today" class="button-39" @click.prevent="claimShift">Claim</button>
+              <button v-if="shift.end > today && shift.volunteers.length < shift.capacity" class="button-39" @click.prevent="claimShift">Claim</button>
               <button v-if="selectedOrg?.isAdmin && shift.end > today" class="button-39 red" @click.prevent="emit('close'), emit('delete')">Delete Shift</button>
             </div>
           </div>

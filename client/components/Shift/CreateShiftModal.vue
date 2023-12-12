@@ -18,6 +18,7 @@ async function createShift() {
       });
     }
   } catch (_) {
+    emit("close");
     return;
   }
   capacity.value = 0;

@@ -158,14 +158,14 @@ const triggerCreateModalDblClick = async (event: any) => {
       <CreateShiftModal :show="showCreateModal" :shift="shift" @close="showCreateModal = false" @refreshShifts="getAllShifts(), (showCreateModal = false)" />
     </teleport>
   </div>
-  <div class="cal" title="Click and drag or double click to create shifts!">
+  <div class="cal" :title="selectedOrg?.isAdmin ? 'Click and drag or double click to create shifts!' : ''">
     <vue-cal
       ref="vuecal"
       :time-from="7 * 60"
       :time-to="22 * 60"
       :snap-to-time="15"
       :disable-views="['years', 'year', 'day']"
-      :editable-events="{ title: false, drag: true, resize: true, delete: false, create: selectedOrg?.isAdmin }"
+      :editable-events="{ title: false, drag: selectedOrg?.isAdmin, resize: selectedOrg?.isAdmin, delete: false, create: selectedOrg?.isAdmin }"
       :drag-to-create-threshold="15"
       style="height: 100%"
       :events="convertDates(showOnlyMyShifts ? myShifts : shifts)"
