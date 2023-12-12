@@ -17,6 +17,15 @@ const purchaseLink = ref<string>(props.stock.supplyLink);
 const diet = ref<Array<string>>(props.stock.diet);
 const maxPerPerson = ref<number>(props.stock.maxPerPerson);
 
+function resetForm() {
+  name.value = props.stock.item;
+  imgLink.value = props.stock.image;
+  units.value = props.stock.count;
+  purchaseLink.value = props.stock.supplyLink;
+  diet.value = props.stock.diet;
+  maxPerPerson.value = props.stock.maxPerPerson;
+  emit("close");
+}
 //test link https://drive.google.com/uc?export=view&id=1K3GKKH13ZdvlpePlfIx62OFRsfjMxwoE
 </script>
 
@@ -56,7 +65,7 @@ const maxPerPerson = ref<number>(props.stock.maxPerPerson);
             </div>
           </div>
           <div class="modal-footer">
-            <button class="button-39" @click.prevent="emit('close')">Cancel</button>
+            <button class="button-39" @click.prevent="resetForm">Cancel</button>
             <button class="button-39" type="submit">Update</button>
           </div>
         </form>
