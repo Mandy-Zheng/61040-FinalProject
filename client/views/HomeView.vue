@@ -213,4 +213,12 @@ ul {
   padding-left: 5em;
   margin-bottom: 2em;
 }
+
+hr {
+  border: none;
+  height: 1px;
+  /* Set the hr color */
+  color: #a2a2a2; /* old IE */
+  background-color: #333; /* Modern Browsers */
+}
 </style>
