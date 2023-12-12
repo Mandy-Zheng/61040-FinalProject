@@ -1,22 +1,20 @@
 <script setup lang="ts">
-import { fetchy } from "@/utils/fetchy";
-import { ref, onBeforeMount } from "vue";
 import Multiselect from "@vueform/multiselect";
+import { onBeforeMount, ref } from "vue";
 
 const props = defineProps(["show", "organization"]);
 const emit = defineEmits(["close", "edit"]);
 const newDays = ref<Array<string>>([]);
-const days = ref<Array<string>>(["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]);
+const days = ref<Array<string>>(["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]);
 const newRestockDay = ref<string>();
 
 onBeforeMount(async () => {
-  newDays.value=[];
-  if(props.organization.openDays)
-    props.organization.openDays.forEach(day => {
+  newDays.value = [];
+  if (props.organization.openDays)
+    props.organization.openDays.forEach((day) => {
       newDays.value.push(days.value[day]);
     });
-  if(props.organization.restockDay)
-    newRestockDay.value=days.value[props.organization.restockDay];
+  if (props.organization.restockDay) newRestockDay.value = days.value[props.organization.restockDay];
 });
 </script>
 
@@ -25,20 +23,18 @@ onBeforeMount(async () => {
     <div v-if="props.show" class="modal-mask">
       <div class="modal-container">
         <h3>Edit days for {{ props.organization.name }}</h3>
-        <h5>Open Days</h5>
+        <h4>Open Days</h4>
         <div class="column">
-          <Multiselect class="multiselect" v-model="newDays" mode="tags" :options="days" :searchable="true" :closeOnSelect="false" placeholder="Edit Days" required />
+          <Multiselect class="multiselect" v-model="newDays" mode="tags" :options="days" :searchable="true" :closeOnSelect="false" placeholder="Select open days" required />
         </div>
-        <h5>Restock Day</h5>
+        <h4>Restock Day</h4>
         <div class="column">
-          <select class="restockDays" v-model="newRestockDay">
-            <option v-for="day in days" :value="day">{{day}}</option>
-          </select>
+          <Multiselect class="restockDays" v-model="newRestockDay" :options="days" :closeOnSelect="true" :searchable="true"> </Multiselect>
         </div>
 
         <div class="modal-footer">
           <button class="button-39" @click="emit('close')">Close</button>
-          <button class="button-39" @click="emit('edit', newDays, newRestockDay),emit('close')">Edit Days</button>
+          <button class="button-39" @click="emit('edit', newDays, newRestockDay), emit('close')">Edit Days</button>
         </div>
       </div>
     </div>
@@ -49,6 +45,16 @@ onBeforeMount(async () => {
 .modal-footer {
   display: flex;
   justify-content: space-between;
+}
+
+.multiselect {
+  margin: 0;
+  padding-bottom: 0;
+}
+
+.column {
+  margin-bottom: 0;
+  padding-bottom: 0;
 }
 
 .modal-mask {
@@ -92,5 +98,10 @@ onBeforeMount(async () => {
 
 span {
   color: black;
+}
+
+h4 {
+  font-weight: 400;
+  margin: 0.25em;
 }
 </style>
