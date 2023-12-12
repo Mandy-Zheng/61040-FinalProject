@@ -4,7 +4,7 @@ import { formatDate } from "@/utils/formatDate";
 import Multiselect from "@vueform/multiselect";
 import { storeToRefs } from "pinia";
 import { computed, onBeforeMount, ref } from "vue";
-import { DIETARY_RESTRICTIONS, LANGUAGES, TAG_COLORS, onCreate } from "../../../server/framework/utils";
+import { LANGUAGES, TAG_COLORS, onCreate } from "../../../server/framework/utils";
 import { useOrganizationStore } from "../../stores/organization";
 import { fetchy } from "../../utils/fetchy";
 
@@ -22,9 +22,23 @@ const showAllocateModal = ref<boolean>(false);
 const allocation = ref<Array<any>>([]);
 
 const languageOptions = computed(() => [...new Set([...props.allLanguages, ...LANGUAGES])]);
-const dietOptions = computed(() => [...new Set([...props.allDiets, ...DIETARY_RESTRICTIONS])]);
-const multiselectDietTags = dietOptions.value.map((tag) => {
-  return { label: tag, value: tag };
+// const dietOptions = computed(() => [...new Set([...props.allDiets, ...DIETARY_RESTRICTIONS])]);
+// const multiselectDietTags = dietOptions.value.map((tag) => {
+//   return { label: tag, value: tag };
+// });
+const dietOptions = [
+  { group: "Vegetarian", foods: ["Fish", "Shellfish", "Chicken", "Beef", "Pork", "Meat"] },
+  { group: "All nuts", foods: ["Tree Nuts", "Peanuts"] },
+  { group: "Dairy", foods: ["Milk", "Eggs"] },
+  { group: "Other common allergens", foods: ["Gluten", "Soy", "Sesame"] },
+];
+const multiselectDietTags = dietOptions.map((i) => {
+  return {
+    foodGroup: i.group,
+    foods: i.foods.map((food) => {
+      return { name: food, value: food };
+    }),
+  };
 });
 
 function resetUpdate() {
@@ -103,14 +117,22 @@ onBeforeMount(async () => {
           <div v-if="editMode" class="row">
             <p class="label">Avoid:</p>
             <Multiselect
-              class="multiselect"
               v-model="dietRestrictions"
               mode="tags"
               :options="multiselectDietTags"
-              :searchable="true"
-              @create="onCreate"
-              :createTag="true"
+              :multiple="true"
+              :groups="true"
+              group-options="foods"
+              group-values="foods"
+              group-label="foodGroup"
+              :group-select="true"
+              placeholder="No dietary restrictions"
+              track-by="name"
+              label="name"
               :closeOnSelect="false"
+              :searchable="true"
+              :createOption="true"
+              @create="onCreate"
               required
             />
           </div>
@@ -136,7 +158,7 @@ onBeforeMount(async () => {
               </div>
             </div>
             <div v-else>
-              <p class="tag" v-bind:style="{ backgroundColor: TAG_COLORS[2] }">No foods to avoid</p>
+              <p class="tag" v-bind:style="{ backgroundColor: TAG_COLORS[2] }">No dietary restrictions</p>
             </div>
           </div>
           <div class="">
@@ -174,10 +196,10 @@ onBeforeMount(async () => {
           </div>
           <div>
             <div v-if="editMode" class="row">
-              <p class="label">Requests:</p>
+              <p class="label">Notes:</p>
               <input v-model="requests" />
             </div>
-            <p v-else-if="household.specialRequests">Requests: {{ props.household.specialRequests }}</p>
+            <p v-else-if="household.specialRequests">Notes: {{ props.household.specialRequests }}</p>
           </div>
         </div>
         <div class="btn-group">

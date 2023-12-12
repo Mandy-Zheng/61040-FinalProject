@@ -64,6 +64,11 @@ onBeforeMount(async () => {
 </template>
 
 <style scoped>
+main {
+  background-color: rgb(247, 247, 247);
+  padding-top: 2em;
+  padding-bottom: 10em;
+}
 .org {
   display: flex;
   flex-direction: column;

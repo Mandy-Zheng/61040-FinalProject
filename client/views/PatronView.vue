@@ -16,5 +16,9 @@ const { selectedOrg } = storeToRefs(useOrganizationStore());
 <style scoped>
 .patron-view {
   text-align: center;
+  background-color: rgb(246, 246, 246);
+  padding-top: 2em;
+  padding-bottom: 10em;
+  height: 100vh;
 }
 </style>
