@@ -7,23 +7,12 @@ import { storeToRefs } from "pinia";
 import { ref } from "vue";
 
 const showDeleteModal = ref<boolean>(false);
-const showClaimModal = ref<boolean>(false);
-const showUnclaimModal = ref<boolean>(false);
 const { currentUsername } = storeToRefs(useUserStore());
 
 const props = defineProps(["shift", "show"]);
 const emit = defineEmits(["refreshShifts", "close", "delete"]);
 const { selectedOrg } = storeToRefs(useOrganizationStore());
 const today = new Date().toISOString();
-
-const deleteShift = async () => {
-  try {
-    await fetchy(`api/shift/${props.shift._id}`, "DELETE");
-  } catch {
-    return;
-  }
-  emit("refreshShifts");
-};
 
 const claimShift = async () => {
   try {
@@ -63,23 +52,15 @@ const unclaimShift = async () => {
             <div class="modify">
               <button class="button-39" @click="emit('close')">Cancel</button>
               <button v-if="shift.end > today" class="button-39" @click.prevent="unclaimShift">Unclaim</button>
-              <button v-if="selectedOrg?.isAdmin && shift.end > today" class="button-39 red" @click.prevent="showDeleteModal = true">Delete Shift</button>
+              <button v-if="selectedOrg?.isAdmin && shift.end > today" class="button-39 red" @click.prevent="emit('close'), emit('delete')">Delete Shift</button>
             </div>
           </div>
           <div v-else style="margin-top: 1em">
             <div class="modify">
               <button class="button-39" @click="emit('close')">Cancel</button>
               <button v-if="shift.end > today" class="button-39" @click.prevent="claimShift">Claim</button>
-              <button v-if="selectedOrg?.isAdmin && shift.end > today" class="button-39 red" @click.prevent="showDeleteModal = true">Delete Shift</button>
+              <button v-if="selectedOrg?.isAdmin && shift.end > today" class="button-39 red" @click.prevent="emit('close'), emit('delete')">Delete Shift</button>
             </div>
-          </div>
-        </div>
-        <div :class="showDeleteModal ? '' : 'hide'">
-          <div class="modal-header">Delete shift from {{ formatDate(props.shift.start) }} to {{ formatDate(props.shift.end) }}</div>
-          This action will delete the shift permanently. Are you sure?
-          <div class="modal-footer">
-            <button class="button-39" @click="emit('close')">Cancel</button>
-            <button class="button-39 red" @click="deleteShift(), (showDeleteModal = false)">Delete shift</button>
           </div>
         </div>
       </div>

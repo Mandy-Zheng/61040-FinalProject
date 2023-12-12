@@ -6,6 +6,7 @@ import moment from "moment";
 import { storeToRefs } from "pinia";
 import { onBeforeMount, ref } from "vue";
 import VueCal from "vue-cal";
+import DeleteShiftModal from "../components/Shift/DeleteShiftModal.vue";
 import ShiftModal from "../components/Shift/ShiftModal.vue";
 let hidePastShifts = ref(true);
 let showOnlyMyShifts = ref(false);
@@ -14,6 +15,7 @@ let myShifts = ref<Array<Record<string, string>>>([]);
 const { selectedOrg } = storeToRefs(useOrganizationStore());
 const { currentUsername } = storeToRefs(useUserStore());
 const showShiftModal = ref<boolean>(false);
+const showDeleteModal = ref<boolean>(false);
 
 const shift = ref(undefined);
 const today = new Date();
@@ -104,6 +106,24 @@ async function createShift(event: any) {
   return event;
 }
 
+async function createShiftFromDblClick(event: any) {
+  try {
+    if (selectedOrg.value) {
+      const start = event;
+      const startTime = new Date(start).getTime();
+      const end = new Date(startTime + 2 * 60 * 60 * 1000).toISOString();
+      const body = { orgId: selectedOrg.value.id, start: start, end: end, event: event };
+      await fetchy("api/shift", "POST", {
+        body: body,
+      });
+    }
+  } catch (_) {
+    return;
+  }
+  await getAllShifts();
+  return event;
+}
+
 async function updateShift(event: any) {
   try {
     if (selectedOrg.value) {
@@ -119,6 +139,16 @@ async function updateShift(event: any) {
   await getAllShifts();
   return;
 }
+
+const deleteShift = async (shift: any) => {
+  try {
+    await fetchy(`api/shift/${shift._id}`, "DELETE");
+  } catch {
+    return;
+  }
+  await getAllShifts();
+  showDeleteModal.value = false;
+};
 
 const triggerModal = async (event: any) => {
   shift.value = event.shift;
@@ -141,15 +171,17 @@ const triggerModal = async (event: any) => {
       </label>
     </div>
     <teleport to="body">
-      <ShiftModal :show="showShiftModal" :shift="shift" @close="showShiftModal = false" @refreshShifts="getAllShifts(), (showShiftModal = false)" />
+      <ShiftModal :show="showShiftModal" :shift="shift" @close="showShiftModal = false" @delete="showDeleteModal = true" @refreshShifts="getAllShifts(), (showShiftModal = false)" />
+      <DeleteShiftModal :show="showDeleteModal" :shift="shift" @close="showDeleteModal = false" @delete="deleteShift" />
     </teleport>
   </div>
   <div class="cal">
     <vue-cal
+      ref="vuecal"
       :time-from="7 * 60"
       :time-to="22 * 60"
       :snap-to-time="15"
-      :disable-views="['years', 'year']"
+      :disable-views="['years', 'year', 'day']"
       :editable-events="{ title: false, drag: true, resize: true, delete: false, create: selectedOrg?.isAdmin }"
       :drag-to-create-threshold="15"
       style="height: 100%"
@@ -160,6 +192,7 @@ const triggerModal = async (event: any) => {
       :min-date="today"
       @event-duration-change="updateShift"
       @event-drop="updateShift"
+      @cell-dblclick="createShiftFromDblClick"
     >
     </vue-cal>
   </div>
