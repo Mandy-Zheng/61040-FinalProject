@@ -113,14 +113,25 @@ onBeforeMount(async () => {
     <teleport to="body">
       <CreateStockModal :allDiets="allDiets" :show="showCreateModal" @close="showCreateModal = false" @add="addItem" />
     </teleport>
+<<<<<<< Updated upstream
     <div class="allStocks" v-if="inventory.length">
+||||||| Stash base
+    <div class="allStocks">
+=======
+    <div v-if="inventory.length !== 0" class="allStocks">
+>>>>>>> Stashed changes
       <div v-for="stock in inventory" :key="stock" class="stocks">
         <StockComponent :allDiets="allDiets" @refreshStocks="getAllInventories(), getInventories()" :stockId="stock._id" />
       </div>
     </div>
+<<<<<<< Updated upstream
     <div class="no-file" v-else>
       <h2><i>No Files Yet</i></h2>
     </div>
+||||||| Stash base
+=======
+    <h3 style="padding: 2em" v-else>No inventory yet!</h3>
+>>>>>>> Stashed changes
   </div>
 </template>
 
