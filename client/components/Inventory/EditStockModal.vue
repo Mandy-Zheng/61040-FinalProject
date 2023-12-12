@@ -46,7 +46,7 @@ onBeforeMount(async () => {
               <div class="form-input">Image Link<input v-model="imgLink" /></div>
               <div class="form-input">Purchase Link<input v-model="purchaseLink" /></div>
               <div class="form-input">
-                Units <input class="number-input" type="number" v-model="units" min="0" /> Max Per Person <input class="number-input" type="number" v-model="maxPerPerson" min="0" />
+                Units <input class="number-input" type="number" v-model="units" min="0" /> Max Per Household <input class="number-input" type="number" v-model="maxPerPerson" min="0" />
               </div>
             </div>
           </div>
