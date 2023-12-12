@@ -2,7 +2,7 @@
 import Multiselect from "@vueform/multiselect";
 import { storeToRefs } from "pinia";
 import { computed, ref } from "vue";
-import { DIETARY_RESTRICTIONS, LANGUAGES, onCreate } from "../../../server/framework/utils";
+import { LANGUAGES, onCreate } from "../../../server/framework/utils";
 import { useOrganizationStore } from "../../stores/organization";
 import { fetchy } from "../../utils/fetchy";
 import CreatePatronComponent from "./CreatePatronComponent.vue";
@@ -11,9 +11,23 @@ const props = defineProps(["show", "allLanguages", "allDiets"]);
 const emit = defineEmits(["close", "refreshHouseholds"]);
 
 const { selectedOrg } = storeToRefs(useOrganizationStore());
-const dietOptions = computed(() => [...new Set([...props.allDiets, ...DIETARY_RESTRICTIONS])]);
-const multiselectDietTags = dietOptions.value.map((tag) => {
-  return { label: tag, value: tag };
+// const dietOptions = computed(() => [...new Set([...props.allDiets, ...DIETARY_RESTRICTIONS])]);
+// const multiselectDietTags = dietOptions.value.map((tag) => {
+//   return { label: tag, value: tag };
+// });
+const dietOptions = [
+  { group: "Vegetarian", foods: ["Fish", "Shellfish", "Chicken", "Beef", "Pork", "Meat"] },
+  { group: "All nuts", foods: ["Tree Nuts", "Peanuts"] },
+  { group: "Dairy", foods: ["Milk", "Eggs"] },
+  { group: "Other common allergens", foods: ["Gluten", "Soy", "Sesame"] },
+];
+const multiselectDietTags = dietOptions.map((i) => {
+  return {
+    foodGroup: i.group,
+    foods: i.foods.map((food) => {
+      return { name: food, value: food };
+    }),
+  };
 });
 
 const languageOptions = computed(() => [...new Set([...props.allLanguages, ...LANGUAGES])]);
@@ -87,7 +101,24 @@ async function addHousehold() {
             <div class="form-input">
               <div>Avoid</div>
               <div class="dropdown">
-                <Multiselect class="multiselect" v-model="diet" mode="tags" :options="multiselectDietTags" :createTag="true" @create="onCreate" :searchable="true" :closeOnSelect="false" />
+                <Multiselect
+                  v-model="diet"
+                  mode="tags"
+                  :options="multiselectDietTags"
+                  :multiple="true"
+                  :groups="true"
+                  group-options="foods"
+                  group-values="foods"
+                  group-label="foodGroup"
+                  :group-select="true"
+                  placeholder="Enter dietary restrictions"
+                  track-by="name"
+                  label="name"
+                  :closeOnSelect="false"
+                  :searchable="true"
+                  :createOption="true"
+                  @create="onCreate"
+                />
               </div>
             </div>
             <div class="special-request">Special Requests<textarea v-model="specialRequests"></textarea></div>
@@ -188,13 +219,15 @@ img {
   gap: 1em;
   align-items: center;
 }
+
 .form {
   width: 50%;
-  height: 50%;
+  height: fit-content;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
   gap: 2em;
+  margin-bottom: 1.5em;
 }
 
 span {
