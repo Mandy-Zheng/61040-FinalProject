@@ -19,6 +19,6 @@ const { selectedOrg } = storeToRefs(useOrganizationStore());
   background-color: rgb(246, 246, 246);
   padding-top: 2em;
   padding-bottom: 10em;
-  height: 100vh;
+  height: 100%;
 }
 </style>
