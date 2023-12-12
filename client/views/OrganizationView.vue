@@ -49,12 +49,10 @@ onBeforeMount(async () => {
     <div class="org">
       <h1 class="title">
         Current Organization:
-<<<<<<< Updated upstream
-        <span>{{ selectedOrg?.name ?? "None" }}</span>
+        <span>{{ selectedOrg?.name ?? "no organization selected" }}</span>
       </h1>
       <RegisterOrganizationForm class="form" @addOrg="getUserOrganizations" />
       <h3 class="manage">Manage Your Organizations</h3>
-<<<<<<< HEAD
       <div v-if="allOrgs.length">
         <div :class="allOrgs.length < 3 ? 'small-grid' : 'grid'">
           <!-- <div v-for="org in allOrgs" :key="org"><OrganizationComponent :orgId="org" @leaveOrg="leavingOrganizations" @updateName="getUserOrganizations" /></div> -->
@@ -66,27 +64,6 @@ onBeforeMount(async () => {
       <div class="no-org" v-else>
         <h2><i>No Organizations</i></h2>
       </div>
-=======
-      <div :class="allOrgs.length < 3 ? 'small-grid' : 'grid'">
-        <!-- <div v-for="org in allOrgs" :key="org"><OrganizationComponent :orgId="org" @leaveOrg="leavingOrganizations" @updateName="getUserOrganizations" /></div> -->
-||||||| Stash base
-        <span>{{ selectedOrg?.name ?? "None" }}</span>
-      </h3>
-      <h3 style="margin-top: 2em">Manage Your Organizations</h3>
-      <div class="grid">
-        <!-- <div v-for="org in allOrgs" :key="org"><OrganizationComponent :orgId="org" @leaveOrg="leavingOrganizations" @updateName="getUserOrganizations" /></div> -->
-=======
-        <span>{{ selectedOrg?.name ?? "no organization selected" }}</span>
-      </h3>
-      <h3 style="margin-top: 2em">Manage Your Organizations</h3>
-      <div v-if="allOrgs.length !== 0" class="grid">
->>>>>>> Stashed changes
-        <div v-for="org in allOrgs" :key="org">
-          <OrganizationComponent :orgId="org" :isSelected="selectedOrg?.id === org" @leaveOrg="leavingOrganizations" @updateName="getUserOrganizations" @select="changeOrganization" />
-        </div>
-      </div>
-      <h3 style="padding: 2em" v-else>No organizations yet!</h3>
->>>>>>> ea1002c2265d2d2a200bc8c2d1d3d09c9cc7ae63
     </div>
   </main>
 </template>
