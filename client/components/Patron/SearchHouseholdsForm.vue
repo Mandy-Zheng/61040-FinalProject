@@ -3,10 +3,14 @@ import { ref } from "vue";
 
 const searchId = ref("");
 const emit = defineEmits(["search"]);
+
+function emptyForm() {
+  searchId.value = "";
+}
 </script>
 
 <template>
-  <form class="pure-form pure-form-aligned" @submit.prevent="emit('search', searchId)">
+  <form class="pure-form pure-form-aligned" @submit.prevent="emit('search', searchId), emptyForm()">
     <fieldset>
       <div class="pure-control-group">
         <input v-model.trim="searchId" type="text" id="aligned-name" placeholder="Household ID" style="border-radius: 2em; width: 25em" />

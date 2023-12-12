@@ -53,6 +53,7 @@
     "moment": "^2.29.4",
     "mongodb": "^5.9.1",
     "morgan": "^1.10.0",
+    "nanoid": "^5.0.4",
     "pinia": "^2.1.6",
     "pinia-plugin-persistedstate": "^3.2.0",
     "purecss": "^3.0.0",

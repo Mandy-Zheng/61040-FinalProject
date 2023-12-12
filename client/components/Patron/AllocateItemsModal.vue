@@ -1,16 +1,18 @@
 <script setup lang="ts">
 import { fetchy } from "@/utils/fetchy";
-import { ref } from "vue";
+import { computed } from "vue";
 import AdjustableStockComponent from "./AdjustableStockComponent.vue";
 
 const props = defineProps(["show", "household", "allocation"]);
 const emit = defineEmits(["close", "refreshHouseholds"]);
 
-const newAllocations = ref<Array<number>>(
-  props.allocation.map((stock) => {
-    return stock.allocation;
-  }),
-);
+const newAllocations = computed(() => {
+  const help = new Array<number>();
+  props.allocation.map((stock: any, _) => {
+    help.push(stock.allocation);
+  });
+  return help;
+});
 async function allocateItems() {
   try {
     await fetchy(`/api/profile/visit/${props.household._id}`, "PATCH");

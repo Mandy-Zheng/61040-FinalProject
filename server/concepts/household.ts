@@ -92,7 +92,7 @@ export default class HouseholdConcept {
 
   async countVisits(_id: ObjectId) {
     const household = await this.getProfileById(_id);
-    return household.members.length;
+    return household.pastVisits.length;
   }
 
   async updateLanguage(_id: ObjectId, lang: string) {

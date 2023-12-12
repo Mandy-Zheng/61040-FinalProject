@@ -1,26 +1,22 @@
 <script setup lang="ts">
 import { fetchy } from "@/utils/fetchy";
+import { ref, onBeforeMount } from "vue";
 import Multiselect from "@vueform/multiselect";
-import { computed, onBeforeMount, ref } from "vue";
 
 const props = defineProps(["show", "organization"]);
-const allUsers = ref<Array<{ label: string; value: string }>>([]);
-const emit = defineEmits(["close", "add"]);
-const usersToAdd = ref<Array<string>>([]);
-const nonTeamMembers = computed(() => {
-  const adminsAndMembers = props.organization.admins.concat(props.organization.members);
-  return allUsers.value.filter((user) => !adminsAndMembers.includes(user.label));
-});
+const emit = defineEmits(["close", "edit"]);
+const newDays = ref<Array<string>>([]);
+const days = ref<Array<string>>(["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]);
+const newRestockDay = ref<string>();
 
 onBeforeMount(async () => {
-  try {
-    const users = await fetchy(`/api/users`, "GET");
-    allUsers.value = users.map((user: any) => {
-      return { label: user.username, value: user._id };
+  newDays.value=[];
+  if(props.organization.openDays)
+    props.organization.openDays.forEach(day => {
+      newDays.value.push(days.value[day]);
     });
-  } catch {
-    return;
-  }
+  if(props.organization.restockDay)
+    newRestockDay.value=days.value[props.organization.restockDay];
 });
 </script>
 
@@ -28,13 +24,21 @@ onBeforeMount(async () => {
   <transition name="modal">
     <div v-if="props.show" class="modal-mask">
       <div class="modal-container">
-        <h3>Add Members for {{ props.organization.name }}</h3>
+        <h3>Edit days for {{ props.organization.name }}</h3>
+        <h5>Open Days</h5>
         <div class="column">
-          <Multiselect class="multiselect" v-model="usersToAdd" mode="tags" :options="nonTeamMembers" :searchable="true" :closeOnSelect="false" placeholder="Select members to add" required />
+          <Multiselect class="multiselect" v-model="newDays" mode="tags" :options="days" :searchable="true" :closeOnSelect="false" placeholder="Edit Days" required />
         </div>
+        <h5>Restock Day</h5>
+        <div class="column">
+          <select class="restockDays" v-model="newRestockDay">
+            <option v-for="day in days" :value="day">{{day}}</option>
+          </select>
+        </div>
+
         <div class="modal-footer">
           <button class="button-39" @click="emit('close')">Close</button>
-          <button class="button-39" @click="emit('add', usersToAdd)">Add Members</button>
+          <button class="button-39" @click="emit('edit', newDays, newRestockDay),emit('close')">Edit Days</button>
         </div>
       </div>
     </div>

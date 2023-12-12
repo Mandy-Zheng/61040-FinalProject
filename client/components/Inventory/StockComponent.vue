@@ -51,14 +51,14 @@ onBeforeMount(async () => {
     <img v-if="item.image.length" :src="item.image" />
     <img v-else src="../../assets/images/image.svg" />
     <div class="item">
-      <div>
+      <div style="width: 100%">
         <div class="header">
           <h2>{{ item.item }}</h2>
           <h3 v-if="item.count <= 5" class="low-label">Low in stock!</h3>
         </div>
         <div class="subtext">
           <p class="count">{{ item.count }} Units</p>
-          <p class="maxp">Max per Person: {{ item.maxPerPerson }}</p>
+          <p class="maxp">Max per Household: {{ item.maxPerPerson }}</p>
           <p class="maxp">Max per Day: {{ item.maxPerDay }}</p>
         </div>
         <div class="diet">
@@ -121,7 +121,7 @@ onBeforeMount(async () => {
 }
 .header {
   display: flex;
-
+  width: 100%;
   justify-content: space-between;
 }
 .modify {
@@ -132,6 +132,7 @@ onBeforeMount(async () => {
   display: flex;
   flex-direction: row;
   padding: 1em;
+  width: 60em;
 }
 .subtext {
   display: flex;
@@ -141,7 +142,7 @@ onBeforeMount(async () => {
   display: flex;
   flex-direction: row;
   height: max-content;
-  width: 35em;
+  width: 33em;
   justify-content: space-between;
 }
 
@@ -173,7 +174,7 @@ h2 {
 }
 
 .link {
-  margin: 0;
+  margin-left: 1.5em;
   padding: 0;
 }
 .maxp {
