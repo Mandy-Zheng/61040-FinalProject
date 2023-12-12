@@ -10,11 +10,14 @@ const showDeleteModal = ref<boolean>(false);
 const { currentUsername } = storeToRefs(useUserStore());
 
 const props = defineProps(["shift", "show"]);
-const emit = defineEmits(["refreshShifts", "close", "delete"]);
+const emit = defineEmits(["refreshShifts", "close", "delete", "updateCapacity"]);
 const { selectedOrg } = storeToRefs(useOrganizationStore());
 const today = new Date().toISOString();
+const isEditingCapacity = ref<boolean>(false);
+const capacity = ref<number>(props.shift === undefined ? 0 : props.shift.capacity); //computed(() => props.shift.capacity);
 
 const claimShift = async () => {
+  isEditingCapacity.value = false;
   try {
     await fetchy(`api/shift/claim/${props.shift._id}`, "PATCH");
   } catch {
@@ -25,6 +28,7 @@ const claimShift = async () => {
 };
 
 const unclaimShift = async () => {
+  isEditingCapacity.value = false;
   try {
     await fetchy(`api/shift/unclaim/${props.shift._id}`, "PATCH");
   } catch {
@@ -33,6 +37,18 @@ const unclaimShift = async () => {
   }
   emit("refreshShifts");
 };
+
+async function updateCapacity() {
+  isEditingCapacity.value = false;
+  try {
+    const body = { id: props.shift._id, capacity: capacity.value };
+    await fetchy("/api/shift/capacity", "PATCH", { body: body });
+    emit("updateCapacity");
+  } catch (_) {
+    capacity.value = props.shift.capacity;
+    return;
+  }
+}
 </script>
 
 <template>
@@ -42,27 +58,48 @@ const unclaimShift = async () => {
         <div :class="showDeleteModal ? 'hide' : ''">
           <p>Start: {{ formatDate(shift.start) }}</p>
           <p>End: {{ formatDate(shift.end) }}</p>
-          <div class="shift" v-if="shift.volunteers.length !== 0">
-            <h4>Max volunteers: {{ shift.capacity }}</h4>
-            <div class="row">
+          <div class="shift">
+            <h4 v-if="!isEditingCapacity">
+              Max volunteers: {{ shift.capacity }}
+              <button v-if="selectedOrg?.isAdmin" class="icon" @click="isEditingCapacity = true" title="Edit Organization Name">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                  <path
+                    d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"
+                  />
+                  <path
+                    fill-rule="evenodd"
+                    d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"
+                  />
+                </svg>
+              </button>
+            </h4>
+            <h4 v-else>
+              Max volunteers:
+              <input style="padding: 0.5em; border-radius: 0.5em; border-color: rgb(197, 197, 197); border-width: 0.5px" type="number" v-model="capacity" :min="shift.volunteers.length" />
+              <button class="icon" @click="updateCapacity" title="Update Name">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
+                  <path
+                    d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022"
+                  />
+                </svg>
+              </button>
+            </h4>
+            <div v-if="shift.volunteers.length !== 0" class="row">
               <article v-for="volunteer in shift.volunteers" :key="volunteer" style="background-color: #cdb9a29c">{{ volunteer }}</article>
             </div>
-          </div>
-          <div v-else class="shift">
-            <h4>Max volunteers: {{ shift.capacity }}</h4>
-            <p>No volunteers yet!</p>
+            <p v-else>No volunteers yet!</p>
           </div>
 
           <div v-if="shift.volunteers.includes(currentUsername)" class="btn-group">
             <div class="modify">
-              <button class="button-39" @click="emit('close')">Cancel</button>
+              <button class="button-39" @click="emit('close')">Close</button>
               <button v-if="shift.end > today" class="button-39" @click.prevent="unclaimShift">Unclaim</button>
               <button v-if="selectedOrg?.isAdmin && shift.end > today" class="button-39 red" @click.prevent="emit('close'), emit('delete')">Delete Shift</button>
             </div>
           </div>
           <div v-else style="margin-top: 1em">
             <div class="modify">
-              <button class="button-39" @click="emit('close')">Cancel</button>
+              <button class="button-39" @click="emit('close')">Close</button>
               <button v-if="shift.end > today && shift.volunteers.length < shift.capacity" class="button-39" @click.prevent="claimShift">Claim</button>
               <button v-if="selectedOrg?.isAdmin && shift.end > today" class="button-39 red" @click.prevent="emit('close'), emit('delete')">Delete Shift</button>
             </div>
