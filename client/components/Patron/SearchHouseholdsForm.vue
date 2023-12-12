@@ -1,15 +1,27 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { defineProps, ref, watch } from "vue";
 
 const searchId = ref<string>("");
-const emit = defineEmits(["search"]);
+const props = defineProps(["empty"]);
+const emit = defineEmits(["search", "resetEmpty"]);
+
+console.log(props);
+watch(
+  () => props.empty,
+  (val) => {
+    if (val === true) {
+      searchId.value = "";
+      emit("resetEmpty");
+    }
+  },
+);
 </script>
 
 <template>
   <form class="pure-form pure-form-aligned" @submit.prevent="emit('search', searchId)">
     <fieldset>
       <div class="pure-control-group">
-        <input v-model.trim="searchId" type="text" id="aligned-name" placeholder="Household ID" style="border-radius: 2em; width: 25em" />
+        <input v-model.trim="searchId" type="text" id="aligned-name" placeholder="Search by id or name" style="border-radius: 2em; width: 25em" />
         <button class="icon search">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="gray" class="bi bi-search" viewBox="0 0 16 16">
             <path
