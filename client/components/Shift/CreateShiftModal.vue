@@ -31,14 +31,14 @@ async function createShift() {
     <div v-if="show" class="modal-mask">
       <div class="modal-container">
         <form>
-          <div class="form">
+          <div class="form" @submit.prevent="createShift">
             <div class="item">
               <div class="form-input">Max number of volunteers <input class="number-input" type="number" v-model="capacity" min="0" required /></div>
             </div>
           </div>
           <div class="modal-footer">
-            <button class="button-39" @click="emit('close')">Cancel</button>
-            <button class="button-39" type="submit" @click.prevent="createShift">Create shift</button>
+            <button class="button-39" @click.prevent="emit('close')">Cancel</button>
+            <button class="button-39" type="submit">Create shift</button>
           </div>
         </form>
       </div>
