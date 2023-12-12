@@ -10,8 +10,4 @@ const { selectedOrg } = storeToRefs(useOrganizationStore());
     <AllHouseholdsComponent />
   </div>
 </template>
-<style scoped>
-.household {
-  margin-left: 4em;
-}
-</style>
+<style scoped></style>
