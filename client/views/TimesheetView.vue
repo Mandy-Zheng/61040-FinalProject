@@ -203,9 +203,8 @@ const triggerCreateModalDblClick = async (event: any) => {
     </vue-cal>
   </div>
   <div class="no-shifts" v-else>
-    <h2><i>Loading...</i></h2>
+    <img class="loader" src="../assets/images/logo.svg" />
   </div>
-  <div class="hoverthing">Click and drag or double click to create shifts!</div>
 </template>
 
 <style scoped>
