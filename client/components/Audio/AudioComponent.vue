@@ -125,7 +125,7 @@ function closeUpdateModal() {
       </div>
     </div>
     <p v-else-if="loaded">No Audio found</p>
-    <p v-else>Loading...</p>
+    <p v-else><img class="loader" src="../assets/images/logo.svg" /></p>
   </main>
 </template>
 
@@ -167,5 +167,26 @@ audio {
 .row {
   display: flex;
   align-content: center;
+}
+.loader {
+  width: 50px;
+  height: 50px;
+  animation-name: spin;
+  animation-duration: 800ms;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+  /* transform: rotate(3deg); */
+  /* transform: rotate(0.3rad);/ */
+  /* transform: rotate(3grad); */
+  /* transform: rotate(.03turn);  */
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 </style>
