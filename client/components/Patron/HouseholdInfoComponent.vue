@@ -373,4 +373,8 @@ input {
   margin-bottom: 2em;
   padding-right: 1em;
 }
+
+ul {
+  text-align: left;
+}
 </style>
