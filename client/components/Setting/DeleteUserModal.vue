@@ -7,7 +7,7 @@ const emit = defineEmits(["close", "delete"]);
   <transition name="modal">
     <div v-if="show" class="modal-mask">
       <div class="modal-container">
-        <div class="modal-header">Delete user</div>
+        <h2>Delete user</h2>
         This action will delete your account permanently. Are you sure?
         <div class="modal-footer">
           <button class="close-btn" @click="emit('close')">Close</button>
@@ -22,6 +22,7 @@ const emit = defineEmits(["close", "delete"]);
 .modal-footer {
   display: flex;
   justify-content: space-between;
+  margin-top: 1em;
 }
 
 .edit-btn {

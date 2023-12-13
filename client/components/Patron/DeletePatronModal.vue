@@ -24,7 +24,10 @@ const patronsToRemove = ref<Array<string>>([]);
             <button class="delete-btn" @click="emit('delete', patronsToRemove)">Delete</button>
           </div>
         </div>
-        <div v-else>Cannot remove only patron in the household <button @click="emit('close')">Cancel</button></div>
+        <div v-else>
+          <div>Cannot remove only patron in the household</div>
+          <button class="close-btn" style="margin-top: 1em" @click="emit('close')">Cancel</button>
+        </div>
       </div>
     </div>
   </transition>

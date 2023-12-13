@@ -7,7 +7,7 @@ const emit = defineEmits(["close", "delete"]);
   <transition name="modal">
     <div v-if="show" class="modal-mask">
       <div class="modal-container">
-        <div class="modal-header">Delete {{ props.stock.item }}</div>
+        <h3>Delete {{ props.stock.item }}</h3>
         This action will delete the stock permanently. Are you sure?
         <div class="modal-footer">
           <button class="close-btn" @click="emit('close')">Cancel</button>
@@ -27,6 +27,7 @@ img {
   top: 0;
 }
 .modal-footer {
+  margin-top: 1em;
   display: flex;
   justify-content: space-between;
 }

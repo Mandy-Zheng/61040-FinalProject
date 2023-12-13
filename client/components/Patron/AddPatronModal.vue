@@ -63,6 +63,7 @@ h4 {
   border-radius: 2px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
   transition: all 0.3s ease;
+  width: 500px;
 }
 .modal-mask {
   position: fixed;
@@ -108,7 +109,7 @@ input {
   height: 35px;
   border-color: rgb(219, 219, 219);
   border: solid;
-  width: 10em;
+  width: 20em;
   border-width: 1px;
 }
 
