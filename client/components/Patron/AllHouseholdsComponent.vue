@@ -98,7 +98,7 @@ onBeforeMount(async () => {
       </article>
     </section>
     <p class="no-household" v-else-if="loaded"><i>No households yet!</i></p>
-    <p class="no-household" v-else><i>Loading...</i></p>
+    <img v-else class="loader" src="../../assets/images/logo.svg" />
   </div>
 </template>
 
@@ -162,5 +162,27 @@ article {
   margin-top: 2em;
   margin-right: 15em;
   margin-left: 15em;
+}
+
+.loader {
+  width: 50px;
+  height: 50px;
+  animation-name: spin;
+  animation-duration: 800ms;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+  /* transform: rotate(3deg); */
+  /* transform: rotate(0.3rad);/ */
+  /* transform: rotate(3grad); */
+  /* transform: rotate(.03turn);  */
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 </style>

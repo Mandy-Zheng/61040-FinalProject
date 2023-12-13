@@ -121,7 +121,7 @@ onBeforeMount(async () => {
       </div>
     </div>
     <div class="no-file" v-else-if="!loaded">
-      <h2><i>Loading...</i></h2>
+      <img class="loader" src="../assets/images/logo.svg" />
     </div>
     <div class="no-file" v-else>
       <h2><i>No Items in Inventory Yet</i></h2>
@@ -252,5 +252,27 @@ h2 {
   display: flex;
   align-content: center;
   gap: 0.5em;
+}
+
+.loader {
+  width: 50px;
+  height: 50px;
+  animation-name: spin;
+  animation-duration: 800ms;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+  /* transform: rotate(3deg); */
+  /* transform: rotate(0.3rad);/ */
+  /* transform: rotate(3grad); */
+  /* transform: rotate(.03turn);  */
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 </style>
