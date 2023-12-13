@@ -24,6 +24,7 @@ const showCreateModal = ref<boolean>(false);
 
 const shift = ref<any>(undefined);
 const today = new Date();
+const loaded = ref(false);
 
 async function getOrgShifts() {
   let results;
@@ -92,6 +93,7 @@ onBeforeMount(async () => {
   try {
     await getAllShifts();
     await getCurrentOrganization();
+    loaded.value = true;
   } catch {
     return;
   }
@@ -168,19 +170,11 @@ const triggerCreateModalDblClick = async (event: any) => {
           @updateCapacity="getAllShifts"
         />
       </article>
-      <!-- <ShiftModal
-        :show="showShiftModal"
-        :shift="shift"
-        @close="showShiftModal = false"
-        @delete="showDeleteModal = true"
-        @refreshShifts="getAllShifts(), (showShiftModal = false)"
-        @updateCapacity="getAllShifts"
-      /> -->
       <DeleteShiftModal :show="showDeleteModal" :shift="shift" @close="showDeleteModal = false" @delete="deleteShift" />
       <CreateShiftModal :show="showCreateModal" :shift="shift" @close="showCreateModal = false" @refreshShifts="getAllShifts(), (showCreateModal = false)" />
     </teleport>
   </div>
-  <div class="cal" :title="selectedOrg?.isAdmin ? 'Click and drag or double click to create shifts!' : ''">
+  <div v-if="loaded" class="cal" :title="selectedOrg?.isAdmin ? 'Click and drag or double click to create shifts!' : ''">
     <vue-cal
       ref="vuecal"
       :time-from="7 * 60"
@@ -208,9 +202,25 @@ const triggerCreateModalDblClick = async (event: any) => {
       </template>
     </vue-cal>
   </div>
+  <div class="no-shifts" v-else>
+    <h2><i>Loading...</i></h2>
+  </div>
+  <div class="hoverthing">Click and drag or double click to create shifts!</div>
 </template>
 
 <style scoped>
+h2,
+.no-shifts {
+  margin-top: 1em;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  color: var(--faded);
+  font-weight: lighter;
+  font-size: 36px;
+}
 .cal {
   margin: 0 7em 3em 7em;
 }

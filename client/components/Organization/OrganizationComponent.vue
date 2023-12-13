@@ -235,7 +235,7 @@ onBeforeMount(async () => {
         </teleport>
       </div>
       <div v-else style="display: flex; justify-content: center">
-        <div style="display: flex; justify-content: center">
+        <div v-if="isSelected" style="display: flex; justify-content: center">
           <button class="icon" @click.prevent="showLeaveModal = true" title="Leave Organization">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="black" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
               <path
