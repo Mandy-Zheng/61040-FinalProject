@@ -143,66 +143,68 @@ const triggerCreateModalDblClick = async (event: any) => {
 </script>
 
 <template>
-  <div class="shifts">
-    <h1>Timesheet</h1>
-    <div class="row">
-      <div class="toggletext">Show only future shifts:</div>
-      <label class="switch" style="margin-right: 3em">
-        <input type="checkbox" @click="toggleFuturePref" checked />
-        <span class="slider round"></span>
-      </label>
-      <div class="toggletext">Show all my claimed shifts:</div>
-      <label class="switch">
-        <input type="checkbox" @click="toggleMyShiftsPref" />
-        <span class="slider round"></span>
-      </label>
+  <main>
+    <div class="shifts">
+      <h1>Timesheet</h1>
+      <div class="row">
+        <div class="toggletext">Show only future shifts:</div>
+        <label class="switch" style="margin-right: 3em">
+          <input type="checkbox" @click="toggleFuturePref" checked />
+          <span class="slider round"></span>
+        </label>
+        <div class="toggletext">Show all my claimed shifts:</div>
+        <label class="switch">
+          <input type="checkbox" @click="toggleMyShiftsPref" />
+          <span class="slider round"></span>
+        </label>
+      </div>
+      <teleport to="body">
+        <article v-for="s in shifts" :key="s._id">
+          <ShiftModal
+            :show="showShiftModal && shift._id === s._id"
+            :shift="s"
+            @close="showShiftModal = false"
+            @delete="showDeleteModal = true"
+            @refreshShifts="getAllShifts(), (showShiftModal = false)"
+            @updateCapacity="getAllShifts"
+          />
+        </article>
+        <DeleteShiftModal :show="showDeleteModal" :shift="shift" @close="showDeleteModal = false" @delete="deleteShift" />
+        <CreateShiftModal :show="showCreateModal" :shift="shift" @close="showCreateModal = false" @refreshShifts="getAllShifts(), (showCreateModal = false)" />
+      </teleport>
     </div>
-    <teleport to="body">
-      <article v-for="s in shifts" :key="s._id">
-        <ShiftModal
-          :show="showShiftModal && shift._id === s._id"
-          :shift="s"
-          @close="showShiftModal = false"
-          @delete="showDeleteModal = true"
-          @refreshShifts="getAllShifts(), (showShiftModal = false)"
-          @updateCapacity="getAllShifts"
-        />
-      </article>
-      <DeleteShiftModal :show="showDeleteModal" :shift="shift" @close="showDeleteModal = false" @delete="deleteShift" />
-      <CreateShiftModal :show="showCreateModal" :shift="shift" @close="showCreateModal = false" @refreshShifts="getAllShifts(), (showCreateModal = false)" />
-    </teleport>
-  </div>
-  <div v-if="loaded" class="cal" :title="selectedOrg?.isAdmin ? 'Click and drag or double click to create shifts!' : ''">
-    <vue-cal
-      ref="vuecal"
-      :time-from="7 * 60"
-      :time-to="22 * 60"
-      :snap-to-time="15"
-      :disable-views="['years', 'year', 'day']"
-      :editable-events="{ title: false, drag: selectedOrg?.isAdmin, resize: selectedOrg?.isAdmin, delete: false, create: selectedOrg?.isAdmin }"
-      :drag-to-create-threshold="15"
-      style="height: 100%"
-      :events="convertDates(showOnlyMyShifts ? myShifts : shifts)"
-      today-button
-      :on-event-click="triggerModal"
-      @event-drag-create="triggerCreateModal"
-      :min-date="today"
-      @event-duration-change="updateShift"
-      @event-drop="updateShift"
-      @cell-dblclick="triggerCreateModalDblClick"
-    >
-      <template #event="{ event }">
-        <div>{{ moment(event.start).format("HH:mm") }} - {{ moment(event.end).format("HH:mm") }}</div>
-        <small>
-          Volunteers: {{ event.volunteers }} <br />
-          Capacity: {{ event.capacity }}
-        </small>
-      </template>
-    </vue-cal>
-  </div>
-  <div class="no-shifts" v-else>
-    <img class="loader" src="../assets/images/logo.svg" />
-  </div>
+    <div v-if="loaded" class="cal" :title="selectedOrg?.isAdmin ? 'Click and drag or double click to create shifts!' : ''">
+      <vue-cal
+        ref="vuecal"
+        :time-from="7 * 60"
+        :time-to="22 * 60"
+        :snap-to-time="15"
+        :disable-views="['years', 'year', 'day']"
+        :editable-events="{ title: false, drag: selectedOrg?.isAdmin, resize: selectedOrg?.isAdmin, delete: false, create: selectedOrg?.isAdmin }"
+        :drag-to-create-threshold="15"
+        style="height: 100%"
+        :events="convertDates(showOnlyMyShifts ? myShifts : shifts)"
+        today-button
+        :on-event-click="triggerModal"
+        @event-drag-create="triggerCreateModal"
+        :min-date="today"
+        @event-duration-change="updateShift"
+        @event-drop="updateShift"
+        @cell-dblclick="triggerCreateModalDblClick"
+      >
+        <template #event="{ event }">
+          <div>{{ moment(event.start).format("HH:mm") }} - {{ moment(event.end).format("HH:mm") }}</div>
+          <small>
+            Volunteers: {{ event.volunteers }} <br />
+            Capacity: {{ event.capacity }}
+          </small>
+        </template>
+      </vue-cal>
+    </div>
+    <div class="no-shifts" v-else>
+      <img class="loader" src="../assets/images/logo.svg" />
+    </div>
+  </main>
 </template>
 
 <style scoped>

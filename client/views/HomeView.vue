@@ -127,6 +127,8 @@ h1 {
   display: block;
   height: 32em;
   width: 100%;
+  position: relative;
+  top: -2em;
 }
 .float-button {
   float: left top;

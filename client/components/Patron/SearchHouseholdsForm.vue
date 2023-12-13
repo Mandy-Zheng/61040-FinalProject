@@ -38,8 +38,8 @@ form {
   margin-top: 0.4em;
 }
 .search {
-  margin-left: -6em;
-  margin-top: 5px;
+  margin-left: -2em;
+  margin-top: 8px;
 }
 form {
   display: flex;

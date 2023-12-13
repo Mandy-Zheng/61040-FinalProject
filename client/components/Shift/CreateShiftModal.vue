@@ -24,6 +24,11 @@ async function createShift() {
   capacity.value = 0;
   emit("refreshShifts");
 }
+
+function resetForm() {
+  capacity.value = 0;
+  emit("close");
+}
 </script>
 
 <template>
@@ -38,7 +43,7 @@ async function createShift() {
             </div>
           </div>
           <div class="modal-footer">
-            <button class="close-btn" @click.prevent="emit('close')">Cancel</button>
+            <button class="close-btn" @click.prevent="resetForm">Cancel</button>
             <button class="success-btn" type="submit">Add</button>
           </div>
         </form>
