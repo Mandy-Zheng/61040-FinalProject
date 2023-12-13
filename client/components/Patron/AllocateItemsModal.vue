@@ -7,11 +7,11 @@ const props = defineProps(["show", "household", "allocation"]);
 const emit = defineEmits(["close", "refreshHouseholds"]);
 
 const newAllocations = computed(() => {
-  const help = new Array<number>();
-  props.allocation.map((stock: any, _) => {
-    help.push(stock.allocation);
+  const allocations = new Array<number>();
+  props.allocation.map((stock: any) => {
+    allocations.push(stock.allocation);
   });
-  return help;
+  return allocations;
 });
 async function allocateItems() {
   try {
