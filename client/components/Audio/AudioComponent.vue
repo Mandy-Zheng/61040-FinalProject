@@ -167,5 +167,7 @@ audio {
 .row {
   display: flex;
   align-content: center;
+  transform-origin: top left;
+  transform: scale(1.25);
 }
 </style>
