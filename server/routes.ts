@@ -478,6 +478,10 @@ class Routes {
       throw new NotAllowedError("Cannot allocate negative amount");
     }
     const stocks = await Promise.all(IDs.map((stock) => Stock.getStockById(stock)));
+    const moreThanInv = stocks.filter((s, idx) => s.count - changes[idx] < 0);
+    if (moreThanInv.length > 0) {
+      throw new NotAllowedError(`Cannot allocate more units of ${moreThanInv[0].item} than in inventory`);
+    }
     await Promise.all(stocks.map((stock) => Team.isTeamMember(stock.owner, user)));
     await Promise.all(stocks.map((stock, idx) => Stock.decrementStockQuantity(stock._id, changes[idx])));
     return { msg: "Stocks successfully allocated!" };
