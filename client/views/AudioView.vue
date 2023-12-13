@@ -10,6 +10,7 @@ const { selectedOrg } = storeToRefs(useOrganizationStore());
 const showCreateModal = ref<boolean>(false);
 const allLanguageAudio = ref<Array<any>>([]);
 const allLanguages = computed(() => allLanguageAudio.value.map((languageAudio) => languageAudio.language));
+const loaded = ref(false);
 
 async function refresh(language: string) {
   const idx = allLanguageAudio.value.findIndex((languageAudio) => languageAudio.language === language);
@@ -23,6 +24,7 @@ async function refresh(language: string) {
 }
 
 async function getAllLanguageAudio() {
+  loaded.value = false;
   try {
     if (selectedOrg.value) {
       allLanguageAudio.value = await fetchy(`/api/languageAudio/owner/${selectedOrg.value.id}/allLanguages`, "GET");
@@ -30,11 +32,13 @@ async function getAllLanguageAudio() {
   } catch {
     return;
   }
+  loaded.value = true;
 }
 
 onBeforeMount(async () => {
   try {
     await getAllLanguageAudio();
+    loaded.value = true;
   } catch (error) {
     return;
   }
@@ -43,9 +47,6 @@ onBeforeMount(async () => {
 
 <template>
   <main>
-    <button class="success-btn">Hello</button>
-    <button class="close-btn">Hello</button>
-    <button class="delete-btn">Hello</button>
     <h1>Language Audio Files</h1>
     <div style="margin-left: 170px; margin-right: 200px">
       <div class="right">
@@ -59,7 +60,7 @@ onBeforeMount(async () => {
       <teleport to="body">
         <CreateAudioModal @close="showCreateModal = false" :show="showCreateModal" :allLanguages="allLanguages" @add="refresh" />
       </teleport>
-      <div v-if="allLanguageAudio.length" class="language">
+      <div v-if="loaded && allLanguageAudio.length !== 0" class="language">
         <AudioComponent
           v-for="languageAudio in allLanguageAudio"
           :key="languageAudio"
@@ -68,6 +69,9 @@ onBeforeMount(async () => {
           :allLanguages="allLanguages"
           @refresh="refresh"
         />
+      </div>
+      <div class="no-file" v-else-if="!loaded">
+        <h2><i>Loading...</i></h2>
       </div>
       <div class="no-file" v-else>
         <h2><i>No Files Yet</i></h2>

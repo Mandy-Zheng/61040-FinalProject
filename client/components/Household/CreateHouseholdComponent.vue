@@ -39,7 +39,7 @@ const enum memberProfile {
 }
 
 const diet = ref<Array<string>>([]);
-const language = ref<string>("English");
+const language = ref<string>("");
 //const pastVisits = ref<Array<Date>>([]);
 const specialRequests = ref<string>("");
 const isSubmitting = ref<boolean>(false);

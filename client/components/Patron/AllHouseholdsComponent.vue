@@ -98,7 +98,7 @@ onBeforeMount(async () => {
       </article>
     </section>
     <p class="no-household" v-else-if="loaded"><i>No households yet!</i></p>
-    <p v-else>Loading...</p>
+    <p class="no-household" v-else><i>Loading...</i></p>
   </div>
 </template>
 

@@ -39,7 +39,7 @@ function update() {
   <transition name="modal">
     <div v-if="show" class="modal-mask">
       <div class="modal-container">
-        <h3>Manage Members {{ props.organization.name }}</h3>
+        <h3>Manage Members of {{ props.organization.name }}</h3>
         <div v-if="adminsAndMembers.length !== 0" class="space">
           Choose member to change settings for:
           <select v-model="currMember" @change="changeMember">

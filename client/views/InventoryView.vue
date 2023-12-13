@@ -14,6 +14,7 @@ const inventory = ref<Array<any>>([]);
 const showCreateModal = ref<boolean>(false);
 const item = ref("");
 const allDiets = computed(() => [...new Set(inventories.value.flatMap((inventory) => inventory.diet))]);
+const loaded = ref(false);
 
 async function getInventory() {
   try {
@@ -72,6 +73,7 @@ async function getMaxAllocation() {
 onBeforeMount(async () => {
   await getAllInventories();
   await getInventories();
+  loaded.value = true;
 });
 </script>
 
@@ -113,10 +115,13 @@ onBeforeMount(async () => {
     <teleport to="body">
       <CreateStockModal :allDiets="allDiets" :show="showCreateModal" @close="showCreateModal = false" @add="addItem" />
     </teleport>
-    <div class="allStocks" v-if="inventory.length">
+    <div class="allStocks" v-if="loaded && inventory.length">
       <div v-for="stock in inventory" :key="stock" class="stocks">
         <StockComponent :allDiets="allDiets" @refreshStocks="getAllInventories(), getInventories()" :stockId="stock._id" />
       </div>
+    </div>
+    <div class="no-file" v-else-if="!loaded">
+      <h2><i>Loading...</i></h2>
     </div>
     <div class="no-file" v-else>
       <h2><i>No Items in Inventory Yet</i></h2>
