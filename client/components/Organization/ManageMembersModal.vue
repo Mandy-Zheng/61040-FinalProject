@@ -41,7 +41,7 @@ function update() {
       <div class="modal-container">
         <h3>Manage Members of {{ props.organization.name }}</h3>
         <div v-if="adminsAndMembers.length !== 0" class="space">
-          Choose member to change settings for:
+          <p>Choose member to change settings for:</p>
           <select v-model="currMember" @change="changeMember">
             <option value="" :selected="currMember === ''" disabled>--select a member--</option>
             <option v-for="u in adminsAndMembers" :key="u" :selected="currMember === u" :value="u">{{ u }}</option>
@@ -67,6 +67,10 @@ function update() {
 </template>
 
 <style scoped>
+p {
+  width: 150px;
+}
+
 img {
   width: 20px;
   height: 20px;
