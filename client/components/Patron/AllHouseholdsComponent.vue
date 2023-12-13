@@ -75,8 +75,8 @@ onBeforeMount(async () => {
   <div class="right" v-if="!showCreateComponent">
     <SearchHouseholdsForm :empty="empty" @search="getHouseholds" @resetEmpty="resetClear" />
     <div>
-      <button class="button-39" style="color: white" @click.prevent="showCreateComponent = true">Create New Household</button>
-      <button class="button-39 reset" @click.prevent="showResetModal = true">Reset All Visits</button>
+      <button class="success-btn" @click.prevent="showCreateComponent = true">Create New Household</button>
+      <button class="info-btn reset" @click.prevent="showResetModal = true">Reset All Visits</button>
     </div>
   </div>
   <CreateHouseholdComponent :show="showCreateComponent" :allLanguages="allLanguages" :allDiets="allDiets" @close="showCreateComponent = false" @refreshHouseholds="getHouseholds" />
@@ -151,15 +151,9 @@ article {
   margin-left: 4em;
 } */
 
-.button-39 {
-  background-color: var(--primary);
-  color: black;
-  margin: 1em;
-  border: none;
-  height: 4em;
-}
 .reset {
-  background-color: var(--secondary);
+  margin-left: 1em;
+  margin-right: 6em;
 }
 .right {
   display: flex;

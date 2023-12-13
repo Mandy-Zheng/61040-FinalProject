@@ -37,27 +37,18 @@ async function updateAudioFile() {
           </div>
         </div>
         <div class="modal-footer">
-          <button class="button-39" style="color: black; background-color: white; border: solid; border-width: 1px; border-color: grey" @click="emit('close')">Cancel</button>
-          <button class="button-39" @click="updateAudioFile">Update</button>
+          <button class="close-btn" @click="emit('close')">Cancel</button>
+          <button class="success-btn" @click="updateAudioFile">Update</button>
         </div>
       </div>
     </div>
   </transition>
 </template>
 <style scoped>
-.button-39 {
-  background-color: var(--primary);
-  color: white;
-  height: 2.5em;
-  align-content: center;
-  text-align: center;
-  padding-bottom: 2.2em;
-  border: none;
-}
-
 .modal-footer {
   display: flex;
   justify-content: space-between;
+  margin-top: 2em;
 }
 
 .modal-mask {
@@ -75,7 +66,7 @@ async function updateAudioFile() {
 .modal-container {
   width: 300px;
   margin: auto;
-  padding: 20px 30px;
+  padding: 3em;
   background-color: #fff;
   border-radius: 2px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
@@ -86,18 +77,6 @@ async function updateAudioFile() {
   margin-top: 0;
   color: var(--primary);
 }
-
-.button-39 {
-  background-color: var(--primary);
-  color: white;
-  height: 2.5em;
-  align-content: center;
-  text-align: center;
-  padding-bottom: 2.2em;
-  border: none;
-  margin-top: 1em;
-}
-
 .modal-footer {
   display: flex;
   justify-content: space-between;

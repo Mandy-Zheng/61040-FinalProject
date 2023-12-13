@@ -93,16 +93,16 @@ async function updateCapacity() {
 
           <div v-if="shift.volunteers.includes(currentUsername)" class="btn-group">
             <div class="modify">
-              <button class="button-39" @click="emit('close')">Close</button>
-              <button v-if="shift.end > today" class="button-39" @click.prevent="unclaimShift">Unclaim</button>
-              <button v-if="selectedOrg?.isAdmin && shift.end > today" class="button-39 red" @click.prevent="emit('close'), emit('delete')">Delete Shift</button>
+              <button class="close-btn" @click="emit('close')">Close</button>
+              <button v-if="shift.end > today" class="info-btn" @click.prevent="unclaimShift">Unclaim</button>
+              <button v-if="selectedOrg?.isAdmin && shift.end > today" class="delete-btn" @click.prevent="emit('close'), emit('delete')">Delete</button>
             </div>
           </div>
           <div v-else style="margin-top: 1em">
             <div class="modify">
-              <button class="button-39" @click="emit('close')">Close</button>
-              <button v-if="shift.end > today && shift.volunteers.length < shift.capacity" class="button-39" @click.prevent="claimShift">Claim</button>
-              <button v-if="selectedOrg?.isAdmin && shift.end > today" class="button-39 red" @click.prevent="emit('close'), emit('delete')">Delete Shift</button>
+              <button class="close-btn" @click="emit('close')">Close</button>
+              <button v-if="shift.end > today && shift.volunteers.length < shift.capacity" class="success-btn" @click.prevent="claimShift">Claim</button>
+              <button v-if="selectedOrg?.isAdmin && shift.end > today" class="delete-btn" @click.prevent="emit('close'), emit('delete')">Delete</button>
             </div>
           </div>
         </div>

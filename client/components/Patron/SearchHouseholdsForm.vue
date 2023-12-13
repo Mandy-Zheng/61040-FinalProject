@@ -39,7 +39,7 @@ form {
   margin-top: 0.4em;
 }
 .search {
-  margin-left: -35px;
+  margin-left: -6em;
   margin-top: 5px;
 }
 form {
@@ -48,21 +48,9 @@ form {
   padding: 1em;
   align-items: center;
 }
-.button-39 {
-  margin: 10px;
-  padding: 10px;
-}
 
-.column {
-  display: flex;
-  flex-direction: column;
-  gap: 1em;
-  padding-right: 2em;
-}
-
-.row {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
+input {
+  width: 22em;
+  margin-right: 4em;
 }
 </style>

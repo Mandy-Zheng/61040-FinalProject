@@ -23,7 +23,7 @@ async function register() {
     <fieldset>
       <div class="pure-control-group align">
         <input v-model.trim="orgName" type="text" id="aligned-name" placeholder="Organization Name" required />
-        <button class="button-39">Register</button>
+        <button class="success-btn">Register</button>
       </div>
     </fieldset>
   </form>
@@ -36,15 +36,6 @@ h3 {
 }
 input {
   margin: 0em;
-}
-.button-39 {
-  background-color: var(--primary);
-  color: white;
-  height: 2.5em;
-  align-content: center;
-  text-align: center;
-  padding-bottom: 2.2em;
-  border: none;
 }
 .align {
   display: flex;

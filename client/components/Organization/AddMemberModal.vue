@@ -33,8 +33,8 @@ onBeforeMount(async () => {
           <Multiselect class="multiselect" v-model="usersToAdd" mode="tags" :options="nonTeamMembers" :searchable="true" :closeOnSelect="false" placeholder="Select members to add" required />
         </div>
         <div class="modal-footer">
-          <button class="button-39" @click="emit('close')">Close</button>
-          <button class="button-39" @click="emit('add', usersToAdd)">Add Members</button>
+          <button class="close-btn" @click="emit('close')">Cancel</button>
+          <button class="success-btn" @click="emit('add', usersToAdd)">Add</button>
         </div>
       </div>
     </div>

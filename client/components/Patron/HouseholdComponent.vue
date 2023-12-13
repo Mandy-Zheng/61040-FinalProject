@@ -97,11 +97,6 @@ async function deletePatrons(patrons: Array<string>) {
 </template>
 
 <style scoped>
-.button-39 {
-  margin: 1px;
-  padding: 10px;
-}
-
 .column {
   display: flex;
   flex-direction: column;

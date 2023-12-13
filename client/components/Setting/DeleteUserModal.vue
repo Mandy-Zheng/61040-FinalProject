@@ -10,8 +10,8 @@ const emit = defineEmits(["close", "delete"]);
         <div class="modal-header">Delete user</div>
         This action will delete your account permanently. Are you sure?
         <div class="modal-footer">
-          <button class="button-39" @click="emit('close')">Close</button>
-          <button class="button-39 red" @click="emit('delete')">Delete</button>
+          <button class="close-btn" @click="emit('close')">Close</button>
+          <button class="delete-btn" @click="emit('delete')">Delete</button>
         </div>
       </div>
     </div>

@@ -58,8 +58,8 @@ function update() {
           </select>
         </div>
         <div class="modal-footer">
-          <button class="button-39" @click="close">Close</button>
-          <button class="button-39" @click="update">Update</button>
+          <button class="close-btn" @click="close">Close</button>
+          <button class="success-btn" @click="update">Update</button>
         </div>
       </div>
     </div>

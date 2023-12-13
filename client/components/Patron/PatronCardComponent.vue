@@ -34,7 +34,7 @@ async function updatePatrons() {
           </div>
           <div class="form-input"><span>Birthdate:</span> <input type="date" :max="today" v-model="birthday" required /></div>
           <div class="form-input"><span>Photo Link:</span> <input v-model="img" /></div>
-          <button class="button-39" type="submit">Save Changes</button>
+          <button class="success-btn" type="submit">Update</button>
         </form>
       </div>
       <div class="row" v-else>
@@ -67,10 +67,6 @@ async function updatePatrons() {
 <style scoped>
 .row {
   display: flex;
-}
-.button-39 {
-  margin: 10px;
-  padding: 10px;
 }
 
 .name {

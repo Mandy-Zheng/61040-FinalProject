@@ -92,8 +92,8 @@ onBeforeMount(async () => {
         ></Multiselect>
       </div>
       <div class="btn-group">
-        <button class="button-39" @click.prevent="showCreateModal = true">Create New Item</button>
-        <button class="button-39 reset align" @click.prevent="getMaxAllocation()">
+        <button class="success-btn" @click.prevent="showCreateModal = true">Create New Item</button>
+        <button class="info-btn align" @click.prevent="getMaxAllocation()">
           Update Daily Allocation
           <div class="tooltip">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
@@ -146,6 +146,8 @@ h2 {
 }
 .btn-group {
   display: flex;
+  gap: 1em;
+  margin-right: 0em;
 }
 .inventory {
   text-align: center;
@@ -172,7 +174,7 @@ h2 {
   padding-left: 4em;
   padding-bottom: 1em;
   padding-right: 4em;
-
+  margin-bottom: 2em;
   font-weight: 300;
 }
 
@@ -191,12 +193,6 @@ h2 {
   align-items: center;
 }
 
-.button-39 {
-  background-color: var(--primary);
-  border: none;
-  margin: 1em;
-  color: white;
-}
 .right {
   margin-top: 1em;
   margin-right: 11em;

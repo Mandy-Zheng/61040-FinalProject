@@ -203,8 +203,8 @@ onBeforeMount(async () => {
           </div>
         </div>
         <div class="btn-group">
-          <button class="button-39" v-if="editMode" @click="resetUpdate">Cancel</button>
-          <button class="button-39" v-if="editMode" @click="updateOverview">Update</button>
+          <button class="close-btn" v-if="editMode" @click="resetUpdate">Cancel</button>
+          <button class="success-btn" v-if="editMode" @click="updateOverview">Update</button>
         </div>
       </div>
     </div>
@@ -230,10 +230,6 @@ h3 {
 .overview-header {
   display: flex;
   align-items: center;
-}
-
-.button-39 {
-  margin: 0;
 }
 
 .btn-group {

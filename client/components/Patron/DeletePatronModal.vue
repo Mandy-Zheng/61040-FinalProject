@@ -18,9 +18,11 @@ const patronsToRemove = ref<Array<string>>([]);
         <h4>Removing Patrons from household {{ householdId }}</h4>
         <br />
         <div v-if="patronNames.length > 1">
-          <Multiselect v-model="patronsToRemove" mode="tags" :options="patronNames" :searchable="true" :closeOnSelect="false" />
-          <button class="button-39" @click="emit('close')">Cancel</button>
-          <button class="button-39" @click="emit('delete', patronsToRemove)">Delete</button>
+          <Multiselect v-model="patronsToRemove" placeholder="Select Patrons to Remove" mode="tags" :options="patronNames" :searchable="true" :closeOnSelect="false" />
+          <div class="modal-footer">
+            <button class="close-btn" @click="emit('close')">Cancel</button>
+            <button class="delete-btn" @click="emit('delete', patronsToRemove)">Delete</button>
+          </div>
         </div>
         <div v-else>Cannot remove only patron in the household <button @click="emit('close')">Cancel</button></div>
       </div>
@@ -29,16 +31,10 @@ const patronsToRemove = ref<Array<string>>([]);
 </template>
 
 <style scoped>
-.button-39 {
-  height: 3em;
-  align-content: center;
-  text-align: center;
-  margin-right: 1em;
-}
-
 .modal-footer {
   display: flex;
   justify-content: space-between;
+  margin-top: 2em;
 }
 
 .modal-mask {
@@ -65,10 +61,6 @@ const patronsToRemove = ref<Array<string>>([]);
 .modal-header {
   margin-top: 0;
   color: var(--primary);
-}
-.button-39 {
-  margin: 10px;
-  padding: 10px;
 }
 
 .name {

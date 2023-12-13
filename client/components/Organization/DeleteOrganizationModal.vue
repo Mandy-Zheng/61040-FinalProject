@@ -17,8 +17,8 @@ const emit = defineEmits(["close", "delete"]);
           This action will delete the organization permanently and all information will be lost. Are you sure?
         </div>
         <div class="modal-footer">
-          <button class="button-39" @click="emit('close')">Close</button>
-          <button class="button-39 red" @click="emit('delete')">Delete Organization</button>
+          <button class="close-btn" @click="emit('close')">Cancel</button>
+          <button class="delete-btn" @click="emit('delete')">Delete</button>
         </div>
       </div>
     </div>

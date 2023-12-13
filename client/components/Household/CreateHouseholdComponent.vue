@@ -151,10 +151,10 @@ async function addHousehold() {
         </div>
         <div class="footer">
           <div>
-            <button class="button-39" @click.prevent="resetForm">Cancel</button>
+            <button class="close-btn" @click.prevent="resetForm">Cancel</button>
           </div>
           <div>
-            <button class="button-39" type="submit" @click="addHousehold">Submit</button>
+            <button class="success-btn" type="submit" @click="addHousehold">Add</button>
           </div>
         </div>
       </div>
@@ -255,7 +255,7 @@ textarea {
 }
 
 .footer {
-  width: 50%;
+  width: 53%;
   gap: 1em;
   display: flex;
   justify-content: space-between;

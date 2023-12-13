@@ -38,8 +38,8 @@ async function createShift() {
             </div>
           </div>
           <div class="modal-footer">
-            <button class="button-39" @click.prevent="emit('close')">Cancel</button>
-            <button class="button-39" type="submit">Create shift</button>
+            <button class="close-btn" @click.prevent="emit('close')">Cancel</button>
+            <button class="success-btn" type="submit">Add</button>
           </div>
         </form>
       </div>

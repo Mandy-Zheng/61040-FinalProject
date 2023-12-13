@@ -12,8 +12,8 @@ const emit = defineEmits(["close", "claim"]);
         <div class="modal-header">Claim shift from {{ formatDate(props.shift.start) }} to {{ formatDate(props.shift.end) }}</div>
         Are you sure?
         <div class="modal-footer">
-          <button class="button-39" @click="emit('close')">Cancel</button>
-          <button class="button-39 red" @click="emit('claim')">Claim shift</button>
+          <button class="close-btn" @click="emit('close')">Cancel</button>
+          <button class="success-btn" @click="emit('claim')">Claim shift</button>
         </div>
       </div>
     </div>

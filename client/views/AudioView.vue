@@ -43,16 +43,18 @@ onBeforeMount(async () => {
 
 <template>
   <main>
+    <button class="success-btn">Hello</button>
+    <button class="close-btn">Hello</button>
+    <button class="delete-btn">Hello</button>
     <h1>Language Audio Files</h1>
     <div style="margin-left: 170px; margin-right: 200px">
       <div class="right">
-        <button class="button-39" @click="showCreateModal = true">
+        <button class="close-btn" @click="showCreateModal = true">
           Upload Audio File
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-up-circle-fill" viewBox="0 0 16 16">
             <path d="M16 8A8 8 0 1 0 0 8a8 8 0 0 0 16 0m-7.5 3.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707z" />
           </svg>
         </button>
-        <!-- <button class="button-39 reset" @click.prevent="showResetModal = true">Reset All Visits</button> -->
       </div>
       <teleport to="body">
         <CreateAudioModal @close="showCreateModal = false" :show="showCreateModal" :allLanguages="allLanguages" @add="refresh" />
@@ -94,8 +96,11 @@ h2 {
   font-weight: lighter;
   font-size: 36px;
 }
-.button-39 {
-  margin-top: 1em;
+.close-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5em;
 }
 select {
   height: 35px;
@@ -123,12 +128,5 @@ select {
   flex-direction: column;
   gap: 4em;
   margin-bottom: 75px;
-}
-
-.button-39 {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 10px;
 }
 </style>

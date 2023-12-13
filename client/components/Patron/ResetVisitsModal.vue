@@ -27,8 +27,8 @@ async function resetVisits() {
         <div class="modal-header">Reset visits to 0 for all households in this organization</div>
         This action will lose the past visits permanently. Are you sure?
         <div class="modal-footer">
-          <button class="button-39" @click="emit('close')">Close</button>
-          <button class="button-39 red" @click="resetVisits">Reset</button>
+          <button class="close-btn" @click="emit('close')">Close</button>
+          <button class="delete-btn" @click="resetVisits">Reset</button>
         </div>
       </div>
     </div>

@@ -47,8 +47,8 @@ function update(idx: number, amount: number) {
         </div>
 
         <div class="modal-footer">
-          <button class="button-39" @click="emit('close')">Cancel</button>
-          <button class="button-39" style="background-color: var(--primary); border: none; color: white" @click="allocateItems">Allocate</button>
+          <button class="close-btn" @click="emit('close')">Cancel</button>
+          <button class="success-btn" @click="allocateItems">Allocate</button>
         </div>
       </div>
     </div>

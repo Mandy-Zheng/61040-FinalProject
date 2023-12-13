@@ -10,8 +10,8 @@ const emit = defineEmits(["close", "delete"]);
         <div class="modal-header">Delete household {{ props.household._id }} from this organization</div>
         This action will delete the household permanently. Are you sure?
         <div class="modal-footer">
-          <button class="button-39" @click="emit('close')">Close</button>
-          <button class="button-39 red" @click="emit('delete')">Delete household</button>
+          <button class="close-btn" @click="emit('close')">Cancel</button>
+          <button class="delete-btn" @click="emit('delete')">Delete household</button>
         </div>
       </div>
     </div>

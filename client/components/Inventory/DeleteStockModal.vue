@@ -10,8 +10,8 @@ const emit = defineEmits(["close", "delete"]);
         <div class="modal-header">Delete {{ props.stock.item }}</div>
         This action will delete the stock permanently. Are you sure?
         <div class="modal-footer">
-          <button class="button-39" @click="emit('close')">Close</button>
-          <button class="button-39 red" @click="emit('delete')">Delete Stock</button>
+          <button class="close-btn" @click="emit('close')">Cancel</button>
+          <button class="delete-btn" @click="emit('delete')">Delete</button>
         </div>
       </div>
     </div>

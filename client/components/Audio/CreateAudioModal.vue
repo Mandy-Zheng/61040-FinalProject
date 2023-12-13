@@ -66,26 +66,16 @@ function resetForm() {
           </div>
         </div>
         <div class="modal-footer">
-          <button class="button-39" style="color: black; background-color: white; border: solid; border-width: 1px; border-color: grey" @click="resetForm">Cancel</button>
-          <button class="button-39" @click="addAudioFile">Add</button>
+          <button class="close-btn" @click="resetForm">Cancel</button>
+          <button class="success-btn" @click="addAudioFile">Add</button>
         </div>
       </div>
     </div>
   </transition>
 </template>
 <style scoped>
-.button-39 {
-  background-color: var(--primary);
-  color: white;
-  height: 2.5em;
-  align-content: center;
-  text-align: center;
-  padding-bottom: 2.2em;
-  border: none;
-  margin-top: 1em;
-}
-
 .modal-footer {
+  margin-top: 1em;
   display: flex;
   justify-content: space-between;
 }

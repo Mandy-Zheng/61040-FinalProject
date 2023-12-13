@@ -38,9 +38,9 @@ function resetForm() {
 
           <div class="form-input"><span>Birthdate:</span> <input type="date" :max="today" v-model="birthday" /></div>
           <div class="form-input"><span>Photo Link:</span> <input v-model="image" /></div>
-          <div class="row">
-            <button class="button-39" @click="resetForm">Cancel</button>
-            <button class="button-39" @click="addMember">Add</button>
+          <div class="modal-footer">
+            <button class="close-btn" @click="resetForm">Cancel</button>
+            <button class="success-btn" @click="addMember">Add</button>
           </div>
         </div>
       </div>
@@ -49,19 +49,16 @@ function resetForm() {
 </template>
 
 <style scoped>
-.button-39 {
-  height: 3em;
-  align-content: center;
-  text-align: center;
-  margin-right: 1em;
-}
-.row {
+.modal-footer {
   display: flex;
-  gap: 1em;
+  justify-content: space-between;
+}
+h4 {
+  font-size: larger;
 }
 .modal-container {
   margin: auto;
-  padding: 20px 30px;
+  padding: 2em;
   background-color: #fff;
   border-radius: 2px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
@@ -81,8 +78,10 @@ function resetForm() {
 .patron-card {
   display: flex;
   flex-direction: column;
-  background-color: rgb(240, 240, 240);
+
   padding: 1em;
+  padding-bottom: 0;
+  padding-top: 0;
   margin-top: 1em;
   margin-bottom: 1em;
   border-radius: 5px;

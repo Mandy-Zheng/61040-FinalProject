@@ -218,9 +218,7 @@ const triggerCreateModalDblClick = async (event: any) => {
 .shifts {
   margin: 0em;
 }
-.button-39 {
-  margin: 1em;
-}
+
 .row {
   display: flex;
   justify-content: center;

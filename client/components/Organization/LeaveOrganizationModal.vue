@@ -17,8 +17,8 @@ const emit = defineEmits(["close", "leave"]);
           This action will make you leave {{ props.organization.name }}. You will not be able to rejoin it without contacting an admin. Are you sure you wish to continue?
         </div>
         <div class="modal-footer">
-          <button class="button-39" @click="emit('close')">Close</button>
-          <button class="button-39 red" @click="emit('leave')">Leave</button>
+          <button class="close-btn" @click="emit('close')">Cancel</button>
+          <button class="delete-btn" @click="emit('leave')">Leave</button>
         </div>
       </div>
     </div>

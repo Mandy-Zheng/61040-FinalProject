@@ -33,8 +33,8 @@ onBeforeMount(async () => {
         </div>
 
         <div class="modal-footer">
-          <button class="button-39" @click="emit('close')">Close</button>
-          <button class="button-39" @click="emit('edit', newDays, newRestockDay), emit('close')">Edit Days</button>
+          <button class="close-btn" @click="emit('close')">Cancel</button>
+          <button class="success-btn" @click="emit('edit', newDays, newRestockDay), emit('close')">Edit Days</button>
         </div>
       </div>
     </div>

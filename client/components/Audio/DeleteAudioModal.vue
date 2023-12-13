@@ -21,29 +21,22 @@ async function deleteAudioFile() {
         <h3>Are you sure you want to delete the following {{ props.language }} audio file that translates to:</h3>
         <p>{{ props.translation }}</p>
         <div class="modal-footer">
-          <button class="button-39" @click="emit('close')">Cancel</button>
-          <button class="button-39 red" @click="deleteAudioFile">Delete</button>
+          <button class="close-btn" @click="emit('close')">Cancel</button>
+          <button class="delete-btn" @click="deleteAudioFile">Delete</button>
         </div>
       </div>
     </div>
   </transition>
 </template>
 <style scoped>
-.button-39 {
-  background-color: var(--primary);
-  color: white;
-  height: 2.5em;
-  align-content: center;
-  text-align: center;
-  padding-bottom: 2.2em;
-  border: none;
-}
-
 .modal-footer {
   display: flex;
   justify-content: space-between;
+  margin-top: 2em;
 }
-
+h3 {
+  margin-top: 0;
+}
 .modal-mask {
   position: fixed;
   z-index: 9998;
@@ -59,7 +52,7 @@ async function deleteAudioFile() {
 .modal-container {
   width: 500px;
   margin: auto;
-  padding: 20px 30px;
+  padding: 3em;
   background-color: #fff;
   border-radius: 2px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);

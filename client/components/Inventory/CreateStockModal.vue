@@ -73,8 +73,8 @@ onBeforeMount(async () => {});
             </div>
           </div>
           <div class="modal-footer">
-            <button class="button-39" @click.prevent="emptyForm">Cancel</button>
-            <button class="button-39" type="submit">Add</button>
+            <button class="close-btn" @click.prevent="emptyForm">Cancel</button>
+            <button class="success-btn" type="submit">Add</button>
           </div>
         </form>
       </div>

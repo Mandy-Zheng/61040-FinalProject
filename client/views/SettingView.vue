@@ -26,10 +26,10 @@ async function delete_() {
     <h1>Settings for {{ currentUsername }}</h1>
     <div class="row">
       <div class="column">
-        <button class="button-39" style="background-color: var(--primary)" @click="logout">Logout</button>
+        <button class="close-btn" @click="logout">Logout</button>
       </div>
       <div class="column">
-        <button class="button-39" style="background-color: var(--secondary)" @click="showDeleteModal = true">Delete</button>
+        <button class="delete-btn" @click="showDeleteModal = true">Delete</button>
       </div>
     </div>
     <UpdateUserForm />
@@ -48,9 +48,5 @@ async function delete_() {
 .column {
   flex: 50%;
   padding: 10px;
-}
-
-.button-39 {
-  border: none;
 }
 </style>
