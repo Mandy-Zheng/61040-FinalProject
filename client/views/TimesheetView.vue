@@ -205,7 +205,6 @@ const triggerCreateModalDblClick = async (event: any) => {
   <div class="no-shifts" v-else>
     <img class="loader" src="../assets/images/logo.svg" />
   </div>
-  <div class="hoverthing">Click and drag or double click to create shifts!</div>
 </template>
 
 <style scoped>
