@@ -177,10 +177,9 @@ audio {
   animation-duration: 800ms;
   animation-iteration-count: infinite;
   animation-timing-function: linear;
-  /* transform: rotate(3deg); */
-  /* transform: rotate(0.3rad);/ */
-  /* transform: rotate(3grad); */
-  /* transform: rotate(.03turn);  */
+}
+audio::-webkit-media-controls-panel {
+  background-color: rgb(222, 222, 222);
 }
 
 @keyframes spin {
