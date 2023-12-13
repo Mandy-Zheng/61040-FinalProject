@@ -125,7 +125,7 @@ function closeUpdateModal() {
       </div>
     </div>
     <p v-else-if="loaded">No Audio found</p>
-    <p v-else><img class="loader" src="../assets/images/logo.svg" /></p>
+    <p v-else><img class="loader" src="../../assets/images/logo.svg" /></p>
   </main>
 </template>
 
