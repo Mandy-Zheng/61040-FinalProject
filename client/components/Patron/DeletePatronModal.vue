@@ -16,8 +16,9 @@ const patronsToRemove = ref<Array<string>>([]);
     <div v-if="props.show" class="modal-mask">
       <div class="modal-container">
         <h4>Removing Patrons from household {{ householdId }}</h4>
-        <br />
+
         <div v-if="patronNames.length > 1">
+          <br />
           <Multiselect v-model="patronsToRemove" placeholder="Select Patrons to Remove" mode="tags" :options="patronNames" :searchable="true" :closeOnSelect="false" />
           <div class="modal-footer">
             <button class="close-btn" @click="emit('close')">Cancel</button>

@@ -95,7 +95,7 @@ onBeforeMount(async () => {
   <div v-if="props.household" class="item-card">
     <div class="item">
       <div>
-        <h3>ID: {{ props.household._id }}</h3>
+        <h3 class="id">ID: {{ props.household._id }}</h3>
         <div class="info">
           <div style="display: flex; justify-content: center">
             <button @click="editMode = true" title="Edit Overview" class="icon"></button>
@@ -177,7 +177,7 @@ onBeforeMount(async () => {
             </div>
             <div v-else class="language">
               <p>Language: {{ props.household.preferredLanguage }}</p>
-              <div v-if="allAudios.length !== 0" style="">
+              <div v-if="allAudios.length !== 0" class="language-audio">
                 <button v-if="!showAudio" @click="showAudio = true" class="icon" style="color: var(--primary); text-decoration: underline">Show Audio</button>
                 <button v-else @click="showAudio = false" class="icon" style="color: var(--primary); text-decoration: underline">Hide Audio</button>
                 <div v-if="showAudio" style="margin-top: 1em; display: flex; gap: 2em; flex-direction: column">
@@ -221,6 +221,12 @@ onBeforeMount(async () => {
 </template>
 
 <style scoped>
+.language-audio {
+  text-align: start;
+}
+.id {
+  text-align: start;
+}
 h3 {
   font-weight: lighter;
 }

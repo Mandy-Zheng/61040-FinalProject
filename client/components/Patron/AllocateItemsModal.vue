@@ -39,7 +39,7 @@ function update(idx: number, amount: number) {
     <div v-if="props.show" class="modal-mask">
       <div class="modal-container">
         <div><h2>Allocate the following items</h2></div>
-        Select appropriate item units for this household. This action will automatically update the inventory. Are you sure?
+        Select appropriate item units to distribute to this household. This action will automatically update the inventory. Are you sure?
         <div class="row stocks">
           <article v-for="(stock, idx) in props.allocation" :key="stock" style="width: 25em">
             <AdjustableStockComponent :household="household" :stock="stock" :idx="idx" @updateAllocation="update" />

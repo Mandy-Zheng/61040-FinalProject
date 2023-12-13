@@ -64,7 +64,7 @@ async function getMaxAllocation() {
       await fetchy(`/api/inventories/${selectedOrg.value.id}`, "GET");
     }
   } catch (error) {
-    console.log(error);
+    return;
   }
   await getAllInventories();
   await getInventories();

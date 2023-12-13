@@ -5,7 +5,6 @@ const searchId = ref<string>("");
 const props = defineProps(["empty"]);
 const emit = defineEmits(["search", "resetEmpty"]);
 
-console.log(props);
 watch(
   () => props.empty,
   (val) => {
@@ -51,6 +50,6 @@ form {
 
 input {
   width: 22em;
-  margin-right: 4em;
+  margin-left: 4em;
 }
 </style>

@@ -26,7 +26,7 @@ onBeforeMount(async () => {
 <style src="@vueform/multiselect/themes/default.css"></style>
 
 <template>
-  <header>
+  <header class="">
     <nav>
       <div class="title">
         <svg id="svg" version="1.1" xmlns="http://www.w3.org/2000/svg" fill="var(--primary)" xmlns:xlink="http://www.w3.org/1999/xlink" width="32" height="32" viewBox="0, 0, 400,392.9606625258799">
@@ -74,18 +74,18 @@ onBeforeMount(async () => {
       </div>
       <ul>
         <li v-if="isLoggedIn && selectedOrg === undefined">
-          <RouterLink :to="{ name: 'Home' }" :class="{ underline: currentRouteName == 'Home' }"> Home </RouterLink>
-          <RouterLink :to="{ name: 'Organization' }" :class="{ underline: currentRouteName == 'Organization' }"> Organization </RouterLink>
-          <RouterLink :to="{ name: 'Settings' }" :class="{ underline: currentRouteName == 'Settings' }"> Settings </RouterLink>
+          <RouterLink class="navbar-link" :to="{ name: 'Home' }" :class="{ underline: currentRouteName == 'Home' }"> Home </RouterLink>
+          <RouterLink class="navbar-link" :to="{ name: 'Organization' }" :class="{ underline: currentRouteName == 'Organization' }"> Organization </RouterLink>
+          <RouterLink class="navbar-link" :to="{ name: 'Settings' }" :class="{ underline: currentRouteName == 'Settings' }"> Settings </RouterLink>
         </li>
         <li v-else-if="isLoggedIn">
-          <RouterLink :to="{ name: 'Home' }" :class="{ underline: currentRouteName == 'Home' }"> Home </RouterLink>
-          <RouterLink :to="{ name: 'Inventory' }" :class="{ underline: currentRouteName == 'Inventory' }"> Inventory </RouterLink>
-          <RouterLink :to="{ name: 'Patrons' }" :class="{ underline: currentRouteName == 'Patrons' }"> Patrons </RouterLink>
-          <RouterLink :to="{ name: 'Audio' }" :class="{ underline: currentRouteName == 'Audio' }"> Audio </RouterLink>
-          <RouterLink :to="{ name: 'Timesheet' }" :class="{ underline: currentRouteName == 'Timesheet' }"> Timesheet </RouterLink>
-          <RouterLink :to="{ name: 'Organization' }" :class="{ underline: currentRouteName == 'Organization' }"> Organization </RouterLink>
-          <RouterLink :to="{ name: 'Settings' }" :class="{ underline: currentRouteName == 'Settings' }"> Settings </RouterLink>
+          <RouterLink class="navbar-link" :to="{ name: 'Home' }" :class="{ underline: currentRouteName == 'Home' }"> Home </RouterLink>
+          <RouterLink class="navbar-link" :to="{ name: 'Inventory' }" :class="{ underline: currentRouteName == 'Inventory' }"> Inventory </RouterLink>
+          <RouterLink class="navbar-link" :to="{ name: 'Patrons' }" :class="{ underline: currentRouteName == 'Patrons' }"> Patrons </RouterLink>
+          <RouterLink class="navbar-link" :to="{ name: 'Audio' }" :class="{ underline: currentRouteName == 'Audio' }"> Audio </RouterLink>
+          <RouterLink class="navbar-link" :to="{ name: 'Timesheet' }" :class="{ underline: currentRouteName == 'Timesheet' }"> Timesheet </RouterLink>
+          <RouterLink class="navbar-link" :to="{ name: 'Organization' }" :class="{ underline: currentRouteName == 'Organization' }"> Organization </RouterLink>
+          <RouterLink class="navbar-link" :to="{ name: 'Settings' }" :class="{ underline: currentRouteName == 'Settings' }"> Settings </RouterLink>
         </li>
         <li v-else>
           <RouterLink :to="{ name: 'Home' }" :class="{ underline: currentRouteName == 'Home' }"> Home </RouterLink>
@@ -97,7 +97,7 @@ onBeforeMount(async () => {
       <p class="msg">{{ toast.message }}</p>
     </article>
   </header>
-  <RouterView />
+  <RouterView class="page" />
 </template>
 
 <style scoped>
@@ -108,11 +108,22 @@ onBeforeMount(async () => {
   z-index: 9999;
 }
 
+.page {
+  padding-top: 2em;
+  background-color: rgb(246, 246, 246);
+}
+
 nav {
   padding: 0.5em 2em;
+  padding-bottom: 1em;
+  margin-top: 0em;
   background-color: white;
   display: flex;
   align-items: center;
+}
+
+.navbar-link:hover {
+  color: var(--primary);
 }
 
 h1 {

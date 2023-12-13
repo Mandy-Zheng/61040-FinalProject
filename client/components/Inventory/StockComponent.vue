@@ -144,7 +144,19 @@ onBeforeMount(async () => {
   flex-direction: row;
   padding: 1em;
   width: 60em;
+  display: flex;
+  margin-bottom: 2em;
+  justify-content: space-between;
+  background-color: #fff;
+  border: none;
+  border-width: 1px;
+  border-color: rgb(186, 185, 185);
+  padding: 1em 1em;
+  border-radius: 0.4rem;
+  transition: 0.2s;
+  box-shadow: 10px 20px 30px -20px rgba(5, 5, 5, 0.24);
 }
+
 .subtext {
   display: flex;
   flex-direction: row;
@@ -197,7 +209,7 @@ img {
   width: 200px;
   height: 200px;
   border-radius: 20px;
-  border: 1px solid var(--primary);
+  /* border: 1px solid var(--primary); */
   margin-right: 4em;
 }
 

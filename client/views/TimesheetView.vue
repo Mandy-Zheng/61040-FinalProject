@@ -31,7 +31,6 @@ async function getOrgShifts() {
   try {
     if (selectedOrg.value) {
       results = await fetchy(`/api/shift/org/${selectedOrg.value.id}/${hidePastShifts.value}`, "GET");
-      console.log(results);
     }
   } catch (_) {
     return;
@@ -43,7 +42,6 @@ async function getMyShifts() {
   let results;
   try {
     results = await fetchy(`/api/shift/user/${hidePastShifts.value}`, "GET");
-    console.log(results);
   } catch (_) {
     return;
   }
@@ -328,6 +326,7 @@ input:checked + .slider:before {
 }
 
 .loader {
+  margin-top: 6em;
   width: 50px;
   height: 50px;
   animation-name: spin;

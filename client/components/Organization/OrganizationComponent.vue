@@ -116,7 +116,6 @@ async function editDays(openDays: Array<string>, restockDay: string) {
     await fetchy(`/api/organization/days/open/${props.orgId}`, "PATCH", { body: { days: k } });
     if (l) await fetchy(`/api/organization/days/restock/${props.orgId}`, "PATCH", { body: { day: l } });
   } catch (error) {
-    console.log(error);
     return;
   }
   await getOrganization();
