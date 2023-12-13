@@ -205,7 +205,7 @@ select {
   margin: 0;
   width: 19em;
   font-weight: 300;
-  height: 2em;
+  min-height: 2em;
 }
 img {
   height: 125px;

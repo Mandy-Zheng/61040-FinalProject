@@ -152,7 +152,7 @@ onBeforeMount(async () => {
               </button>
             </div>
             <p class="diet-title">Avoid:</p>
-            <div v-if="$props.household.dietaryRestrictions.length !== 0" style="display: flex; gap: 0.5em">
+            <div v-if="$props.household.dietaryRestrictions.length !== 0" style="display: flex; gap: 0.5em; width: 20em; flex-wrap: wrap">
               <div v-for="(tag, idx) in props.household.dietaryRestrictions" :key="tag">
                 <p class="tag" v-bind:style="{ backgroundColor: TAG_COLORS[idx % TAG_COLORS.length] }">{{ tag }}</p>
               </div>
