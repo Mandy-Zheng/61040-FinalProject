@@ -177,7 +177,7 @@ onBeforeMount(async () => {
         </h5>
         <h5 class="tag-title">Admins</h5>
         <div class="row">
-          <article v-for="admin in organization.admins" :key="admin" style="background-color: #cdb9a29c">{{ admin }}</article>
+          <article v-for="admin in organization.admins" :key="admin" style="background-color: #a0e0eb">{{ admin }}</article>
         </div>
         <h5 class="tag-title">Members</h5>
         <div class="row">
