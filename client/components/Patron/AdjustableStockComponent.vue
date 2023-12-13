@@ -31,7 +31,7 @@ function update(event: any) {
           </div>
           <div style="display: flex; flex-direction: column">
             <h4 class="units">Units:</h4>
-            <input @input="update" class="number-input" type="number" :value="props.stock.allocation" min="0" :max="props.stock.maxPerPerson" />
+            <input @input.prevent="update" class="number-input" type="number" :value="props.stock.allocation" min="0" required />
           </div>
         </div>
 

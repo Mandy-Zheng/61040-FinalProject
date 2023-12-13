@@ -3,7 +3,7 @@ import { ObjectId } from "mongodb";
 import { Router, getExpressRouter } from "./framework/router";
 
 import { Household, LanguageAudio, Membership, Patron, Shift, Stock, Team, User, WebSession } from "./app";
-import { BadValuesError } from "./concepts/errors";
+import { BadValuesError, NotAllowedError } from "./concepts/errors";
 import { HouseholdDoc } from "./concepts/household";
 import { LanguageAudioDoc } from "./concepts/languageaudio";
 import { PatronDoc } from "./concepts/patron";
@@ -153,10 +153,11 @@ class Routes {
     const memberId = new ObjectId(member);
     await Team.isTeamMember(org, memberId);
     if (isPromoting) {
-      return Team.addUsersAsAdmins(org, [memberId], user);
+      await Team.addUsersAsAdmins(org, [memberId], user);
     } else {
-      return Team.addUsersAsMembers(org, [memberId], user);
+      await Team.addUsersAsMembers(org, [memberId], user);
     }
+    return { msg: "Successfully Changed Member Status!" };
   }
 
   @Router.patch("/organization/leaveOrganization")
@@ -457,7 +458,6 @@ class Routes {
     return { msg: "Stock successfully updated!" };
   }
 
-  // update an inventory item's count or other details (link, image, etc)
   @Router.patch("/inventories/allocate")
   async decrementInventoryItem(session: WebSessionDoc, id: ObjectId, update: Partial<StockDoc>) {
     const user = WebSession.getUser(session);
@@ -468,6 +468,19 @@ class Routes {
       await Stock.updateStockQuantity(ID, update.count);
     }
     return { msg: "Stock successfully updated!" };
+  }
+
+  @Router.patch("/inventories/goodallocate")
+  async allocateStocks(session: WebSessionDoc, ids: ObjectId[], changes: number[]) {
+    const user = WebSession.getUser(session);
+    const IDs = ids.map((id) => new ObjectId(id));
+    if (changes.some((c) => c < 0)) {
+      throw new NotAllowedError("Cannot allocate negative amount");
+    }
+    const stocks = await Promise.all(IDs.map((stock) => Stock.getStockById(stock)));
+    await Promise.all(stocks.map((stock) => Team.isTeamMember(stock.owner, user)));
+    await Promise.all(stocks.map((stock, idx) => Stock.decrementStockQuantity(stock._id, changes[idx])));
+    return { msg: "Stocks successfully allocated!" };
   }
 
   @Router.post("/inventory")
