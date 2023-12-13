@@ -30,9 +30,9 @@ async function createShift() {
   <transition name="modal fade">
     <div v-if="show" class="modal-mask">
       <div class="modal-container">
-        <form>
+        <form @submit.prevent="createShift">
           <h3>Create Shift</h3>
-          <div class="form" @submit.prevent="createShift">
+          <div class="form">
             <div class="item">
               <div class="form-input">Max number of volunteers: <input class="number-input" type="number" v-model="capacity" min="0" required /></div>
             </div>
