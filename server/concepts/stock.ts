@@ -76,10 +76,13 @@ export default class StockConcept {
     if (!stock) {
       throw new NotFoundError("Stock not found");
     }
+    if (change < 0) {
+      throw new NotAllowedError("Cannot allocate negative units");
+    }
     if (stock.count - change < 0) {
       throw new NotAllowedError("Stock count cannot be negative");
     }
-    await this.stocks.updateOne({ _id }, { count: stock.count - change, maxPerDay: stock.maxPerDay - change });
+    await this.stocks.updateOne({ _id }, { count: stock.count - change });
     return { msg: "Stock successfully updated!" };
   }
 

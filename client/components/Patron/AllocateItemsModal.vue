@@ -15,13 +15,10 @@ const newAllocations = computed(() => {
 });
 async function allocateItems() {
   try {
+    const body = { ids: props.allocation.map((s) => s._id), changes: newAllocations.value };
+    console.log(newAllocations.value);
+    await fetchy(`/api/inventories/goodallocate`, "PATCH", { body: body });
     await fetchy(`/api/profile/visit/${props.household._id}`, "PATCH");
-    await Promise.all(
-      props.allocation.map(async (stock: any, idx) => {
-        const body = { id: stock._id, update: { count: stock.count - newAllocations.value[idx] } };
-        return fetchy(`/api/inventories/allocate`, "PATCH", { body: body });
-      }),
-    );
   } catch {
     return;
   }

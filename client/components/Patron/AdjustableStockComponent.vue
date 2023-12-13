@@ -23,6 +23,9 @@ function update(event: any) {
               {{ props.stock.item }}
             </h2>
             <div class="subtext">
+              <p class="maxp">Remaining Amount: {{ props.stock.count }}</p>
+            </div>
+            <div class="subtext">
               <p class="maxp">Max for household: {{ props.stock.maxPerPerson }}</p>
             </div>
             <div>
@@ -31,7 +34,7 @@ function update(event: any) {
           </div>
           <div style="display: flex; flex-direction: column">
             <h4 class="units">Units:</h4>
-            <input @input="update" class="number-input" type="number" :value="props.stock.allocation" min="0" :max="props.stock.maxPerPerson" />
+            <input @input.prevent="update" class="number-input" type="number" :value="props.stock.allocation" min="0" required />
           </div>
         </div>
 
