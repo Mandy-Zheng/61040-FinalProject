@@ -255,8 +255,8 @@ h2 {
 }
 
 .loader {
-  width: 100px;
-  height: 100px;
+  width: 50px;
+  height: 50px;
   animation-name: spin;
   animation-duration: 800ms;
   animation-iteration-count: infinite;
