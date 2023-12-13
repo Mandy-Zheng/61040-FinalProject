@@ -97,6 +97,9 @@ img {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
   transition: all 0.3s ease;
   height: 40em;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .modal-header {
