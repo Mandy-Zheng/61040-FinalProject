@@ -23,6 +23,9 @@ function update(event: any) {
               {{ props.stock.item }}
             </h2>
             <div class="subtext">
+              <p class="maxp">Remaining Amount: {{ props.stock.count }}</p>
+            </div>
+            <div class="subtext">
               <p class="maxp">Max for household: {{ props.stock.maxPerPerson }}</p>
             </div>
             <div>

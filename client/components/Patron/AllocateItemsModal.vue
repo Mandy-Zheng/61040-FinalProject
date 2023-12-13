@@ -16,6 +16,7 @@ const newAllocations = computed(() => {
 async function allocateItems() {
   try {
     const body = { ids: props.allocation.map((s) => s._id), changes: newAllocations.value };
+    console.log(newAllocations.value);
     await fetchy(`/api/inventories/goodallocate`, "PATCH", { body: body });
     await fetchy(`/api/profile/visit/${props.household._id}`, "PATCH");
   } catch {
