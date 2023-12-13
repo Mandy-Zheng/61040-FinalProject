@@ -67,7 +67,7 @@ onBeforeMount(async () => {
         </div>
       </div>
       <div class="no-org" v-else-if="!loaded">
-        <h2><i>Loading...</i></h2>
+        <img class="loader" src="../assets/images/logo.svg" />
       </div>
       <div class="no-org" v-else>
         <h2><i>No Organizations</i></h2>
@@ -152,5 +152,27 @@ select {
 
 .box {
   color: var(--primary);
+}
+
+.loader {
+  width: 100px;
+  height: 100px;
+  animation-name: spin;
+  animation-duration: 800ms;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+  /* transform: rotate(3deg); */
+  /* transform: rotate(0.3rad);/ */
+  /* transform: rotate(3grad); */
+  /* transform: rotate(.03turn);  */
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 </style>
